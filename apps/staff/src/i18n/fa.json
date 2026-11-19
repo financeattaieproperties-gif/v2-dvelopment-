@@ -268,5 +268,20 @@
   "Contract installment schedules, draft customer deposits, and Finance Manager approvals.": "جدول اقساط قراردادها، سپرده‌های پیش‌نویس مشتریان و تأییدیه مدیر مالی.",
   "Filming, editing, and social media post workflow connected to the Submission DB.": "روند فیلم‌برداری، تدوین و انتشار شبکه‌های اجتماعی متصل به پایگاه ارسال‌ها.",
   "Read-only status of property posts sent to the isolated Submission Database.": "وضعیت فقط‌خواندنی پست‌های املاک ارسال‌شده به پایگاه داده مجزا.",
-  "Project-linked architectural plans, graphic brochures, and 3D renders with version history.": "نقشه‌های معماری، بروشورهای گرافیکی و رندرهای سه‌بعدی مرتبط با پروژه همراه با تاریخچه نسخه."
+  "Project-linked architectural plans, graphic brochures, and 3D renders with version history.": "نقشه‌های معماری، بروشورهای گرافیکی و رندرهای سه‌بعدی مرتبط با پروژه همراه با تاریخچه نسخه.",
+  "Email or username": "ایمیل یا نام کاربری",
+  "Initial password": "رمز عبور اولیه",
+  "New password": "رمز عبور جدید",
+  "Reset password": "تغییر رمز عبور",
+  "Password Reset": "بازیابی رمز عبور",
+  "Password resets are managed by your CEO or Administrator. Please contact the CEO or Admin to reset your password.": "تغییر و بازیابی رمز عبور توسط مدیرعامل یا مدیر سیستم انجام می‌شود. لطفاً برای تغییر رمز با مدیرعامل یا ادمین تماس بگیرید.",
+  "Or sign in with your account & password": "یا با حساب کاربری و رمز عبور وارد شوید",
+  "Staff Accounts": "حساب‌های کارمندان",
+  "Manage staff access and reset passwords.": "مدیریت دسترسی کارمندان و تغییر رمز عبور.",
+  "Set a new password for": "تعیین رمز عبور جدید برای",
+  "Refresh": "به‌روزرسانی",
+  "Status": "وضعیت",
+  "Actions": "اقدامات",
+  "Active": "فعال",
+  "Inactive": "غیرفعال"
 }

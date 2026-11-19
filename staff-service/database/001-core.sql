@@ -1,5 +1,5 @@
 -- V2 ONLY: select a NEW EMPTY testing database in phpMyAdmin before import.
--- Core owns identity, permissions and shared tasks. Import once; no password storage.
+-- Core owns identity, permissions, authentication hashes, and shared tasks.
 SET NAMES utf8mb4;
 CREATE TABLE core_modules (
  code VARCHAR(60) PRIMARY KEY, name VARCHAR(120) NOT NULL, installed_at DATETIME NOT NULL
@@ -31,8 +31,9 @@ CREATE TABLE core_branches (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 CREATE TABLE core_users (
  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
- firebase_uid VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NOT NULL UNIQUE,
+ firebase_uid VARCHAR(128) CHARACTER SET ascii COLLATE ascii_bin NULL UNIQUE,
  name VARCHAR(120) NOT NULL, username VARCHAR(254) NOT NULL UNIQUE,
+ password_hash VARCHAR(255) NULL,
  role VARCHAR(60) NOT NULL, branch_id INT UNSIGNED NULL, active TINYINT NOT NULL DEFAULT 1,
  auth_version INT NOT NULL DEFAULT 1, created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
  FOREIGN KEY(role) REFERENCES core_roles(code), FOREIGN KEY(branch_id) REFERENCES core_branches(id), INDEX(role,active)

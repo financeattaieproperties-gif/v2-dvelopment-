@@ -197,9 +197,6 @@ export function previewClient(management: boolean, initialRoleOverride?: Role) {
     async login(_username: string, _password: string): Promise<Session> {
       throw new Error("Preview does not accept credentials. Use the preview role selector.");
     },
-    async loginWithGoogle(): Promise<Session> {
-      throw new Error("Preview does not accept credentials. Use the preview role selector.");
-    },
     async session() {
       return { user: activeUser, csrfToken: "preview-csrf", serverTime: iso(0) } as Session;
     },
@@ -516,14 +513,14 @@ export function previewClient(management: boolean, initialRoleOverride?: Role) {
       const input = body as {
         name: string;
         username: string;
-        firebaseUid: string;
+        password?: string;
         role: Role;
         departmentCode?: string;
         teamLeaderId?: number;
         branchId?: number;
       };
-      if (!input.name?.trim() || !input.username?.trim() || !input.firebaseUid?.trim()) {
-        throw new Error("Name, email, and Firebase UID are required.");
+      if (!input.name?.trim() || !input.username?.trim() || !input.password || input.password.length < 6) {
+        throw new Error("Name, email or username, and password (min 6 characters) are required.");
       }
       const newUser: StaffUser = {
         id: ++next,
@@ -537,6 +534,15 @@ export function previewClient(management: boolean, initialRoleOverride?: Role) {
       };
       data.assignees.push(newUser);
       return { id: newUser.id, user: newUser };
+    },
+    async updateStaff(id: number, body: { password?: string; active?: boolean }, _key?: string) {
+      if (!isManagerRole(activeUser.role)) {
+        throw new Error("Only CEO can update staff user accounts.");
+      }
+      const target = data.assignees.find((u) => u.id === id);
+      if (!target) throw new Error("Staff account not found.");
+      if (typeof body.active === "boolean") target.active = body.active;
+      return { success: true };
     },
     async saveProject(projectInput: Partial<InventoryProject>) {
       if (!isManagerRole(activeUser.role)) throw new Error("Only CEO can save inventory.");
@@ -823,9 +829,6 @@ export function previewClient(management: boolean, initialRoleOverride?: Role) {
       });
       Object.assign(deliv, updated);
       return deliv;
-    },
-    async resetPassword(_email: string) {
-      throw new Error("Passwords are not stored in sample preview.");
     },
     async logout() {
       location.href = location.pathname;

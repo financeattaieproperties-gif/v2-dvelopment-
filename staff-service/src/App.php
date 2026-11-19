@@ -2,7 +2,6 @@
 declare(strict_types=1);
 namespace Staff;
 require_once __DIR__ . '/Domain.php';
-require_once __DIR__ . '/FirebaseAuth.php';
 require_once __DIR__ . '/Completion.php';
 require_once __DIR__ . '/LeadPropertyClaims.php';
 use PDO;
@@ -71,18 +70,13 @@ final class App {
         session_set_cookie_params(['lifetime'=>0, 'path'=>'/', 'secure'=>!$local, 'httponly'=>true, 'samesite'=>($isCrossOrigin && !$local ? 'None' : 'Strict')]);
         session_start();
         if (!empty($_SESSION['user_id'])) {
-            $row = $this->one('SELECT id,name,username,firebase_uid,role,department_code,team_leader_id,branch_id,active,auth_version FROM core_users WHERE id=?', [$_SESSION['user_id']]);
-            if (!$row || !$row['active'] || $row['role'] === 'finance_assistant' || $row['auth_version'] !== ($_SESSION['auth_version'] ?? null) || time() - ($_SESSION['last_seen'] ?? 0) > 1800 || time() >= ($_SESSION['firebase_expiry'] ?? 0)) {
+            $row = $this->one('SELECT id,name,username,role,department_code,team_leader_id,branch_id,active,auth_version FROM core_users WHERE id=?', [$_SESSION['user_id']]);
+            if (!$row || !$row['active'] || $row['role'] === 'finance_assistant' || $row['auth_version'] !== ($_SESSION['auth_version'] ?? null) || time() - ($_SESSION['last_seen'] ?? 0) > 1800) {
                 $_SESSION = [];
                 session_regenerate_id(true);
             } else {
-                if (time()-($_SESSION['firebase_checked']??0)>=300) {
-                    try { $identity=$this->firebase()->verify($_SESSION['firebase_token']??'');
-                        if ($identity['uid']!==$row['firebase_uid']) throw new FirebaseAuthException('Identity mismatch.');
-                        $_SESSION['firebase_checked']=time();
-                    } catch (FirebaseAuthException $e) { $_SESSION=[]; session_regenerate_id(true); $row=null; }
-                }
-                if ($row) { $this->user=$row; $_SESSION['last_seen']=time(); }
+                $this->user = $row;
+                $_SESSION['last_seen'] = time();
             }
         }
         $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
@@ -137,7 +131,7 @@ final class App {
             if ($route === 'tasks' && $method === 'POST') return $this->createTask($body);
             if (preg_match('#^tasks/(\d+)$#',$route,$m) && $method === 'PATCH') return $this->updateTask((int)$m[1],$body);
             if ($route === 'staff' && $method === 'POST') return $this->createStaff($body);
-            if (preg_match('#^staff/(\d+)$#',$route,$m) && $method === 'PATCH') return $this->setStaffActive((int)$m[1],$body);
+            if (preg_match('#^staff/(\d+)$#',$route,$m) && $method === 'PATCH') return $this->updateStaff((int)$m[1],$body);
             if ($route === 'departments' && $method === 'POST') return $this->createDepartment($body);
             throw new HttpError(404, 'Route not found.');
         });
@@ -152,9 +146,6 @@ final class App {
         if (!is_array($data) || array_is_list($data)) throw new HttpError(400,'A JSON object is required.');
         return $data;
     }
-    private function firebase(): FirebaseAuth {
-        return new FirebaseAuth($this->config['firebase_project_id']??'', $this->config['firebase_api_key']??'');
-    }
     private function login(array $body): array {
         // A failed account switch must never leave the prior identity authenticated.
         $this->user=[]; $_SESSION=[]; session_regenerate_id(true); $_SESSION['csrf']=bin2hex(random_bytes(32));
@@ -162,14 +153,15 @@ final class App {
         $cutoff=gmdate('Y-m-d H:i:s',time()-900);
         $this->execute('INSERT INTO core_login_limits(bucket,attempts,window_start) VALUES (?,1,?) ON DUPLICATE KEY UPDATE attempts=IF(window_start < ?,1,attempts+1),window_start=IF(window_start < ?,VALUES(window_start),window_start)',[$bucket,$this->now,$cutoff,$cutoff]);
         if ($this->one('SELECT attempts FROM core_login_limits WHERE bucket=?',[$bucket])['attempts']>20) { header('Retry-After: 900'); throw new HttpError(429,'Too many sign-in attempts. Try again later.'); }
-        if (!is_string($body['idToken']??null)) throw new HttpError(401,'A Firebase sign-in token is required.');
-        try { $identity=$this->firebase()->verify($body['idToken']); }
-        catch (FirebaseAuthException $e) { throw new HttpError(401,$e->getMessage()); }
-        $row=$this->one('SELECT * FROM core_users WHERE firebase_uid=?',[$identity['uid']]);
-        if (!$row || !$row['active'] || $row['role'] === 'finance_assistant') throw new HttpError(403,'This account has no active workspace access. Contact your administrator.');
+        $identifier=strtolower(trim((string)($body['identifier'] ?? $body['username'] ?? $body['email'] ?? '')));
+        $password=(string)($body['password'] ?? '');
+        if ($identifier==='' || $password==='') throw new HttpError(401,'Email or username and password are required.');
+        $row=$this->one('SELECT * FROM core_users WHERE LOWER(username)=? LIMIT 1',[$identifier]);
+        $hash=$row['password_hash'] ?? null;
+        if (!$row || !is_string($hash) || $hash==='' || !password_verify($password,$hash)) throw new HttpError(401,'Invalid email/username or password.');
+        if (!$row['active'] || $row['role'] === 'finance_assistant') throw new HttpError(403,'This account has no active workspace access. Contact your administrator.');
         session_regenerate_id(true);
-        $_SESSION=['user_id'=>$row['id'],'auth_version'=>$row['auth_version'],'created'=>time(),'last_seen'=>time(),'csrf'=>bin2hex(random_bytes(32)),
-            'firebase_expiry'=>$identity['expiresAt'],'firebase_token'=>$body['idToken'],'firebase_checked'=>time()];
+        $_SESSION=['user_id'=>$row['id'],'auth_version'=>$row['auth_version'],'created'=>time(),'last_seen'=>time(),'csrf'=>bin2hex(random_bytes(32))];
         $this->execute('DELETE FROM core_login_limits WHERE bucket=?',[$bucket]);
         return ['user'=>$this->publicUser($row),'csrfToken'=>$_SESSION['csrf'],'serverTime'=>Domain::iso($this->now)];
     }
@@ -310,29 +302,54 @@ final class App {
     private function createStaff(array $body): array {
         $this->permission('core.staff.manage');
         $name=Domain::text($body['name']??null,120);
-        $username=strtolower(Domain::text($body['username']??null,254));
-        if (!filter_var($username,FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('Enter the Firebase account email.');
-        $uid=Domain::text($body['firebaseUid']??null,128);
-        if (!preg_match('/^[\x21-\x7e]{1,128}$/D',$uid)) throw new InvalidArgumentException('Enter the exact Firebase UID.');
+        $username=strtolower(Domain::text($body['username']??$body['email']??null,254));
+        if ($username==='' || !preg_match('/^[a-z0-9._@+-]{2,254}$/D',$username)) throw new InvalidArgumentException('Enter a valid email or username.');
+        $password=(string)($body['password']??'');
+        if (strlen($password)<6 || strlen($password)>128) throw new InvalidArgumentException('Password must be between 6 and 128 characters.');
+        $passwordHash=password_hash($password, PASSWORD_BCRYPT);
+        $uidRaw=trim((string)($body['firebaseUid']??''));
+        $uid=$uidRaw!=='' ? Domain::text($uidRaw,128) : null;
+        if ($uid!==null && !preg_match('/^[\x21-\x7e]{1,128}$/D',$uid)) throw new InvalidArgumentException('Enter a valid optional Firebase UID.');
         $allowedRoles=['manager','callcenter','sales','sales_leader','marketing_manager','editor','videographer','finance_manager','architect','graphic_designer','visual_designer_3d'];
         if (!in_array($body['role']??'',$allowedRoles,true)) throw new InvalidArgumentException('Select an internal operational staff role.');
-        if ($this->one('SELECT id FROM core_users WHERE username=? OR firebase_uid=?',[$username,$uid])) throw new HttpError(409,'That email or Firebase UID is already provisioned.');
+        if ($uid!==null ? $this->one('SELECT id FROM core_users WHERE LOWER(username)=? OR firebase_uid=?',[$username,$uid]) : $this->one('SELECT id FROM core_users WHERE LOWER(username)=?',[$username])) throw new HttpError(409,'That email or username is already provisioned.');
         $department=$body['departmentCode']??$this->one('SELECT department_code FROM core_roles WHERE code=?',[$body['role']])['department_code'];
         if (!$this->one('SELECT code FROM core_departments WHERE code=? AND code<>?',[$department,'customers'])) throw new InvalidArgumentException('Choose internal department.');
         $branchId=!empty($body['branchId']) ? (int)$body['branchId'] : ((int)($this->user['branch_id'] ?? 0) ?: (int)($this->one('SELECT id FROM core_branches WHERE active=1 ORDER BY id LIMIT 1')['id'] ?? 0));
         if (!$branchId || !$this->one('SELECT id FROM core_branches WHERE id=? AND active=1',[$branchId])) throw new InvalidArgumentException('Select an active branch.');
         $leader=empty($body['teamLeaderId'])?null:(int)$body['teamLeaderId']; if ($leader&&$this->activeUser($leader)['role']!=='sales_leader') throw new InvalidArgumentException('Choose Sales Team Leader.');
-        $this->execute('INSERT INTO core_users(name,username,firebase_uid,role,department_code,team_leader_id,branch_id) VALUES (?,?,?,?,?,?,?)',[$name,$username,$uid,$body['role'],$department,$leader,$branchId]);
+        $this->execute('INSERT INTO core_users(name,username,password_hash,firebase_uid,role,department_code,team_leader_id,branch_id) VALUES (?,?,?,?,?,?,?,?)',[$name,$username,$passwordHash,$uid,$body['role'],$department,$leader,$branchId]);
         $id=(int)$this->db->lastInsertId(); $this->audit('staff.created',$id); return ['id'=>$id];
     }
-    private function setStaffActive(int $id,array $body): array {
-        $this->permission('core.staff.manage'); if ($id===$this->uid()) throw new HttpError(403,'You cannot deactivate your own account.');
-        if (!is_bool($body['active'] ?? null)) throw new InvalidArgumentException('An active flag is required.');
-        $target=$this->one('SELECT role FROM core_users WHERE id=? FOR UPDATE',[$id]);
-        if (!$target || in_array($target['role'],['ceo','admin','manager'],true)) throw new HttpError(403,'Privileged staff changes require private administration.');
-        if ($body['active'] && $target['role'] === 'finance_assistant') throw new HttpError(403,'This staff role has been retired.');
-        if (!$body['active'] && ($this->one("SELECT id FROM cc_leads WHERE assignee_id=? AND status IN ('draft','active') LIMIT 1 FOR UPDATE",[$id]) || $this->one("SELECT id FROM core_management_tasks WHERE assignee_id=? AND status IN ('todo','in_progress') LIMIT 1 FOR UPDATE",[$id]))) throw new HttpError(409,'This agent still has active work. Resolve assignments before deactivation.');
-        $this->execute('UPDATE core_users SET active=?,auth_version=auth_version+1 WHERE id=?',[(int)$body['active'],$id]); $this->audit('staff.active_changed',$id); return ['success'=>true];
+    private function updateStaff(int $id,array $body): array {
+        $this->permission('core.staff.manage');
+        $hasActive=array_key_exists('active',$body);
+        $hasPassword=array_key_exists('password',$body);
+        if (!$hasActive && !$hasPassword) throw new InvalidArgumentException('Provide an active flag or a new password.');
+        $target=$this->one('SELECT id,role,active FROM core_users WHERE id=? FOR UPDATE',[$id]);
+        if (!$target) throw new HttpError(404,'Staff account not found.');
+        if ($hasActive) {
+            if ($id===$this->uid()) throw new HttpError(403,'You cannot deactivate your own account.');
+            if (!is_bool($body['active'] ?? null)) throw new InvalidArgumentException('An active flag is required.');
+            if (in_array($target['role'],['ceo','admin','manager'],true)) throw new HttpError(403,'Privileged staff changes require private administration.');
+            if ($body['active'] && $target['role'] === 'finance_assistant') throw new HttpError(403,'This staff role has been retired.');
+            if (!$body['active'] && ($this->one("SELECT id FROM cc_leads WHERE assignee_id=? AND status IN ('draft','active') LIMIT 1 FOR UPDATE",[$id]) || $this->one("SELECT id FROM core_management_tasks WHERE assignee_id=? AND status IN ('todo','in_progress') LIMIT 1 FOR UPDATE",[$id]))) throw new HttpError(409,'This agent still has active work. Resolve assignments before deactivation.');
+        }
+        $passwordHash=null;
+        if ($hasPassword) {
+            $password=(string)($body['password']??'');
+            if (strlen($password)<6 || strlen($password)>128) throw new InvalidArgumentException('Password must be between 6 and 128 characters.');
+            $passwordHash=password_hash($password, PASSWORD_BCRYPT);
+        }
+        if ($hasActive && $hasPassword) {
+            $this->execute('UPDATE core_users SET active=?,password_hash=?,auth_version=auth_version+1 WHERE id=?',[(int)$body['active'],$passwordHash,$id]);
+        } elseif ($hasActive) {
+            $this->execute('UPDATE core_users SET active=?,auth_version=auth_version+1 WHERE id=?',[(int)$body['active'],$id]);
+        } else {
+            $this->execute('UPDATE core_users SET password_hash=?,auth_version=auth_version+1 WHERE id=?',[$passwordHash,$id]);
+        }
+        $this->audit($hasPassword ? 'staff.password_reset' : 'staff.active_changed',$id);
+        return ['success'=>true];
     }
     private function mutate(string $route,array $body,callable $operation): mixed {
         $key=$_SERVER['HTTP_IDEMPOTENCY_KEY'] ?? '';

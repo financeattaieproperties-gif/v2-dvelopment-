@@ -167,5 +167,20 @@
   "Sign In": "Sign In",
   "Don't have an account?": "Don't have an account?",
   "Contact Admin": "Contact Admin",
-  "Private, authorized staff access only · Fixed Role Workspace": "Private, authorized staff access only · Fixed Role Workspace"
+  "Private, authorized staff access only · Fixed Role Workspace": "Private, authorized staff access only · Fixed Role Workspace",
+  "Email or username": "Email or username",
+  "Initial password": "Initial password",
+  "New password": "New password",
+  "Reset password": "Reset password",
+  "Password Reset": "Password Reset",
+  "Password resets are managed by your CEO or Administrator. Please contact the CEO or Admin to reset your password.": "Password resets are managed by your CEO or Administrator. Please contact the CEO or Admin to reset your password.",
+  "Or sign in with your account & password": "Or sign in with your account & password",
+  "Staff Accounts": "Staff Accounts",
+  "Manage staff access and reset passwords.": "Manage staff access and reset passwords.",
+  "Set a new password for": "Set a new password for",
+  "Refresh": "Refresh",
+  "Status": "Status",
+  "Actions": "Actions",
+  "Active": "Active",
+  "Inactive": "Inactive"
 }

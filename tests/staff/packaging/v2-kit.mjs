@@ -19,7 +19,7 @@ for(const file of walk(path.join(root,'dist'))){
  assert.ok(!relative.startsWith('private/'),relative);
 }
 for(const file of ['01-new-v2-schema.sql','01b-submissions-db.sql','complete-v2-mysql-schema.sql','02-five-project-showcase.sql','03-website-admin.sql','04-staff-ceo.template.sql'])assert.ok(exists('database/'+file),file);
-for(const phpSrc of ['App.php','Completion.php','CompletionRules.php','Domain.php','FirebaseAuth.php','LeadPropertyClaims.php'])assert.ok(exists('private/app/src/'+phpSrc),phpSrc);
+for(const phpSrc of ['App.php','Completion.php','CompletionRules.php','Domain.php','LeadPropertyClaims.php'])assert.ok(exists('private/app/src/'+phpSrc),phpSrc);
 assert.ok(exists('private/config.php'));
 assert.ok(exists('private-setup/WEBSITE-ADMIN-LOGIN-PRIVATE.txt'));
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'private-setup/project-showcase.json'),'utf8'));

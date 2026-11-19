@@ -47,7 +47,7 @@ export interface StaffUser {
   role: Role;
   departmentCode?: DepartmentCode;
   username?: string;
-  firebaseUid?: string;
+  firebaseUid?: string | null;
   teamLeaderId?: number | null;
   assignedProjectIds?: number[];
   branchId: number | null;

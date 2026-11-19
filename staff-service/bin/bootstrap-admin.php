@@ -7,15 +7,15 @@ if (!$directory || file_exists($directory)) throw new RuntimeException('Use --ou
 if (!mkdir($directory,0700,true)) throw new RuntimeException('Cannot create private output.');
 $sql=<<<'SQL'
 -- V2 ONLY. Import after 001-core.sql and 010-callcenter.sql.
--- Create the CEO in Firebase first. Copy its exact UID and email into these values.
--- Empty values intentionally create NO account. No password belongs in MySQL.
-SET @owner_firebase_uid = '';
-SET @owner_email = '';
+-- Generate a bcrypt hash privately via: php set-staff-password.php --username Ceo@attaieproperties.com --sql
+-- Empty values intentionally create NO account. No plaintext password belongs in MySQL.
+SET @owner_username = '';
+SET @owner_password_hash = '';
 SET @owner_name = 'Admin (CEO)';
-INSERT INTO core_users(firebase_uid,username,name,role)
-SELECT @owner_firebase_uid,@owner_email,@owner_name,'ceo'
-WHERE @owner_firebase_uid <> '' AND @owner_email <> '';
+INSERT INTO core_users(username,password_hash,name,role)
+SELECT LOWER(@owner_username),@owner_password_hash,@owner_name,'ceo'
+WHERE @owner_username <> '' AND @owner_password_hash <> '';
 SQL;
 file_put_contents($directory.'/020-owner.template.sql',$sql."\n");
-file_put_contents($directory.'/FIREBASE-SETUP.txt',"Keep outside webroot.\nCreate the CEO in your V2 Firebase Authentication console (Email/Password).\nCopy its UID and email into 020-owner.template.sql, then import into V2 only.\nEnable Email/Password sign-in and authorize attaieproperties.com and www.attaieproperties.com.\nSet matching Firebase project ID/Web API key in private PHP config, and VITE_STAFF_FIREBASE_API_KEY before building.\nNo default login or local password is generated.\nCEO: /ceo/; Manager: /management/; Call Center: /callcenter/.\n");
-echo "Owner provisioning template and Firebase setup instructions prepared. No credentials generated.\n";
+file_put_contents($directory.'/MYSQL-AUTH-SETUP.txt',"Keep outside webroot.\nImport 04-seed-all-staff-users.sql or generate a bcrypt hash with set-staff-password.php and populate 020-owner.template.sql.\nNo plaintext password belongs in SQL or upload files.\nCEO: /ceo/; Manager: /management/; Call Center: /callcenter/.\n");
+echo "Owner provisioning template and MySQL auth setup instructions prepared. No plaintext credentials generated.\n";

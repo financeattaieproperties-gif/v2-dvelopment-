@@ -6,7 +6,7 @@ test('Dari staff translations contain no damaged placeholder text',()=>{
  const fa=JSON.parse(fs.readFileSync(new URL('../../../apps/staff/src/i18n/fa.json',import.meta.url),'utf8'));
  for(const [key,value] of Object.entries(fa)) assert.doesNotMatch(value,/\?{2}/,key);
 });
-test('core registers canonical roles and branch ownership without password storage', () => {
+test('core registers canonical roles, branch ownership, and nullable firebase_uid + password_hash', () => {
  const sql=read('001-core.sql');
  for(const name of ['core_users','core_departments','core_roles','core_permissions','core_role_permissions','core_modules','core_module_versions','core_branches','core_branch_managers','core_management_tasks']) assert.match(sql,new RegExp(`CREATE TABLE ${name}\\s*\\(`));
  const roleSeed=sql.match(/INSERT INTO core_roles VALUES([\s\S]*?)INSERT INTO core_permissions/)?.[1] || '';
@@ -15,8 +15,9 @@ test('core registers canonical roles and branch ownership without password stora
  assert.match(sql,/CREATE TABLE core_branches \([\s\S]*code VARCHAR\(40\) NOT NULL UNIQUE[\s\S]*address VARCHAR\(255\)[\s\S]*phone VARCHAR\(40\)[\s\S]*email VARCHAR\(254\)[\s\S]*version INT/);
  assert.match(sql,/CREATE TABLE core_branch_managers \([\s\S]*branch_id INT UNSIGNED PRIMARY KEY[\s\S]*manager_user_id INT UNSIGNED NOT NULL UNIQUE/);
  assert.match(sql,/CREATE TABLE core_management_tasks \([\s\S]*branch_id INT UNSIGNED NOT NULL/);
- assert.match(sql,/firebase_uid VARCHAR\(128\).*UNIQUE/);
- assert.doesNotMatch(sql,/password_hash|DROP TABLE|ALTER TABLE/i);
+ assert.match(sql,/firebase_uid VARCHAR\(128\).*NULL UNIQUE/);
+ assert.match(sql,/password_hash VARCHAR\(255\) NULL/);
+ assert.doesNotMatch(sql,/DROP TABLE|ALTER TABLE/i);
 });
 test('callcenter install creates only its own tables and never alters prior tables', () => {
  const sql=read('010-callcenter.sql');

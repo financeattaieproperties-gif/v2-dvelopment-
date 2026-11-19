@@ -15,8 +15,10 @@ test('staff routing and API are separate and private configuration fails closed'
   assert.match(fs.readFileSync(path.join(root,'deployment/staff/dashboard.htaccess'),'utf8'),/X-Robots-Tag/);
 });
 
-test('deployed CSP permits Firebase HTTPS authentication',()=>{
+test('deployed CSP restricts connections and frames to self without Firebase',()=>{
  const rules=fs.readFileSync(path.join(root,'deployment/staff/dashboard.htaccess'),'utf8');
- assert.match(rules,/connect-src 'self' https:\/\/identitytoolkit\.googleapis\.com/);
+ assert.match(rules,/connect-src 'self';/);
+ assert.match(rules,/frame-src 'self';/);
+ assert.doesNotMatch(rules,/identitytoolkit\.googleapis\.com|firebaseapp\.com|accounts\.google\.com/);
  assert.doesNotMatch(rules,/connect-src[^;]*\*/);
 });

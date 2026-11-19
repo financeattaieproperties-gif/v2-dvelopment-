@@ -27,17 +27,16 @@ const browser=await chromium.launch({headless:true});
 try {
  const page=await browser.newPage();const errors=[];let googleCalls=0;
  page.on('pageerror',e=>errors.push(e.message));
- await page.route('https://identitytoolkit.googleapis.com/**',async route=>{googleCalls++;await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(route.request().url().includes('sendOobCode')?{}:{idToken:tokens.agent})});});
+ await page.route('https://identitytoolkit.googleapis.com/**',async route=>{googleCalls++;await route.abort();});
  await page.goto('http://127.0.0.1:5176/callcenter/');
- await page.getByLabel('Email',{exact:true}).first().fill('agent@example.test');
+ assert.equal(await page.locator('[data-testid="staff-google-signin-btn"]').count(),0);
+ await page.getByLabel('Email or username',{exact:true}).first().fill('agent@example.test');
  await page.getByLabel('Password',{exact:true}).fill('Fictional-fixture-only');
- await page.screenshot({path:'test-results/staff/firebase-login.png',fullPage:true});
- await page.getByRole('button',{name:'Sign in',exact:true}).click();
+ await page.getByRole('button',{name:'Forgot password?',exact:true}).click();
+ await page.getByTestId('login-forgot-panel').waitFor();
+ await page.screenshot({path:'test-results/staff/mysql-login.png',fullPage:true});
+ await page.getByRole('button',{name:'Sign In',exact:true}).click();
  await page.getByRole('heading',{name:'Overview',exact:true}).waitFor();
- assert.equal(googleCalls,1);assert.deepEqual(errors,[]);
- await page.locator('button.account').click();
- await page.getByLabel('Email',{exact:true}).fill('agent@example.test');
- await page.getByRole('button',{name:'Send reset email',exact:true}).click();
- await page.getByRole('status').filter({hasText:'If the account exists'}).waitFor();assert.equal(googleCalls,2);
- console.log('Production build login and password reset passed with actual packaged CSP and fictional signed Firebase identity. No Google account request was made.');
+ assert.equal(googleCalls,0);assert.deepEqual(errors,[]);
+ console.log('Production build login passed with strict CSP and MySQL session auth. Zero Google/Firebase requests were made.');
 } finally {await browser.close();await new Promise(resolve=>server.close(resolve));}

@@ -335,9 +335,11 @@ function App() {
       | "detail"
       | "assign"
       | "staff"
-      | "department";
-    item?: Lead | Followup | ManagementTask;
+      | "department"
+      | "resetPassword";
+    item?: Lead | Followup | ManagementTask | StaffUser;
   } | null>(null);
+  const [staffDirectory, setStaffDirectory] = useState<StaffUser[]>([]);
   const [sheetsExportMode, setSheetsExportMode] = useState<"leads" | "inventory" | null>(null);
   const [pendingCalendarSync, setPendingCalendarSync] = useState<PendingStaffCalendarSync | null>(null);
   const generation = useRef(0);
@@ -599,6 +601,12 @@ function App() {
       if (current === generation.current) setLoading(false);
     }
   }, [session, page, query, number, filter, refreshOutboxCounts, syncQueuedOfflineEntries]);
+
+  useEffect(() => {
+    if (session && page === "team" && session.user.role === "ceo") {
+      client.staff().then(setStaffDirectory).catch(() => {});
+    }
+  }, [session, page]);
 
   useEffect(() => {
     if (isOnline && session && (offlineSavedAt || pendingSyncCount > 0)) {
@@ -2496,24 +2504,76 @@ function App() {
                 </p>
               )}
               {page === "team" && manager && (
-                <div className="team-action" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-                  <button
-                    className="button secondary"
-                    data-testid="create-department-btn"
-                    onClick={() => setModal({ kind: "department" })}
-                  >
-                    <Building2 size={17} />
-                    {t("Create department")}
-                  </button>
-                  <button
-                    className="button secondary"
-                    data-testid="create-agent-btn"
-                    onClick={() => setModal({ kind: "staff" })}
-                  >
-                    <UserRound size={17} />
-                    {t("Create agent")}
-                  </button>
-                </div>
+                <>
+                  <div className="team-action" style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+                    <button
+                      className="button secondary"
+                      data-testid="create-department-btn"
+                      onClick={() => setModal({ kind: "department" })}
+                    >
+                      <Building2 size={17} />
+                      {t("Create department")}
+                    </button>
+                    <button
+                      className="button secondary"
+                      data-testid="create-agent-btn"
+                      onClick={() => setModal({ kind: "staff" })}
+                    >
+                      <UserRound size={17} />
+                      {t("Create agent")}
+                    </button>
+                  </div>
+                  <section className="panel" data-testid="staff-accounts-directory" style={{ marginTop: 16 }}>
+                    <div className="panel-heading">
+                      <div>
+                        <h2>{t("Staff Accounts")}</h2>
+                        <p>{t("Manage staff access and reset passwords.")}</p>
+                      </div>
+                      <button
+                        type="button"
+                        className="button secondary"
+                        onClick={() => {
+                          client.staff().then(setStaffDirectory).catch(() => {});
+                        }}
+                      >
+                        {t("Refresh")}
+                      </button>
+                    </div>
+                    <div className="table-wrap">
+                      <table>
+                        <thead>
+                          <tr>
+                            <th>{t("Name")}</th>
+                            <th>{t("Email or username")}</th>
+                            <th>{t("Role")}</th>
+                            <th>{t("Status")}</th>
+                            <th>{t("Actions")}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {(staffDirectory.length > 0 ? staffDirectory : data?.assignees || []).map((member) => (
+                            <tr key={member.id}>
+                              <td>{member.name}</td>
+                              <td dir="ltr">{member.username || "—"}</td>
+                              <td>{member.role}</td>
+                              <td>{member.active === false ? t("Inactive") : t("Active")}</td>
+                              <td>
+                                <button
+                                  type="button"
+                                  className="button secondary"
+                                  data-testid={`reset-password-btn-${member.id}`}
+                                  onClick={() => setModal({ kind: "resetPassword", item: member })}
+                                >
+                                  {t("Reset password")}
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </section>
+                </>
               )}
             </>
           )}
@@ -2713,6 +2773,7 @@ function App() {
               assign: "Assign task",
               staff: "Create agent",
               department: "Create department",
+              resetPassword: "Reset password",
             }[modal.kind],
           )}
           close={() => setModal(null)}
@@ -2762,6 +2823,17 @@ function App() {
             />
           ) : modal.kind === "department" ? (
             <DepartmentForm t={t} done={complete} />
+          ) : modal.kind === "resetPassword" ? (
+            <ResetPasswordModalForm
+              t={t}
+              user={modal.item as StaffUser}
+              done={async () => {
+                await complete();
+                if (manager) {
+                  client.staff().then(setStaffDirectory).catch(() => {});
+                }
+              }}
+            />
           ) : modal.kind === "task" ? (
             <TaskDetail
               t={t}
@@ -3850,25 +3922,22 @@ function StaffForm({
       <Field label={t("Name")}>
         <input name="name" required maxLength={120} />
       </Field>
-      <p>
-        {t(
-          "Create the account in Firebase first, then enter its exact UID and email here.",
-        )}
-      </p>
-      <Field label={t("Email")}>
+      <Field label={t("Email or username")}>
         <input
           name="username"
-          type="email"
+          type="text"
           autoComplete="off"
           required
           maxLength={254}
         />
       </Field>
-      <Field label={t("Firebase UID")}>
+      <Field label={t("Initial password")}>
         <input
-          name="firebaseUid"
-          autoComplete="off"
+          name="password"
+          type="password"
+          autoComplete="new-password"
           required
+          minLength={6}
           maxLength={128}
         />
       </Field>
@@ -3935,35 +4004,58 @@ function StaffForm({
     </form>
   );
 }
-function PasswordForm({ t }: { t: Translate; done: () => void }) {
-  const [sent, setSent] = useState(false);
-  const { busy, error, submit } = useSubmission(async () => {
-    setSent(true);
-  });
+function ResetPasswordModalForm({
+  t,
+  user,
+  done,
+}: {
+  t: Translate;
+  user: StaffUser;
+  done: () => Promise<void>;
+}) {
+  const { busy, error, submit } = useSubmission(done);
   return (
     <form
-      className="panel profile-card"
       onSubmit={(e) => {
         e.preventDefault();
-        const form = new FormData(e.currentTarget);
-        void submit({}, () => client.resetPassword(String(form.get("email"))));
+        const f = new FormData(e.currentTarget);
+        const password = String(f.get("password") || "");
+        void submit({ password }, (key) =>
+          client.updateStaff(user.id, { password }, key),
+        );
       }}
     >
-      <h2>{t("Security")}</h2>
-      <p>{t("Reset your password by email.")}</p>
-      <Field label={t("Email")}>
-        <input name="email" type="email" autoComplete="email" required />
+      <p>
+        {t("Set a new password for")} <strong>{user.name}</strong>{" "}
+        {user.username ? `(${user.username})` : ""}.
+      </p>
+      <Field label={t("New password")}>
+        <input
+          name="password"
+          type="password"
+          autoComplete="new-password"
+          required
+          minLength={6}
+          maxLength={128}
+        />
       </Field>
       <FormError message={error} />
-      {sent && (
-        <p role="status">
-          {t("If the account exists, a password reset email has been sent.")}
-        </p>
-      )}
-      <button className="button" disabled={busy}>
-        {t("Send reset email")}
+      <button className="button full" disabled={busy}>
+        {t("Reset password")}
       </button>
     </form>
+  );
+}
+function PasswordForm({ t }: { t: Translate; done: () => void }) {
+  return (
+    <section className="panel profile-card">
+      <h2>{t("Security")}</h2>
+      <p>
+        {t(
+          "Password resets are managed by your CEO or Administrator. Please contact the CEO or Admin to reset your password.",
+        )}
+      </p>
+    </section>
   );
 }
 function BiometricSecurityCard({
@@ -4150,7 +4242,6 @@ function Login({
 }) {
   const [busy, setBusy] = useState(false);
   const [bioBusy, setBioBusy] = useState(false);
-  const [googleBusy, setGoogleBusy] = useState(false);
   const [failure, setFailure] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
@@ -4160,34 +4251,6 @@ function Login({
   const autoPromptTriggeredRef = useRef(false);
   const passwordId = React.useId();
   const pwdProps = getPasswordVisibilityProps(showPassword);
-
-  const handleGoogleSignIn = useCallback(async () => {
-    setGoogleBusy(true);
-    setFailure("");
-    try {
-      const loggedIn = await client.loginWithGoogle();
-      if (
-        !isPreview &&
-        !(panelSpec.allowedRoles as readonly string[]).includes(
-          loggedIn.user.role,
-        )
-      ) {
-        await client.logout().catch(() => {});
-        setFailure(t("This account does not have access to this workspace."));
-        return;
-      }
-      onLogin(loggedIn);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Sign-in service is unavailable. Please try again.";
-      setFailure(
-        msg.includes("popup-closed-by-user")
-          ? t("Google sign-in popup was closed before completing.")
-          : t(msg),
-      );
-    } finally {
-      setGoogleBusy(false);
-    }
-  }, [onLogin, t]);
 
   const handleBiometricSignIn = useCallback(async () => {
     if (!bioStatus.available || !bioStatus.enrolled) return;
@@ -4308,7 +4371,7 @@ function Login({
                 type="button"
                 className="button full"
                 data-testid="biometric-signin-btn"
-                disabled={busy || bioBusy || googleBusy}
+                disabled={busy || bioBusy}
                 onClick={handleBiometricSignIn}
               >
                 <Fingerprint size={17} />
@@ -4332,7 +4395,7 @@ function Login({
                   aria-label={t("Quick Sign-in")}
                   data-testid="biometric-quick-signin-toggle"
                   className="alabaster-switch"
-                  disabled={busy || bioBusy || googleBusy}
+                  disabled={busy || bioBusy}
                   onClick={() => {
                     const next = !bioStatus.quickSignInEnabled;
                     setQuickSignInPreference(next);
@@ -4349,7 +4412,7 @@ function Login({
                 type="button"
                 className="biometric-clear-link"
                 data-testid="biometric-clear-btn"
-                disabled={busy || bioBusy || googleBusy}
+                disabled={busy || bioBusy}
                 onClick={() => {
                   clearBiometricEnrollment();
                   setBioStatus(getBiometricStatus());
@@ -4360,7 +4423,7 @@ function Login({
               </button>
             </div>
             <div className="biometric-divider">
-              <span>{t("Or sign in with email & password")}</span>
+              <span>{t("Or sign in with your account & password")}</span>
             </div>
           </>
         )}
@@ -4403,15 +4466,18 @@ function Login({
           }}
         >
           <div className="field">
+            <label htmlFor="staff-login-username" className="sr-only">
+              {t("Email or username")}
+            </label>
             <div className="input-with-icon">
-              <span className="input-icon-lead">
+              <span className="input-icon-lead" aria-hidden="true">
                 <Mail size={17} />
               </span>
               <input
                 id="staff-login-username"
                 name="username"
-                type="email"
-                placeholder={t("Email")}
+                type="text"
+                placeholder={t("Email or username")}
                 autoComplete="username"
                 defaultValue={bioStatus.enrolled ? bioStatus.email : ""}
                 required
@@ -4419,8 +4485,11 @@ function Login({
             </div>
           </div>
           <div className="field">
+            <label htmlFor={passwordId} className="sr-only">
+              {t("Password")}
+            </label>
             <div className="password-input-wrap">
-              <span className="input-icon-lead">
+              <span className="input-icon-lead" aria-hidden="true">
                 <Lock size={17} />
               </span>
               <input
@@ -4463,8 +4532,13 @@ function Login({
           </div>
 
           {showForgot && (
-            <div className="login-forgot-panel">
-              <PasswordForm t={t} done={() => setShowForgot(false)} />
+            <div className="login-forgot-panel" data-testid="login-forgot-panel" role="status">
+              <h2>{t("Password Reset")}</h2>
+              <p>
+                {t(
+                  "Password resets are managed by your CEO or Administrator. Please contact the CEO or Admin to reset your password.",
+                )}
+              </p>
             </div>
           )}
 
@@ -4482,30 +4556,12 @@ function Login({
           <FormError message={t(failure || error)} />
           <button
             className={`button full ${bioStatus.available && bioStatus.enrolled ? "secondary" : ""}`}
-            disabled={busy || bioBusy || googleBusy}
+            disabled={busy || bioBusy}
           >
             <span>{t(busy ? "Signing in…" : "Sign In")}</span>
             <ArrowRight size={16} />
           </button>
         </form>
-        <div className="biometric-divider">
-          <span>{t("or")}</span>
-        </div>
-        <button
-          type="button"
-          className="button secondary full"
-          data-testid="staff-google-signin-btn"
-          disabled={busy || bioBusy || googleBusy}
-          onClick={handleGoogleSignIn}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-          </svg>
-          <span>{t(googleBusy ? "Connecting Google…" : "Sign in with Google")}</span>
-        </button>
 
         <div className="login-account-row">
           <span>{t("Don't have an account?") || "Don't have an account?"}</span>

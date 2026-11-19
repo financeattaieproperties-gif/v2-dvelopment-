@@ -24,7 +24,9 @@ test("Staff Login screen preserves required auth selectors and uses app navy pal
   const cssCode = fs.readFileSync(cssPath, "utf8");
 
   assert.ok(mainCode.includes('id="staff-login-username"'), "Must preserve #staff-login-username");
-  assert.ok(mainCode.includes('data-testid="staff-google-signin-btn"'), "Must preserve staff-google-signin-btn");
+  assert.ok(!mainCode.includes('data-testid="staff-google-signin-btn"'), "Must not render Google Sign-In button");
+  assert.ok(mainCode.includes('htmlFor="staff-login-username"'), "Must associate label with #staff-login-username");
+  assert.ok(mainCode.includes('data-testid="login-forgot-panel"'), "Must include CEO/Admin forgot password notice");
   assert.ok(mainCode.includes('className="remember-label"'), "Must include Remember me control");
   assert.ok(mainCode.includes('className="forgot-link-btn"'), "Must include Forgot password control");
 
