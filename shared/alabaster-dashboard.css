@@ -1,47 +1,83 @@
 /* Canonical Design Tokens & Layout Blueprint
- * Option 2: Alabaster Architectural Split-Rail (Attaie Properties Unified Dashboard Standard)
- * Apply to all existing and future Admin CRM, Staff Workspace, and standalone dashboards.
+ * Luxury Architectural Edition (Attaie Properties Unified Dashboard Standard)
+ * Designed for High-End Real Estate CRM, Staff Workspace, and Standalone Dashboards.
  */
 :root {
-  --alabaster-bg: #F9F9FB;
+  /* Architectural Alabaster Canvas & Layered Surfaces */
+  --alabaster-bg: #F8F9FB;
   --alabaster-surface: #FFFFFF;
-  --alabaster-rail-bg: #F8FAFC;
-  --alabaster-subtle: #F1F3F6;
+  --alabaster-surface-elevated: #FFFFFF;
+  --alabaster-rail-bg: #F5F7FA;
+  --alabaster-subtle: #F1F3F7;
   --alabaster-hover: #F1F5F9;
+  
+  /* Micro-Layered Architectural Borders & Rims */
   --alabaster-border: rgba(15, 23, 42, 0.08);
-  --alabaster-border-soft: rgba(15, 23, 42, 0.12);
+  --alabaster-border-soft: rgba(15, 23, 42, 0.05);
+  --alabaster-border-highlight: rgba(255, 255, 255, 0.85);
+  --alabaster-card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --alabaster-card-shadow-hover: 0 4px 16px -2px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.08);
+  --alabaster-drawer-shadow: -8px 0 32px -4px rgba(15, 23, 42, 0.12), -1px 0 0 0 rgba(15, 23, 42, 0.06);
+
+  /* Regal Ink & Typography Hierarchy */
+  --alabaster-ink: #0A192F;
   --alabaster-primary: #0B2545;
   --alabaster-primary-hover: #0072BC;
-  --alabaster-ink: #0F172A;
   --alabaster-secondary-text: #475569;
-  --alabaster-muted: #94A3B8;
+  --alabaster-muted: #818285;
   --alabaster-subtle-text: #94A3B8;
 
-  /* Semantic Status Colors (Authentic Gemstone Heritage) */
-  --alabaster-success: #0D6042;
-  --alabaster-success-bg: #EBF7EE;
-  --alabaster-warning: #B45309;
-  --alabaster-warning-bg: #FFFBEB;
-  --alabaster-info: #0072BC;
-  --alabaster-info-bg: #EBF4FC;
-  --alabaster-danger: #991B1B;
-  --alabaster-danger-bg: #FEF2F2;
-  --alabaster-neutral: #64748B;
-  --alabaster-neutral-bg: #F1F5F9;
+  /* Gemstone Real Estate Palette */
+  --alabaster-cobalt: #0072BC;
+  --alabaster-cobalt-hover: #005E9B;
+  --alabaster-cobalt-soft: #EBF4FC;
+  
+  --alabaster-emerald: #0D6042;
+  --alabaster-emerald-soft: #EBF7EE;
+  
   --alabaster-gold: #C5A059;
-  --alabaster-gold-bg: #FAF5EC;
+  --alabaster-gold-hover: #B38E46;
+  --alabaster-gold-soft: #FAF5EC;
+  --alabaster-gold-border: rgba(197, 160, 89, 0.35);
 
-  /* Geometry */
+  --alabaster-amber: #B45309;
+  --alabaster-amber-soft: #FFFBEB;
+  
+  --alabaster-crimson: #991B1B;
+  --alabaster-crimson-soft: #FEF2F2;
+
+  --alabaster-neutral: #64748B;
+  --alabaster-neutral-soft: #F1F5F9;
+
+  /* Semantic Status Aliases */
+  --alabaster-success: var(--alabaster-emerald);
+  --alabaster-success-bg: var(--alabaster-emerald-soft);
+  --alabaster-warning: var(--alabaster-amber);
+  --alabaster-warning-bg: var(--alabaster-amber-soft);
+  --alabaster-info: var(--alabaster-cobalt);
+  --alabaster-info-bg: var(--alabaster-cobalt-soft);
+  --alabaster-danger: var(--alabaster-crimson);
+  --alabaster-danger-bg: var(--alabaster-crimson-soft);
+
+  /* Geometry & Precision Radii */
   --alabaster-rail-width: 64px;
-  --alabaster-drawer-width: 224px;
-  --alabaster-topbar-height: 56px;
+  --alabaster-drawer-width: 236px;
+  --alabaster-topbar-height: 58px;
+  --alabaster-radius-xs: 4px;
   --alabaster-radius-sm: 6px;
-  --alabaster-radius-md: 8px;
-  --alabaster-radius-lg: 10px;
+  --alabaster-radius-md: 9px;
+  --alabaster-radius-lg: 12px;
+  --alabaster-radius-pill: 9999px;
+
+  /* Spring Physics Motion */
+  --alabaster-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --alabaster-transition-fast: 140ms var(--alabaster-ease-spring);
+  --alabaster-transition-normal: 220ms var(--alabaster-ease-spring);
 }
 
 .alabaster-tabular {
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
 }
 
 .alabaster-shell {
@@ -49,7 +85,9 @@
   min-height: 100dvh;
   width: 100%;
   background: var(--alabaster-bg);
-  color: var(--alabaster-primary);
+  color: var(--alabaster-ink);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .alabaster-split-rail {
@@ -57,6 +95,7 @@
   flex-shrink: 0;
   background: var(--alabaster-surface);
   border-inline-end: 1px solid var(--alabaster-border);
+  box-shadow: 1px 0 3px 0 rgba(15, 23, 42, 0.02);
 }
 
 .alabaster-pillar-rail {
@@ -64,7 +103,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 14px 0;
+  padding: 16px 0;
   background: var(--alabaster-rail-bg);
   border-inline-end: 1px solid var(--alabaster-border);
   flex-shrink: 0;
@@ -88,34 +127,149 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 12px 24px;
-  background: var(--alabaster-surface);
+  padding: 12px 28px;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(8px);
   border-bottom: 1px solid var(--alabaster-border);
+  position: sticky;
+  top: 0;
+  z-index: 20;
 }
 
+/* Elevated Architectural Card with Micro-Rim */
 .alabaster-card {
   background: var(--alabaster-surface);
   border: 1px solid var(--alabaster-border);
+  box-shadow: var(--alabaster-card-shadow);
   border-radius: var(--alabaster-radius-md);
+  position: relative;
+  transition: transform var(--alabaster-transition-normal), box-shadow var(--alabaster-transition-normal), border-color var(--alabaster-transition-normal);
 }
 
+.alabaster-card.is-interactive:hover {
+  transform: translateY(-1.5px);
+  box-shadow: var(--alabaster-card-shadow-hover);
+  border-color: rgba(15, 23, 42, 0.12);
+}
+
+/* Primary Architectural Action Button */
 .alabaster-btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 8px 14px;
+  padding: 8px 16px;
   border-radius: var(--alabaster-radius-sm);
-  border: 1px solid var(--alabaster-primary);
-  background: var(--alabaster-primary);
-  color: var(--alabaster-surface);
+  border: 1px solid var(--alabaster-cobalt);
+  background: var(--alabaster-cobalt);
+  color: #FFFFFF;
   font-weight: 600;
   font-size: 13px;
   white-space: nowrap;
   cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(0, 114, 188, 0.25);
+  transition: all var(--alabaster-transition-fast);
 }
 
 .alabaster-btn-primary:hover {
-  background: var(--alabaster-primary-hover);
-  border-color: var(--alabaster-primary-hover);
+  background: var(--alabaster-cobalt-hover);
+  border-color: var(--alabaster-cobalt-hover);
+  transform: translateY(-0.5px);
+  box-shadow: 0 3px 8px 0 rgba(0, 114, 188, 0.32);
+}
+
+.alabaster-btn-primary:active {
+  transform: translateY(0.5px);
+}
+
+/* VIP / High Value Gold Button */
+.alabaster-btn-gold {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: var(--alabaster-radius-sm);
+  border: 1px solid var(--alabaster-gold);
+  background: var(--alabaster-gold);
+  color: #FFFFFF;
+  font-weight: 600;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 1px 2px 0 rgba(197, 160, 89, 0.25);
+  transition: all var(--alabaster-transition-fast);
+}
+
+.alabaster-btn-gold:hover {
+  background: var(--alabaster-gold-hover);
+  border-color: var(--alabaster-gold-hover);
+  transform: translateY(-0.5px);
+  box-shadow: 0 3px 8px 0 rgba(197, 160, 89, 0.35);
+}
+
+/* Hairline Glass Badge with Status Dot */
+.alabaster-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: var(--alabaster-radius-pill);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  font-variant-numeric: tabular-nums;
+  border: 1px solid transparent;
+}
+
+.alabaster-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.alabaster-badge-success {
+  background: var(--alabaster-emerald-soft);
+  color: var(--alabaster-emerald);
+  border-color: rgba(13, 96, 66, 0.15);
+}
+.alabaster-badge-success .alabaster-badge-dot {
+  background: var(--alabaster-emerald);
+}
+
+.alabaster-badge-info {
+  background: var(--alabaster-cobalt-soft);
+  color: var(--alabaster-cobalt);
+  border-color: rgba(0, 114, 188, 0.15);
+}
+.alabaster-badge-info .alabaster-badge-dot {
+  background: var(--alabaster-cobalt);
+}
+
+.alabaster-badge-gold {
+  background: var(--alabaster-gold-soft);
+  color: var(--alabaster-gold);
+  border-color: var(--alabaster-gold-border);
+}
+.alabaster-badge-gold .alabaster-badge-dot {
+  background: var(--alabaster-gold);
+}
+
+.alabaster-badge-warning {
+  background: var(--alabaster-amber-soft);
+  color: var(--alabaster-amber);
+  border-color: rgba(180, 83, 9, 0.15);
+}
+.alabaster-badge-warning .alabaster-badge-dot {
+  background: var(--alabaster-amber);
+}
+
+.alabaster-badge-neutral {
+  background: var(--alabaster-neutral-soft);
+  color: var(--alabaster-neutral);
+  border-color: rgba(100, 116, 139, 0.15);
+}
+.alabaster-badge-neutral .alabaster-badge-dot {
+  background: var(--alabaster-neutral);
 }

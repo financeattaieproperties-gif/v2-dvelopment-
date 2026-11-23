@@ -24,34 +24,40 @@
 }
 :root {
   font-family: StaffSans, system-ui, sans-serif;
-  color: #0F172A;
-  background: #F9F9FB;
+  color: #0A192F;
+  background: #F8F9FB;
   font-synthesis: none;
   --navy: #0B2545;
   --gold: #C5A059;
   --gold-light: #FAF5EC;
   --brand-blue: #0072BC;
+  --brand-blue-hover: #005E9B;
   --brand-blue-lt: #EBF4FC;
   --brand-green: #0D6042;
   --brand-green-lt: #EBF7EE;
   --brand-gray: #64748B;
-  --muted: #94A3B8;
+  --muted: #818285;
   --line: rgba(15, 23, 42, 0.08);
+  --line-highlight: rgba(255, 255, 255, 0.85);
+  --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.06);
+  --card-shadow-hover: 0 6px 18px -2px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.09);
   --red: #991B1B;
   --radius: 10px;
   --rail: 64px;
-  --drawer: 224px;
+  --drawer: 236px;
   --sidebar: 288px;
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 * {
   box-sizing: border-box;
 }
 body {
   margin: 0;
-  background: #F9F9FB;
-  color: #0F172A;
+  background: #F8F9FB;
+  color: #0A192F;
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   padding-left: env(safe-area-inset-left, 0px);
@@ -622,17 +628,23 @@ html[dir="rtl"] .serial {
 .panel {
   border: 1px solid var(--line);
   border-radius: var(--radius);
-  background: #fff;
+  background: #FFFFFF;
   overflow: hidden;
-  box-shadow: 0 2px 4px rgba(30, 41, 59, 0.03);
+  box-shadow: var(--card-shadow);
+  transition: box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1), transform 200ms cubic-bezier(0.16, 1, 0.3, 1), border-color 200ms ease;
+}
+.panel:hover {
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(15, 23, 42, 0.11);
 }
 .panel-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 21px 23px;
-  border-bottom: 1px solid #f0f2f5;
+  padding: 18px 22px;
+  border-bottom: 1px solid var(--line);
+  background: #FFFFFF;
 }
 .panel-heading h2 {
   font-size: 14px;

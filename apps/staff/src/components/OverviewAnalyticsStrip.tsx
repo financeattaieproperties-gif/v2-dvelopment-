@@ -9,12 +9,17 @@ interface OverviewAnalyticsStripProps {
 
 const V1 = {
   blue: "#0072BC",
-  green: "#14A850",
-  slate: "#818285",
-  border: "#E2E8F0",
+  blueSoft: "#EBF4FC",
+  green: "#0D6042",
+  greenSoft: "#EBF7EE",
+  gold: "#C5A059",
+  goldSoft: "#FAF5EC",
+  slate: "#64748B",
+  slateMuted: "#818285",
+  border: "rgba(15, 23, 42, 0.08)",
   surface: "#FFFFFF",
-  canvas: "#F8FAFC",
-  ink: "#1E293B",
+  canvas: "#F8F9FB",
+  ink: "#0A192F",
 };
 
 export function KpiSparkline({ points, color }: { points: number[]; color: string }) {
@@ -22,18 +27,29 @@ export function KpiSparkline({ points, color }: { points: number[]; color: strin
   const max = Math.max(...safe, 1);
   const min = Math.min(...safe, 0);
   const span = Math.max(max - min, 1);
-  const w = 78;
-  const h = 24;
-  const pts = safe
-    .map((v, i) => {
-      const x = (i / (safe.length - 1)) * w;
-      const y = h - ((v - min) / span) * (h - 4) - 2;
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
+  const w = 84;
+  const h = 26;
+  const pts = safe.map((v, i) => {
+    const x = (i / (safe.length - 1)) * w;
+    const y = h - ((v - min) / span) * (h - 6) - 3;
+    return { x, y };
+  });
+
+  const linePath = pts.reduce((acc, p, i) => (i === 0 ? `M ${p.x.toFixed(1)} ${p.y.toFixed(1)}` : `${acc} L ${p.x.toFixed(1)} ${p.y.toFixed(1)}`), "");
+  const areaPath = pts.length > 0 ? `${linePath} L ${pts[pts.length - 1].x.toFixed(1)} ${h} L ${pts[0].x.toFixed(1)} ${h} Z` : "";
+  const gradId = `spark-${Math.random().toString(36).substring(2, 7)}`;
+
   return (
     <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} aria-hidden="true" style={{ display: "block", flexShrink: 0 }}>
-      <polyline fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" points={pts} />
+      <defs>
+        <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={color} stopOpacity="0.25" />
+          <stop offset="100%" stopColor={color} stopOpacity="0.0" />
+        </linearGradient>
+      </defs>
+      <path d={areaPath} fill={`url(#${gradId})`} />
+      <path d={linePath} fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={pts[pts.length - 1].x} cy={pts[pts.length - 1].y} r="2.5" fill={color} />
     </svg>
   );
 }
