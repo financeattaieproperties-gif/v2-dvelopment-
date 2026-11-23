@@ -24,16 +24,48 @@
         font-display: swap;
       }
       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --surface-ground: #F9F9FB;
+        --surface-card: #FFFFFF;
+        --brand-lapis: #0B2545;
+        --brand-cobalt: #0072BC;
+        --brand-gold: #C5A059;
+        --brand-emerald: #0D6042;
+        --ink-primary: #0F172A;
+        --ink-secondary: #475569;
+        --border-hairline: rgba(15, 23, 42, 0.08);
+      }
       html, body {
         font-family: 'DM Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-        background: #F8FAFC;
-        color: #1E293B;
+        background: #F9F9FB;
+        color: #0F172A;
         -webkit-font-smoothing: antialiased;
+        overscroll-behavior-y: contain;
+      }
+      /* Custom hairline stealth scrollbars */
+      ::-webkit-scrollbar {
+        width: 5px;
+        height: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: rgba(100, 116, 139, 0.22);
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: rgba(100, 116, 139, 0.42);
       }
       a { color: inherit; text-decoration: none; }
       button, input, select, textarea { font-family: inherit; }
       table { font-variant-numeric: tabular-nums; }
       .tabular-nums { font-variant-numeric: tabular-nums; }
+      /* Native Spring Micro-Interactions */
+      button:active:not(:disabled) {
+        transform: scale(0.978);
+        transition: transform 100ms ease;
+      }
     </style>
   </head>
   <body>

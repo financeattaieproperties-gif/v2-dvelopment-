@@ -175,6 +175,7 @@ export interface Followup {
   assigneeId: number;
   scheduledAt: string;
   completedAt: string | null;
+  outcome?: "followup" | "visit" | "closed" | "lost" | null;
   notes: string;
   version: number;
 }
@@ -481,11 +482,32 @@ export interface Feedback {
   version: number;
 }
 
+export interface LeaderboardAgentEntry {
+  agentId: number;
+  agentName: string;
+  shortName?: string;
+  role: Role | string;
+  departmentCode?: DepartmentCode;
+  branchId?: number | null;
+  branchName?: string | null;
+  photoUrl?: string | null;
+  leadsCount: number;
+  visitsCount: number;
+  dealsCount: number;
+  leadPoints: number;
+  visitPoints: number;
+  dealPoints: number;
+  totalScore: number;
+  closedAmount?: number;
+  rank?: number;
+}
+
 export interface DashboardData {
   leads: Lead[];
   followups: Followup[];
   tasks: ManagementTask[];
   customers: Customer[];
+  leaderboard?: LeaderboardAgentEntry[];
   customerReviewRequests?: CustomerReviewRequest[];
   departments?: Department[];
   branches?: Branch[];

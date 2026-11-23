@@ -24,20 +24,20 @@
 }
 :root {
   font-family: StaffSans, system-ui, sans-serif;
-  color: #1E293B;
-  background: #F8FAFC;
+  color: #0F172A;
+  background: #F9F9FB;
   font-synthesis: none;
-  --navy: #0072BC;
-  --gold: #0072BC;
-  --gold-light: #E6F2FA;
+  --navy: #0B2545;
+  --gold: #C5A059;
+  --gold-light: #FAF5EC;
   --brand-blue: #0072BC;
-  --brand-blue-lt: #E6F2FA;
-  --brand-green: #14A850;
-  --brand-green-lt: #E8F7EE;
-  --brand-gray: #818285;
-  --muted: #818285;
-  --line: #E2E8F0;
-  --red: #BC3D46;
+  --brand-blue-lt: #EBF4FC;
+  --brand-green: #0D6042;
+  --brand-green-lt: #EBF7EE;
+  --brand-gray: #64748B;
+  --muted: #94A3B8;
+  --line: rgba(15, 23, 42, 0.08);
+  --red: #991B1B;
   --radius: 10px;
   --rail: 64px;
   --drawer: 224px;
@@ -50,8 +50,39 @@
 }
 body {
   margin: 0;
-  background: #F8FAFC;
-  color: #1E293B;
+  background: #F9F9FB;
+  color: #0F172A;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  overscroll-behavior-y: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Hairline Desktop and Android Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.22);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.42);
+}
+
+/* Tactile Spring Micro-Interactions */
+.native-touchable, .btn, .stat-card, button {
+  transition: transform 120ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 150ms ease, box-shadow 150ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.native-touchable:active, button:active:not(:disabled) {
+  transform: scale(0.978);
 }
 button,
 input,

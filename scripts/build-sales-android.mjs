@@ -66,10 +66,16 @@ if (fs.existsSync(rootHtml)) {
   fs.writeFileSync(rootHtml, html, "utf8");
 }
 
-// Copy self-hosted logo so offline/bundled WebView assets resolve cleanly
+// Copy self-hosted logos so offline/bundled WebView assets resolve cleanly
 const logoSrc = path.join(root, "public", "logo.png");
 if (fs.existsSync(logoSrc)) {
   fs.copyFileSync(logoSrc, path.join(wwwDir, "logo.png"));
+}
+const loginLogoSrc = path.join(root, "public", "login-logo.png");
+if (fs.existsSync(loginLogoSrc)) {
+  fs.copyFileSync(loginLogoSrc, path.join(wwwDir, "login-logo.png"));
+} else if (fs.existsSync(logoSrc)) {
+  fs.copyFileSync(logoSrc, path.join(wwwDir, "login-logo.png"));
 }
 
 const swNotifSrc = path.join(root, "apps", "staff", "pwa-assets", "sw-notifications.js");

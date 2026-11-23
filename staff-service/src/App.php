@@ -177,7 +177,7 @@ final class App {
     private function workspace(): array {
         $view=$_GET['view'] ?? 'overview';
         if (!$this->hasPermission('callcenter.access') || in_array($view,['projects','contracts','finance','marketing','submissions','deliverables'],true)) return $this->moduleWorkspace($view);
-        if (!in_array($view,['overview','followups','customers','leads','tasks','team','projects','contracts','finance','marketing','submissions','deliverables'],true)) throw new InvalidArgumentException('Unknown dashboard view.');
+        if (!in_array($view,['overview','leaderboard','followups','customers','leads','tasks','team','projects','contracts','finance','marketing','submissions','deliverables'],true)) throw new InvalidArgumentException('Unknown dashboard view.');
         if ($view==='tasks') $this->permission('core.tasks.read_own');
         if ($view==='team') $this->permission('core.tasks.assign');
         $search=trim((string)($_GET['q'] ?? ''));
@@ -199,8 +199,8 @@ final class App {
                 : '(l.origin_agent_id='.$this->uid().' OR l.assignee_id='.$this->uid().')');
         $mine='f.assignee_id='.$this->uid();
         $base="SELECT f.*,l.serial,l.customer_name,l.phone,l.requirements FROM cc_followup_tasks f JOIN cc_leads l ON l.id=f.lead_id WHERE $mine";
-        $followups=in_array($view,['overview','followups'],true) ? $this->query($base.$bucketSql." AND (l.customer_name LIKE ? ESCAPE '!' OR l.serial LIKE ? ESCAPE '!') ORDER BY f.completed_at IS NOT NULL, f.scheduled_at,f.id LIMIT 25 OFFSET $offset",[...$bucketParams,$like,$like]) : [];
-        $leads=in_array($view,['overview','leads'],true) ? $this->query("SELECT l.* FROM cc_leads l WHERE $access AND (l.customer_name LIKE ? ESCAPE '!' OR l.serial LIKE ? ESCAPE '!' OR l.phone LIKE ? ESCAPE '!') ORDER BY l.id DESC LIMIT 25 OFFSET $offset",[$like,$like,$like]) : [];
+        $followups=in_array($view,['overview','leaderboard','followups'],true) ? $this->query($base.$bucketSql." AND (l.customer_name LIKE ? ESCAPE '!' OR l.serial LIKE ? ESCAPE '!') ORDER BY f.completed_at IS NOT NULL, f.scheduled_at,f.id LIMIT 25 OFFSET $offset",[...$bucketParams,$like,$like]) : [];
+        $leads=in_array($view,['overview','leaderboard','leads'],true) ? $this->query("SELECT l.* FROM cc_leads l WHERE $access AND (l.customer_name LIKE ? ESCAPE '!' OR l.serial LIKE ? ESCAPE '!' OR l.phone LIKE ? ESCAPE '!') ORDER BY l.id DESC LIMIT 25 OFFSET $offset",[$like,$like,$like]) : [];
         $taskScope=$view==='team' ? ($this->isManager() ? ($this->isGlobalRole() ? '1=1' : 't.branch_id='.$this->requireUserBranchId()) : 't.assigned_by='.$this->uid()) : 't.assignee_id='.$this->uid();
         $tasks=in_array($view,['overview','tasks','team'],true) && $this->hasPermission('core.tasks.read_own') ? $this->query("SELECT t.*,u.name AS assigned_by_name,ua.name AS assignee_name FROM core_management_tasks t JOIN core_users u ON u.id=t.assigned_by LEFT JOIN core_users ua ON ua.id=t.assignee_id WHERE $taskScope AND t.title LIKE ? ESCAPE '!' ORDER BY t.completed_at IS NOT NULL,t.deadline_at,t.id LIMIT 25 OFFSET $offset",[$like]) : [];
         $customers=$view==='customers' ? $this->query("SELECT c.id,c.name,c.phone,COUNT(l.id) AS lead_count,MAX(l.id) AS latest_lead_id FROM cc_customers c JOIN cc_leads l ON l.customer_id=c.id WHERE $access AND (c.name LIKE ? ESCAPE '!' OR c.phone LIKE ? ESCAPE '!') GROUP BY c.id,c.name,c.phone ORDER BY c.id DESC LIMIT 25 OFFSET $offset",[$like,$like]) : [];
@@ -215,6 +215,9 @@ final class App {
         $assignees=$this->query("SELECT id,name,role,department_code,team_leader_id,branch_id,active FROM core_users WHERE active=1 AND role IN $roles$branchScope ORDER BY name LIMIT 100");
         $branches=$this->query("SELECT id,code,name,address,phone,email,active,version FROM core_branches WHERE active=1 ORDER BY id LIMIT 50");
         $out=['leads'=>array_map([$this,'leadDto'],$leads),'followups'=>array_map([$this,'followupDto'],$followups),'customers'=>$customers,'tasks'=>array_map([$this,'taskDto'],$tasks),'assignees'=>array_map([$this,'publicUser'],$assignees),'branches'=>$branches,'counts'=>array_map('intval',$counts),'page'=>$page,'integration'=>['enabled'=>false,'message'=>'Etisalat automatic capture is not connected. Manual call entries are labeled.'],'serverTime'=>Domain::iso($this->now)];
+        if (in_array($view,['overview','leaderboard'],true)) {
+            $out['leaderboard']=$this->weeklyLeaderboardRows();
+        }
         if (in_array($view,['overview','tasks','team'],true)) {
             if ($this->hasPermission('core.departments.manage')) $out['departments']=$this->query("SELECT code,name FROM core_departments WHERE code<>'customers'");
             if ($this->hasPermission('inventory.read')) {
@@ -460,7 +463,7 @@ final class App {
     private function manager(): void { if (!$this->isManager()) throw new HttpError(403,'Management permission is required.'); }
     private function publicUser(array $row): array { return ['id'=>(int)$row['id'],'name'=>$row['name'],'role'=>$row['role'],'username'=>$row['username'] ?? '','departmentCode'=>$row['department_code']??null,'teamLeaderId'=>empty($row['team_leader_id'])?null:(int)$row['team_leader_id'],'branchId'=>empty($row['branch_id'])?null:(int)$row['branch_id'],'photoUrl'=>$row['photo_url']??null,'active'=>(bool)($row['active'] ?? 1)]; }
     private function leadDto(array $r): array { return ['property'=>!empty($r['property_kind']) && !empty($r['property_id']) ? ['kind'=>$r['property_kind'],'id'=>(int)$r['property_id']] : null,'projectId'=>empty($r['project_id']) ? null : (int)$r['project_id'],'apartmentId'=>empty($r['apartment_id']) ? null : (int)$r['apartment_id'],'id'=>(int)$r['id'],'serial'=>$r['serial'],'customerId'=>$r['customer_id']===null ? null : (int)$r['customer_id'],'customerName'=>$r['customer_name'],'phone'=>$r['phone'],'requirements'=>$r['requirements'],'status'=>$r['status'],'originAgentId'=>(int)$r['origin_agent_id'],'assigneeId'=>(int)$r['assignee_id'],'callAt'=>Domain::iso($r['call_at']),'source'=>$r['source'],'version'=>(int)$r['version']]; }
-    private function followupDto(array $r): array { return ['id'=>(int)$r['id'],'leadId'=>(int)$r['lead_id'],'serial'=>$r['serial'],'customerName'=>$r['customer_name'],'phone'=>$r['phone'],'requirements'=>$r['requirements'],'assigneeId'=>(int)$r['assignee_id'],'scheduledAt'=>Domain::iso($r['scheduled_at']),'completedAt'=>Domain::iso($r['completed_at']),'notes'=>$r['notes'],'version'=>(int)$r['version']]; }
+    private function followupDto(array $r): array { return ['id'=>(int)$r['id'],'leadId'=>(int)$r['lead_id'],'serial'=>$r['serial'],'customerName'=>$r['customer_name'],'phone'=>$r['phone'],'requirements'=>$r['requirements'],'assigneeId'=>(int)$r['assignee_id'],'scheduledAt'=>Domain::iso($r['scheduled_at']),'completedAt'=>Domain::iso($r['completed_at']),'outcome'=>$r['outcome'] ?? null,'notes'=>$r['notes'],'version'=>(int)$r['version']]; }
     private function taskDto(array $r): array { return ['id'=>(int)$r['id'],'title'=>$r['title'],'instructions'=>$r['instructions'],'priority'=>$r['priority'],'assigneeId'=>(int)$r['assignee_id'],'assigneeName'=>$r['assignee_name'] ?? null,'assignedBy'=>$r['assigned_by_name'],'deadlineAt'=>Domain::iso($r['deadline_at']),'status'=>$r['status'],'completedAt'=>Domain::iso($r['completed_at']),'version'=>(int)$r['version']]; }
     private function query(string $sql,array $params=[]): array { $s=$this->db->prepare($sql); $s->execute($params); return $s->fetchAll(); }
     private function one(string $sql,array $params=[]): ?array { return $this->query($sql,$params)[0] ?? null; }

@@ -134,15 +134,20 @@ export async function notifyLeadAssigned(
     .filter(Boolean)
     .join(' ');
 
-  const targetUrl = `/sales/leads?id=${leadId}`;
+  const win = typeof window !== 'undefined' ? (window as unknown as { __ATTAIE_ANDROID_APP__?: boolean }) : {};
+  const isAndroidBundle = Boolean(win.__ATTAIE_ANDROID_APP__ || (typeof location !== 'undefined' && location.pathname.endsWith('/index.html')));
+  const targetUrl = isAndroidBundle
+    ? `./index.html?page=leads&id=${leadId}`
+    : `/sales/leads?id=${leadId}`;
+  const iconUrl = isAndroidBundle ? './pwa-192x192.png' : '/sales/pwa-192x192.png';
 
   const notificationOptions: NotificationOptions & {
     vibrate?: number[];
     renotify?: boolean;
   } = {
     body,
-    icon: '/sales/pwa-192x192.png',
-    badge: '/sales/pwa-192x192.png',
+    icon: iconUrl,
+    badge: iconUrl,
     tag: `lead-assigned-${leadId}`,
     data: {
       url: targetUrl,

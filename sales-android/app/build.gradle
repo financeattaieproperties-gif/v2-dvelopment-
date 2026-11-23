@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace 'af.attaieproperties.sales'
-    compileSdk 35
+    namespace = 'af.attaieproperties.sales'
+    compileSdk = 35
 
     defaultConfig {
-        applicationId 'af.attaieproperties.sales'
-        minSdk 24
-        targetSdk 35
-        versionCode 1
-        versionName '2.0.0'
+        applicationId = 'af.attaieproperties.sales'
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = '2.0.0'
 
         // Shared V2 backend API endpoint (same PHP/MySQL + Firebase backend as Web)
         buildConfigField(
@@ -23,22 +23,23 @@ android {
     }
 
     buildFeatures {
-        buildConfig true
+        buildConfig = true
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
+            signingConfig = signingConfigs.getByName("debug")
             proguardFiles(
                 getDefaultProguardFile('proguard-android-optimize.txt'),
                 'proguard-rules.pro'
             )
         }
         debug {
-            debuggable true
-            applicationIdSuffix '.debug'
-            versionNameSuffix '-debug'
+            debuggable = true
+            applicationIdSuffix = '.debug'
+            versionNameSuffix = '-debug'
         }
     }
 

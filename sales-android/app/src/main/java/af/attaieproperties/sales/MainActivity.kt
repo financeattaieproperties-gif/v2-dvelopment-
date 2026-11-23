@@ -14,6 +14,7 @@ import android.provider.MediaStore
 import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
+import android.webkit.JavascriptInterface
 import android.webkit.SslErrorHandler
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
@@ -41,13 +42,53 @@ import java.io.File
  * - Supports camera/gallery file uploads for Buyer 3x4 Portrait & Tazkira photos when closing a deal
  * - Handles hardware Back navigation across Sales CRM tabs (Leads, Follow-ups, Customers, Projects, Overview)
  */
+class ServerConfigBridge(private val activity: AppCompatActivity) {
+    companion object {
+        private const val PREFS_NAME = "attaie_sales_server_prefs"
+        private const val KEY_API_BASE_URL = "staff_api_base_url"
+    }
+
+    @JavascriptInterface
+    fun getApiBaseUrl(): String {
+        val prefs = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE)
+        val saved = prefs.getString(KEY_API_BASE_URL, null)?.trim()
+        return if (!saved.isNullOrEmpty()) saved else BuildConfig.STAFF_API_BASE_URL
+    }
+
+    @JavascriptInterface
+    fun setApiBaseUrl(url: String?): Boolean {
+        val cleaned = url?.trim().orEmpty()
+        if (!cleaned.startsWith("https://") && !cleaned.startsWith("http://")) {
+            return false
+        }
+        val prefs = activity.getSharedPreferences(PREFS_NAME, Activity.MODE_PRIVATE)
+        prefs.edit().putString(KEY_API_BASE_URL, cleaned).apply()
+        return true
+    }
+}
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var webView: WebView
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var batteryBridge: DeviceBatteryBridge
+    private lateinit var serverConfigBridge: ServerConfigBridge
     private var filePathCallback: ValueCallback<Array<Uri>>? = null
     private var pendingCameraUri: Uri? = null
+    private var pendingChooserParams: WebChromeClient.FileChooserParams? = null
+
+    private val cameraPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        val params = pendingChooserParams
+        pendingChooserParams = null
+        if (params != null) {
+            launchFileChooserIntent(params)
+        } else {
+            filePathCallback?.onReceiveValue(null)
+            filePathCallback = null
+        }
+    }
 
     private val fileChooserLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -69,6 +110,27 @@ class MainActivity : AppCompatActivity() {
             callback.onReceiveValue(uris)
         } else {
             callback.onReceiveValue(null)
+        }
+    }
+
+    private fun launchFileChooserIntent(fileChooserParams: WebChromeClient.FileChooserParams): Boolean {
+        return try {
+            val contentIntent = fileChooserParams.createIntent()
+            val cameraIntent = createCameraCaptureIntent()
+            val launchIntent = if (cameraIntent != null) {
+                Intent.createChooser(contentIntent, getString(R.string.app_name)).apply {
+                    putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
+                }
+            } else {
+                contentIntent
+            }
+            fileChooserLauncher.launch(launchIntent)
+            true
+        } catch (_: Exception) {
+            pendingCameraUri = null
+            this.filePathCallback?.onReceiveValue(null)
+            this.filePathCallback = null
+            false
         }
     }
 
@@ -113,8 +175,10 @@ class MainActivity : AppCompatActivity() {
         webView = WebView(this)
         val biometricBridge = BiometricAuthBridge(this, webView)
         batteryBridge = DeviceBatteryBridge(applicationContext, webView)
+        serverConfigBridge = ServerConfigBridge(this)
         webView.addJavascriptInterface(biometricBridge, "AttaieBiometric")
         webView.addJavascriptInterface(batteryBridge, "AttaieBattery")
+        webView.addJavascriptInterface(serverConfigBridge, "AttaieServerConfig")
         swipeRefresh.addView(webView)
         setContentView(swipeRefresh)
 
@@ -148,7 +212,17 @@ class MainActivity : AppCompatActivity() {
                 view: WebView,
                 request: WebResourceRequest
             ): WebResourceResponse? {
-                val response = assetLoader.shouldInterceptRequest(request.url) ?: return null
+                val reqUrl = request.url
+                var response = assetLoader.shouldInterceptRequest(reqUrl)
+                if (
+                    response == null &&
+                    reqUrl.host == "attaieproperties.com" &&
+                    (reqUrl.path == "/login-logo.png" || reqUrl.path == "/logo.png")
+                ) {
+                    val mappedUri = Uri.parse("https://attaieproperties.com/assets/www/logo.png")
+                    response = assetLoader.shouldInterceptRequest(mappedUri)
+                }
+                if (response == null) return null
                 val headers = response.responseHeaders ?: mutableMapOf()
                 headers["Access-Control-Allow-Origin"] = "*"
                 headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
@@ -190,7 +264,7 @@ class MainActivity : AppCompatActivity() {
             override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 cookieManager.flush()
-                val apiBase = BuildConfig.STAFF_API_BASE_URL
+                val apiBase = serverConfigBridge.getApiBaseUrl()
                 view.evaluateJavascript(
                     "window.__ATTAIE_ANDROID_APP__ = true; window.__ATTAIE_STAFF_API_BASE_URL__ = ${org.json.JSONObject.quote(apiBase)};",
                     null
@@ -202,7 +276,7 @@ class MainActivity : AppCompatActivity() {
                 swipeRefresh.isRefreshing = false
                 cookieManager.flush()
                 // Ensure the shared backend URL and native runtime flag are injected for API and biometric calls
-                val apiBase = BuildConfig.STAFF_API_BASE_URL
+                val apiBase = serverConfigBridge.getApiBaseUrl()
                 view.evaluateJavascript(
                     "window.__ATTAIE_ANDROID_APP__ = true; window.__ATTAIE_STAFF_API_BASE_URL__ = ${org.json.JSONObject.quote(apiBase)};",
                     null
@@ -226,23 +300,20 @@ class MainActivity : AppCompatActivity() {
                 this@MainActivity.filePathCallback?.onReceiveValue(null)
                 this@MainActivity.filePathCallback = filePathCallback
                 pendingCameraUri = null
-                return try {
-                    val contentIntent = fileChooserParams.createIntent()
-                    val cameraIntent = createCameraCaptureIntent()
-                    val launchIntent = if (cameraIntent != null) {
-                        Intent.createChooser(contentIntent, getString(R.string.app_name)).apply {
-                            putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(cameraIntent))
-                        }
-                    } else {
-                        contentIntent
-                    }
-                    fileChooserLauncher.launch(launchIntent)
-                    true
-                } catch (_: Exception) {
-                    pendingCameraUri = null
-                    this@MainActivity.filePathCallback = null
-                    false
+
+                val hasCamera = packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)
+                val hasCameraPerm = ContextCompat.checkSelfPermission(
+                    this@MainActivity,
+                    Manifest.permission.CAMERA
+                ) == PackageManager.PERMISSION_GRANTED
+
+                if (hasCamera && !hasCameraPerm) {
+                    pendingChooserParams = fileChooserParams
+                    cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                    return true
                 }
+
+                return launchFileChooserIntent(fileChooserParams)
             }
         }
 

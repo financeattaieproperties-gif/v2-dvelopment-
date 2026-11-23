@@ -11,6 +11,7 @@ const CHROMIUM_EXECUTABLE =
 
 const TAB_LABELS = {
   overview: 'Overview',
+  leaderboard: 'Weekly Leaderboard',
   followups: 'Follow-ups',
   customers: 'Customers',
   leads: 'Leads',

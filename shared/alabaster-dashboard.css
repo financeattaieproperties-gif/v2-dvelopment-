@@ -3,31 +3,33 @@
  * Apply to all existing and future Admin CRM, Staff Workspace, and standalone dashboards.
  */
 :root {
-  --alabaster-bg: #F8FAFC;
+  --alabaster-bg: #F9F9FB;
   --alabaster-surface: #FFFFFF;
-  --alabaster-rail-bg: #FBFBFD;
-  --alabaster-subtle: #F8FAFC;
+  --alabaster-rail-bg: #F8FAFC;
+  --alabaster-subtle: #F1F3F6;
   --alabaster-hover: #F1F5F9;
-  --alabaster-border: #E2E8F0;
-  --alabaster-border-soft: #CBD5E1;
-  --alabaster-primary: #0072BC;
-  --alabaster-primary-hover: #005E9B;
-  --alabaster-ink: #1E293B;
+  --alabaster-border: rgba(15, 23, 42, 0.08);
+  --alabaster-border-soft: rgba(15, 23, 42, 0.12);
+  --alabaster-primary: #0B2545;
+  --alabaster-primary-hover: #0072BC;
+  --alabaster-ink: #0F172A;
   --alabaster-secondary-text: #475569;
-  --alabaster-muted: #818285;
-  --alabaster-subtle-text: #818285;
+  --alabaster-muted: #94A3B8;
+  --alabaster-subtle-text: #94A3B8;
 
-  /* Semantic Status Colors (Exact Logo Tri-Color Palette) */
-  --alabaster-success: #14A850;
-  --alabaster-success-bg: #E8F7EE;
+  /* Semantic Status Colors (Authentic Gemstone Heritage) */
+  --alabaster-success: #0D6042;
+  --alabaster-success-bg: #EBF7EE;
   --alabaster-warning: #B45309;
   --alabaster-warning-bg: #FFFBEB;
   --alabaster-info: #0072BC;
-  --alabaster-info-bg: #E6F2FA;
-  --alabaster-danger: #B91C1C;
+  --alabaster-info-bg: #EBF4FC;
+  --alabaster-danger: #991B1B;
   --alabaster-danger-bg: #FEF2F2;
-  --alabaster-neutral: #818285;
+  --alabaster-neutral: #64748B;
   --alabaster-neutral-bg: #F1F5F9;
+  --alabaster-gold: #C5A059;
+  --alabaster-gold-bg: #FAF5EC;
 
   /* Geometry */
   --alabaster-rail-width: 64px;

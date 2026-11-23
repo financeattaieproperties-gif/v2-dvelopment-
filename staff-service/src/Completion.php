@@ -17,8 +17,11 @@ trait Completion {
         if ($required) $this->permission($required);
         if ($view==='deliverables'&&$role!=='ceo'&&!$this->hasPermission('engineering.deliverables.submit')) throw new HttpError(403,'Engineering permission required.');
         if ($view==='marketing'&&!$this->hasPermission('marketing.submit_property')&&!$this->hasPermission('marketing.edit_and_post')&&!$this->hasPermission('marketing.complete_filming')) throw new HttpError(403,'Marketing permission required.');
-        if (!in_array($view,['overview','tasks','team','projects','contracts','finance','marketing','submissions','deliverables'],true)) throw new HttpError(403,'This workspace is unavailable.');
+        if (!in_array($view,['overview','leaderboard','tasks','team','projects','contracts','finance','marketing','submissions','deliverables'],true)) throw new HttpError(403,'This workspace is unavailable.');
         $data=['leads'=>[],'followups'=>[],'customers'=>[],'tasks'=>[],'assignees'=>[],'branches'=>[],'counts'=>[],'page'=>0,'integration'=>['enabled'=>false,'message'=>'Manual V2 workflows'],'serverTime'=>Domain::iso($this->now)];
+        if (in_array($view,['overview','leaderboard'],true)) {
+            $data['leaderboard']=$this->weeklyLeaderboardRows();
+        }
         if (in_array($view,['overview','tasks','team'],true)) {
             $this->permission('core.tasks.read_own'); $scope='t.assignee_id=?'; $params=[$this->uid()];
             if ($view==='team') { $this->permission('core.tasks.assign'); $scope='t.assigned_by=?'; }
@@ -417,5 +420,39 @@ trait Completion {
         $this->execute('INSERT INTO inv_construction_companies(project_id,company_name,license_number,representative_name,representative_father_name,representative_tazkira,phone,address,representative_photo_url,details_json) VALUES (?,?,?,?,?,?,?,?,?,?) ON DUPLICATE KEY UPDATE company_name=VALUES(company_name),license_number=VALUES(license_number),representative_name=VALUES(representative_name),representative_father_name=VALUES(representative_father_name),representative_tazkira=VALUES(representative_tazkira),phone=VALUES(phone),address=VALUES(address),representative_photo_url=VALUES(representative_photo_url),details_json=VALUES(details_json)',[$id,Domain::text($company['companyName']??null,180),(string)($company['licenseNumber']??''),Domain::text($company['representativeName']??null,160),(string)($company['representativeFatherName']??''),(string)($company['representativeTazkira']??''),(string)($company['phone']??''),(string)($company['address']??''),$photo,json_encode($company)]);
         foreach ($b['apartments']??[] as $a) { $unit=$this->record('inv_apartments',(int)($a['id']??0),true); if ((int)$unit['project_id']!==$id) throw new InvalidArgumentException('Apartment belongs to another project.'); $this->execute('UPDATE inv_apartments SET boundary_north=?,boundary_south=?,boundary_east=?,boundary_west=?,version=version+1 WHERE id=?',[Domain::text($a['boundaryNorth']??null,180),Domain::text($a['boundarySouth']??null,180),Domain::text($a['boundaryEast']??null,180),Domain::text($a['boundaryWest']??null,180),$unit['id']]); }
         $this->execute('UPDATE inv_projects SET version=version+1 WHERE id=?',[$id]); $this->audit('hr.preparation_saved',$id); return $this->projectDto($this->record('inv_projects',$id));
+    }
+    private function weeklyLeaderboardRows(): array {
+        $weekStart=gmdate('Y-m-d H:i:s',strtotime($this->now)-7*86400);
+        $agents=$this->query("SELECT u.id,u.name,u.role,u.department_code,u.branch_id,u.photo_url,b.name AS branch_name FROM core_users u LEFT JOIN core_branches b ON b.id=u.branch_id WHERE u.active=1 AND u.role IN ('sales','callcenter','sales_leader') ORDER BY u.name LIMIT 200");
+        $map=[];
+        foreach ($agents as $a) {
+            $id=(int)$a['id'];
+            $map[$id]=['agentId'=>$id,'agentName'=>$a['name'],'role'=>$a['role'],'departmentCode'=>$a['department_code']??'sales','branchId'=>empty($a['branch_id'])?null:(int)$a['branch_id'],'branchName'=>$a['branch_name']??null,'photoUrl'=>$a['photo_url']??null,'leadsCount'=>0,'visitsCount'=>0,'dealsCount'=>0,'leadPoints'=>0,'visitPoints'=>0,'dealPoints'=>0,'totalScore'=>0,'closedAmount'=>0.0,'rank'=>0];
+        }
+        foreach ($this->query('SELECT assignee_id,origin_agent_id,status FROM cc_leads WHERE call_at>=?',[$weekStart]) as $l) {
+            $aid=(int)$l['assignee_id']; $oid=(int)$l['origin_agent_id'];
+            if (isset($map[$aid])) $map[$aid]['leadsCount']++;
+            if ($oid!==$aid && isset($map[$oid]) && ($map[$oid]['role']??'')==='callcenter') $map[$oid]['leadsCount']++;
+        }
+        foreach ($this->query("SELECT assignee_id,COUNT(*) AS n FROM cc_followup_tasks WHERE outcome='visit' AND completed_at>=? GROUP BY assignee_id",[$weekStart]) as $v) {
+            $aid=(int)$v['assignee_id'];
+            if (isset($map[$aid])) $map[$aid]['visitsCount']+=(int)$v['n'];
+        }
+        foreach ($this->query('SELECT sales_agent_id,COUNT(*) AS n,COALESCE(SUM(amount),0) AS total_amount FROM cc_deal_closures WHERE closed_at>=? GROUP BY sales_agent_id',[$weekStart]) as $d) {
+            $aid=(int)$d['sales_agent_id'];
+            if (isset($map[$aid])) { $map[$aid]['dealsCount']+=(int)$d['n']; $map[$aid]['closedAmount']+=(float)$d['total_amount']; }
+        }
+        $rows=array_values($map);
+        foreach ($rows as &$r) {
+            $r['leadPoints']=$r['leadsCount']*1;
+            $r['visitPoints']=$r['visitsCount']*3;
+            $r['dealPoints']=$r['dealsCount']*10;
+            $r['totalScore']=$r['leadPoints']+$r['visitPoints']+$r['dealPoints'];
+        }
+        unset($r);
+        usort($rows,fn($a,$b)=>$b['totalScore']<=>$a['totalScore'] ?: $b['dealsCount']<=>$a['dealsCount'] ?: $b['visitsCount']<=>$a['visitsCount'] ?: $b['leadsCount']<=>$a['leadsCount'] ?: strcmp($a['agentName'],$b['agentName']));
+        foreach ($rows as $idx=>&$r) $r['rank']=$idx+1;
+        unset($r);
+        return $rows;
     }
 }

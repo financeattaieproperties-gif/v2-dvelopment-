@@ -12,8 +12,8 @@ It locks the workspace strictly to the **Sales Agent (`sales`)** role, shares th
 sales-android/
 ├── README.md                                 # Build & deployment guide
 ├── .gitignore                                # Android Studio & Gradle ignore rules
-├── gradlew / gradlew.bat                     # Gradle 8.9 wrapper executables (Linux/macOS/Windows)
-├── gradle/wrapper/                           # Gradle 8.9 wrapper jar & properties
+├── gradlew / gradlew.bat                     # Gradle 8.14.7 wrapper executables (Linux/macOS/Windows)
+├── gradle/wrapper/                           # Gradle 8.14.7 wrapper jar & properties
 ├── capacitor.config.json                     # Capacitor configuration (af.attaieproperties.sales)
 ├── settings.gradle                           # Gradle root project settings
 ├── build.gradle                              # Top-level Android Gradle plugin (8.7.2 + Kotlin 2.0.21)
@@ -21,12 +21,12 @@ sales-android/
 ├── www/                                      # Standalone Sales Agent web bundle (Capacitor webDir)
 └── app/
     ├── build.gradle                          # App module config (minSdk 24, targetSdk 35, STAFF_API_BASE_URL)
-    ├── proguard-rules.pro                    # ProGuard/R8 keep rules for Biometric & Battery JS bridges
+    ├── proguard-rules.pro                    # ProGuard/R8 keep rules for Biometric, Battery & ServerConfig JS bridges
     └── src/main/
         ├── AndroidManifest.xml               # Permissions, FileProvider, adaptive icon, RTL, tel:/https: queries
         ├── assets/www/                       # Bundled Sales Agent SPA loaded via WebViewAssetLoader
         ├── java/af/attaieproperties/sales/
-        │   ├── MainActivity.kt               # Native Kotlin host Activity (Cookies, Camera/Gallery, Dialer, Back)
+        │   ├── MainActivity.kt               # Native Kotlin host Activity (Cookies, Camera/Gallery, Dialer, Back, ServerConfigBridge)
         │   ├── BiometricAuthBridge.kt        # AndroidX BiometricPrompt + Keystore EncryptedSharedPreferences
         │   └── DeviceBatteryBridge.kt        # Hardware BatteryManager & charging bridge for header badge
         └── res/
@@ -51,9 +51,10 @@ sales-android/
    - Once verified with Android `BiometricPrompt` (`BIOMETRIC_STRONG | BIOMETRIC_WEAK`), the agent's credentials are encrypted at rest inside `EncryptedSharedPreferences` backed by an Android Keystore AES-256-GCM `MasterKey`.
    - On subsequent launches or session expirations, the Sales Agent unlocks with a single Fingerprint or Face scan, and the app silently re-authenticates with Firebase Auth (`signIn`) and `POST /staff-api/v1/auth/login`.
    - `panelSpec.allowedRoles` strictly enforces `["sales"]` — accounts from other roles cannot switch into or use the Sales Agent Android app.
-2. **Configurable API Endpoint (`resolveStaffApiEndpoint`)**:
+2. **Configurable API Endpoint (`resolveStaffApiEndpoint` + `AttaieServerConfig`)**:
    - On the Web (`/sales/`), requests use `/staff-api/v1/*` with `credentials: "same-origin"`.
    - In the Android App (`sales-android`), `VITE_STAFF_API_BASE_URL` and `MainActivity.kt` set `window.__ATTAIE_STAFF_API_BASE_URL__ = "https://attaieproperties.com/staff-api/v1"`, automatically switching `fetch()` to full HTTPS URLs with `credentials: "include"` and persistent `CookieManager` cookies.
+   - Sales Agents or admins can also tap the server badge on the Android Login screen to test and switch between `https://attaieproperties.com`, `https://website.attaieproperties.com` (V2 Testing), or `https://www.attaieproperties.com` at runtime (persisted via `ServerConfigBridge` in `SharedPreferences`).
 
 ---
 

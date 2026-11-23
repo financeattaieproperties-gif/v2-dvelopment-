@@ -54,6 +54,7 @@ import {
   Bell,
   BellRing,
   BellOff,
+  Trophy,
 } from "lucide-react";
 import type {
   DashboardData,
@@ -78,6 +79,7 @@ import {
   taskState,
 } from "../../../packages/staff-contracts/workflow.mjs";
 import {
+  ROLE_DASHBOARD_LAYOUT_MAP,
   getMobilePrimaryTabs,
   getPasswordVisibilityProps,
   resolvePageForRole,
@@ -114,6 +116,7 @@ import { useLeadNotifications } from "./hooks/useLeadNotifications";
 import { notifyLeadAssigned } from "./pwa/leadNotificationService";
 import { AgentConversionChart } from "./components/AgentConversionChart";
 import { LeadConversionFunnelChart } from "./components/LeadConversionFunnelChart";
+import { WeeklyLeaderboardPage } from "./components/WeeklyLeaderboardPage";
 import { KpiSparkline, OverviewAnalyticsStrip } from "./components/OverviewAnalyticsStrip";
 import { ProjectInventoryWizard } from "./components/ProjectInventoryWizard";
 import { HrContractsWorkspace } from "./components/HrContractsWorkspace";
@@ -146,6 +149,7 @@ import "./callcenter-theme.css";
 type Client = typeof api;
 type Page =
   | "overview"
+  | "leaderboard"
   | "followups"
   | "customers"
   | "leads"
@@ -649,11 +653,20 @@ function App() {
   }, []);
 
   const navigate = (next: Page) => {
-    history.pushState(
-      {},
-      "",
-      `${base}/${next === "overview" ? "" : next}${isPreview ? "?preview=1" : ""}`,
-    );
+    const win = window as unknown as { __ATTAIE_ANDROID_APP__?: boolean };
+    if (win.__ATTAIE_ANDROID_APP__ || location.pathname.endsWith("/index.html")) {
+      history.pushState(
+        { page: next },
+        "",
+        `./index.html?page=${next}${isPreview ? "&preview=1" : ""}`,
+      );
+    } else {
+      history.pushState(
+        { page: next },
+        "",
+        `${base}/${next === "overview" ? "" : next}${isPreview ? "?preview=1" : ""}`,
+      );
+    }
     setPage(next);
     setQuery("");
     setNumber(0);
@@ -754,8 +767,9 @@ function App() {
 
   const isExecOrBranchManager = activeRole === "ceo" || activeRole === "manager";
 
-  const tabs: { id: Page; label: string; icon: React.ElementType }[] = [
+  const rawTabs: { id: Page; label: string; icon: React.ElementType }[] = [
     { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "leaderboard", label: "Weekly Leaderboard", icon: Trophy },
     ...(hasSalesOrCallAccess && !isExecOrBranchManager
       ? [
           { id: "followups" as Page, label: "Follow-ups", icon: CalendarClock },
@@ -799,8 +813,19 @@ function App() {
       : []),
   ];
 
+  const roleAllowedPages = (
+    ROLE_DASHBOARD_LAYOUT_MAP as Record<string, { allowedPages?: readonly string[] }>
+  )[activeRole]?.allowedPages;
+  const tabs = roleAllowedPages
+    ? rawTabs.filter((t) => roleAllowedPages.includes(t.id))
+    : rawTabs;
+
   const headings: Record<Page, [string, string]> = {
     overview: ["Overview", "Your day, clearly organized."],
+    leaderboard: [
+      "Weekly Leaderboard",
+      "Weekly agent performance rankings: 1 Lead = 1 pt · 1 Customer Visit = 3 pts · 1 Deal = 10 pts.",
+    ],
     followups: ["Follow-ups", "Focus on the next conversation."],
     customers: ["Customers", "Customer requirements, in one place."],
     leads: ["Leads", "Every inquiry has a next step."],
@@ -1045,30 +1070,14 @@ function App() {
     !isDashboardPath &&
     !isPreview &&
     !(panelSpec.allowedRoles as readonly string[]).includes(session.user.role)
-  )
-    return (
-      <div className="center-screen">
-        <ShieldCheck size={36} />
-        <h1>{t("This account does not have access to this workspace.")}</h1>
-        <button
-          className="button"
-          onClick={() =>
-            client
-              .logout()
-              .then(() => {
-                clearOfflineSnapshot(panelSpec.panelId);
-                setOfflineSavedAt(null);
-                setJustSignedOut(true);
-                setSession(null);
-                setData(null);
-              })
-              .catch((e) => setError(e.message))
-          }
-        >
-          {t("Sign out")}
-        </button>
-      </div>
-    );
+  ) {
+    const target =
+      (ROLE_DASHBOARD_LAYOUT_MAP as Record<string, { workspacePath?: string }>)[
+        session.user.role
+      ]?.workspacePath || "/callcenter";
+    window.location.replace(target);
+    return null;
+  }
 
   const roleLabel =
     ROLE_LABELS[session.user.role] ||
@@ -1093,7 +1102,7 @@ function App() {
       label: "Sales & Client CRM",
       shortTag: "CRM",
       icon: Briefcase,
-      pages: ["followups", "customers", "leads"],
+      pages: ["leaderboard", "followups", "customers", "leads"],
     },
     {
       id: "operations",
@@ -1371,6 +1380,84 @@ function App() {
             <strong>{t(headings[page][0])}</strong>
           </div>
           <div className="topbar-actions">
+            {(isPreview || (typeof window !== "undefined" && window.location.search.includes("preview=1"))) && (
+              <div
+                className="preview-role-switcher"
+                data-testid="presentation-role-switcher"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  background: "#E6F2FA",
+                  border: "1px solid #0072BC",
+                  borderRadius: "6px",
+                  padding: "3px 8px",
+                  marginRight: "6px",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "11px",
+                    fontWeight: 700,
+                    color: "#0072BC",
+                    textTransform: "uppercase",
+                    letterSpacing: "0.5px",
+                  }}
+                >
+                  Lens:
+                </span>
+                <select
+                  value={session?.user.role || activeRole}
+                  aria-label="Switch presentation role lens"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    color: "#005E9B",
+                    fontSize: "12px",
+                    fontWeight: 600,
+                    outline: "none",
+                    cursor: "pointer",
+                  }}
+                  onChange={(e) => {
+                    const nextRole = e.target.value as Role;
+                    if (!session) return;
+                    const layout = (ROLE_DASHBOARD_LAYOUT_MAP as Record<string, any>)[nextRole];
+                    const nextUser: StaffUser = {
+                      ...session.user,
+                      role: nextRole,
+                      departmentCode:
+                        layout?.defaultPillar === "sales"
+                          ? "sales"
+                          : nextRole === "finance_manager"
+                          ? "finance"
+                          : nextRole === "editor" || nextRole === "videographer" || nextRole === "marketing_manager"
+                          ? "production"
+                          : nextRole.includes("designer") || nextRole === "architect"
+                          ? "engineering"
+                          : "management",
+                    };
+                    setSession({
+                      ...session,
+                      user: nextUser,
+                    });
+                    if (layout?.defaultPage) {
+                      navigate(layout.defaultPage as Page);
+                    }
+                  }}
+                >
+                  <option value="ceo">CEO (Executive Global)</option>
+                  <option value="manager">Branch Manager (Operations)</option>
+                  <option value="sales_leader">Sales Leader (CRM & Team)</option>
+                  <option value="sales">Sales Agent (Direct Deals)</option>
+                  <option value="callcenter">Call Center (Intake & Drafts)</option>
+                  <option value="finance_manager">Finance Manager (Treasury & Ledger)</option>
+                  <option value="marketing_manager">Marketing Manager (Production & Filming)</option>
+                  <option value="videographer">Videographer (Footage & Capture)</option>
+                  <option value="editor">Video Editor (Cut, Social & Submit)</option>
+                  <option value="architect">Engineering Architect (2D/3D Plans)</option>
+                </select>
+              </div>
+            )}
             {panelSpec.panelId === "sales" && battery.visible && (
               <span
                 className={`header-battery-indicator tone-${battery.tone}`}
@@ -1702,6 +1789,7 @@ function App() {
 
           {[
             "overview",
+            "leaderboard",
             "projects",
             "contracts",
             "finance",
@@ -1717,6 +1805,19 @@ function App() {
               page={page}
               users={data?.assignees || []}
               branches={data?.branches || []}
+              t={t}
+            />
+          )}
+
+          {page === "leaderboard" && (
+            <WeeklyLeaderboardPage
+              leads={data?.leads || []}
+              followups={data?.followups || []}
+              assignees={data?.assignees || []}
+              branches={data?.branches || []}
+              leaderboardEntries={data?.leaderboard || []}
+              serverTime={data?.serverTime}
+              language={isCallCenterOnly ? "en" : language}
               t={t}
             />
           )}
@@ -3046,8 +3147,8 @@ function App() {
 }
 
 function pageFromPath(): Page {
-  const part = location.pathname.replace(/\/$/, "").split("/").pop();
-  return [
+  const validPages = [
+    "overview",
     "followups",
     "customers",
     "leads",
@@ -3060,7 +3161,13 @@ function pageFromPath(): Page {
     "submissions",
     "deliverables",
     "profile",
-  ].includes(part || "")
+  ];
+  const queryPage = new URLSearchParams(location.search).get("page");
+  if (queryPage && validPages.includes(queryPage)) {
+    return queryPage as Page;
+  }
+  const part = location.pathname.replace(/\/$/, "").split("/").pop();
+  return validPages.includes(part || "") && part !== "overview"
     ? (part as Page)
     : "overview";
 }
@@ -3496,6 +3603,8 @@ function FeedbackForm({
   const [selectedProjId, setSelectedProjId] = useState<number>(
     projects[0]?.id || 1,
   );
+  const [buyerPhotoUrl, setBuyerPhotoUrl] = useState<string>("");
+  const [tazkiraPhotoUrl, setTazkiraPhotoUrl] = useState<string>("");
   const [syncCalendar, setSyncCalendar] = useState(true);
   const pendingCalendarRef = useRef<PendingStaffCalendarSync | null>(null);
   const pendingFeedbackBodyRef = useRef<Feedback | null>(null);
@@ -3630,12 +3739,44 @@ function FeedbackForm({
               <option value="AFN">AFN</option>
             </select>
           </Field>
-          <Field label={t("Buyer 3×4 Portrait Photo URL")}>
-            <input name="buyerPhotoUrl" defaultValue="/logo.png" required />
-          </Field>
-          <Field label={t("Buyer Tazkira Photo URL")}>
-            <input name="tazkiraPhotoUrl" defaultValue="/logo.png" required />
-          </Field>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <StaffPhotoUpload
+              label={t("Buyer 3×4 Portrait Photo")}
+              value={buyerPhotoUrl}
+              purpose="buyer_portrait"
+              lang={document.documentElement.lang === "fa" ? "fa" : "en"}
+              onUpload={client.upload}
+              onChange={(url) => setBuyerPhotoUrl(url)}
+            />
+            <input
+              name="buyerPhotoUrl"
+              type="text"
+              value={buyerPhotoUrl}
+              onChange={(e) => setBuyerPhotoUrl(e.target.value)}
+              placeholder="/staff-api/v1/files/..."
+              required
+              style={{ fontSize: 12 }}
+            />
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            <StaffPhotoUpload
+              label={t("Buyer Tazkira Photo")}
+              value={tazkiraPhotoUrl}
+              purpose="buyer_tazkira"
+              lang={document.documentElement.lang === "fa" ? "fa" : "en"}
+              onUpload={client.upload}
+              onChange={(url) => setTazkiraPhotoUrl(url)}
+            />
+            <input
+              name="tazkiraPhotoUrl"
+              type="text"
+              value={tazkiraPhotoUrl}
+              onChange={(e) => setTazkiraPhotoUrl(e.target.value)}
+              placeholder="/staff-api/v1/files/..."
+              required
+              style={{ fontSize: 12 }}
+            />
+          </div>
         </div>
       ) : (
         <>
@@ -4401,6 +4542,27 @@ function Login({
   const [now, setNow] = useState(() => new Date());
   const [bgUrl, setBgUrl] = useState<string | null>(null);
   const [desktopServerUrl, setDesktopServerUrl] = useState<string>("");
+  const [androidApiBaseUrl, setAndroidApiBaseUrl] = useState<string>(() => {
+    if (typeof window === "undefined") return "";
+    const win = window as unknown as {
+      __ATTAIE_ANDROID_APP__?: boolean;
+      __ATTAIE_STAFF_API_BASE_URL__?: string;
+      AttaieServerConfig?: { getApiBaseUrl?: () => string };
+    };
+    if (!win.__ATTAIE_ANDROID_APP__ && !win.AttaieServerConfig) return "";
+    return (
+      win.AttaieServerConfig?.getApiBaseUrl?.() ||
+      win.__ATTAIE_STAFF_API_BASE_URL__ ||
+      ""
+    );
+  });
+  const [showAndroidServerSheet, setShowAndroidServerSheet] = useState(false);
+  const [androidServerDraft, setAndroidServerDraft] = useState("");
+  const [androidServerStatus, setAndroidServerStatus] = useState<{
+    ok?: boolean;
+    message: string;
+  } | null>(null);
+  const [testingAndroidServer, setTestingAndroidServer] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => setNow(new Date()), 1000);
@@ -4449,7 +4611,12 @@ function Login({
 
   useEffect(() => {
     let active = true;
-    fetch("/visual-config/read.php")
+    const win = window as unknown as { __ATTAIE_STAFF_API_BASE_URL__?: string };
+    const rawApiBase = win.__ATTAIE_STAFF_API_BASE_URL__ || "";
+    const originPrefix = /^https?:\/\//i.test(rawApiBase)
+      ? rawApiBase.replace(/\/staff-api\/v1\/?$/i, "").replace(/\/+$/, "")
+      : "";
+    fetch(`${originPrefix}/visual-config/read.php`)
       .then((r) => (r.ok ? r.json() : null))
       .then((cfg) => {
         if (!active) return;
@@ -4644,11 +4811,275 @@ function Login({
             </button>
           </>
         )}
+        {!desktopServerUrl && androidApiBaseUrl && (
+          <>
+            <span style={{ color: "#CBD5E1" }}>•</span>
+            <button
+              type="button"
+              data-testid="android-server-config-btn"
+              onClick={() => {
+                setAndroidServerDraft(
+                  androidApiBaseUrl.replace(/\/staff-api\/v1\/?$/i, ""),
+                );
+                setAndroidServerStatus(null);
+                setShowAndroidServerSheet((prev) => !prev);
+              }}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 5,
+                padding: "2px 8px",
+                borderRadius: 999,
+                background: "#E6F2FA",
+                border: "1px solid #BAE6FD",
+                color: "#0072BC",
+                fontSize: 11,
+                fontWeight: 600,
+                cursor: "pointer",
+              }}
+              title="Switch Backend Server URL"
+            >
+              <Globe size={12} color="#0072BC" />
+              <span>
+                {androidApiBaseUrl
+                  .replace(/^https?:\/\//, "")
+                  .replace(/\/.*$/, "")}
+              </span>
+            </button>
+          </>
+        )}
       </div>
+      {showAndroidServerSheet && (
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 420,
+            marginBottom: 14,
+            padding: 16,
+            borderRadius: 14,
+            background: "#FFFFFF",
+            border: "1px solid #E2E8F0",
+            boxShadow: "0 8px 24px rgba(15, 23, 42, 0.08)",
+            textAlign: "left",
+          }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              marginBottom: 8,
+            }}
+          >
+            <strong style={{ fontSize: 14, color: "#1E293B" }}>
+              {t("Backend Server Connection")}
+            </strong>
+            <button
+              type="button"
+              onClick={() => setShowAndroidServerSheet(false)}
+              style={{
+                background: "transparent",
+                border: "none",
+                cursor: "pointer",
+                color: "#64748B",
+              }}
+              aria-label={t("Close")}
+            >
+              <X size={16} />
+            </button>
+          </div>
+          <p style={{ fontSize: 12, color: "#64748B", margin: "0 0 10px" }}>
+            {t(
+              "Select or enter the backend server origin for Sales Agent CRM sync (/staff-api/v1).",
+            )}
+          </p>
+          <input
+            type="url"
+            value={androidServerDraft}
+            onChange={(e) => {
+              setAndroidServerDraft(e.target.value);
+              setAndroidServerStatus(null);
+            }}
+            placeholder="https://attaieproperties.com"
+            style={{
+              width: "100%",
+              height: 36,
+              padding: "0 10px",
+              borderRadius: 8,
+              border: "1px solid #CBD5E1",
+              fontSize: 13,
+              marginBottom: 8,
+              boxSizing: "border-box",
+            }}
+          />
+          <div
+            style={{
+              display: "flex",
+              flexWrap: "wrap",
+              gap: 6,
+              marginBottom: 10,
+            }}
+          >
+            {[
+              {
+                label: "Main (attaieproperties.com)",
+                url: "https://attaieproperties.com",
+              },
+              {
+                label: "V2 Testing (website.attaieproperties.com)",
+                url: "https://website.attaieproperties.com",
+              },
+              {
+                label: "WWW Host",
+                url: "https://www.attaieproperties.com",
+              },
+            ].map((preset) => (
+              <button
+                key={preset.url}
+                type="button"
+                onClick={() => {
+                  setAndroidServerDraft(preset.url);
+                  setAndroidServerStatus(null);
+                }}
+                style={{
+                  fontSize: 11,
+                  fontWeight: 600,
+                  padding: "4px 8px",
+                  borderRadius: 6,
+                  border: "1px solid #E2E8F0",
+                  background: "#F1F5F9",
+                  color: "#1E293B",
+                  cursor: "pointer",
+                }}
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
+          {androidServerStatus && (
+            <div
+              style={{
+                fontSize: 12,
+                padding: "8px 10px",
+                borderRadius: 8,
+                marginBottom: 10,
+                background: androidServerStatus.ok ? "#E8F7EE" : "#FEF2F2",
+                border: `1px solid ${androidServerStatus.ok ? "#86EFAC" : "#FECACA"}`,
+                color: androidServerStatus.ok ? "#14532D" : "#991B1B",
+              }}
+            >
+              {androidServerStatus.message}
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              gap: 8,
+            }}
+          >
+            <button
+              type="button"
+              className="button secondary"
+              disabled={testingAndroidServer}
+              onClick={async () => {
+                const cleaned = androidServerDraft
+                  .trim()
+                  .replace(/\/staff-api\/v1\/?$/i, "")
+                  .replace(/\/+$/, "");
+                if (!/^https?:\/\//i.test(cleaned)) {
+                  setAndroidServerStatus({
+                    ok: false,
+                    message: "Enter a valid https:// server URL.",
+                  });
+                  return;
+                }
+                setTestingAndroidServer(true);
+                setAndroidServerStatus(null);
+                try {
+                  const res = await fetch(`${cleaned}/staff-api/v1/session`, {
+                    method: "GET",
+                    credentials: "include",
+                    cache: "no-store",
+                    headers: { Accept: "application/json" },
+                  });
+                  const payload = await res.json().catch(() => null);
+                  if (res.ok && payload?.data?.csrfToken) {
+                    setAndroidServerStatus({
+                      ok: true,
+                      message: `Connected to ${cleaned} (Staff API v1 ready)`,
+                    });
+                  } else {
+                    setAndroidServerStatus({
+                      ok: false,
+                      message:
+                        payload?.error?.message ||
+                        `HTTP ${res.status} at ${cleaned}/staff-api/v1/session`,
+                    });
+                  }
+                } catch {
+                  setAndroidServerStatus({
+                    ok: false,
+                    message: `Unable to reach ${cleaned}/staff-api/v1/session`,
+                  });
+                } finally {
+                  setTestingAndroidServer(false);
+                }
+              }}
+            >
+              {testingAndroidServer ? t("Testing…") : t("Test Connection")}
+            </button>
+            <button
+              type="button"
+              className="button"
+              onClick={() => {
+                const cleaned = androidServerDraft
+                  .trim()
+                  .replace(/\/staff-api\/v1\/?$/i, "")
+                  .replace(/\/+$/, "");
+                if (!/^https?:\/\//i.test(cleaned)) {
+                  setAndroidServerStatus({
+                    ok: false,
+                    message: "Enter a valid https:// server URL.",
+                  });
+                  return;
+                }
+                const nextApiBase = `${cleaned}/staff-api/v1`;
+                const win = window as unknown as {
+                  __ATTAIE_STAFF_API_BASE_URL__?: string;
+                  AttaieServerConfig?: {
+                    setApiBaseUrl?: (url: string) => boolean;
+                  };
+                };
+                win.__ATTAIE_STAFF_API_BASE_URL__ = nextApiBase;
+                try {
+                  win.AttaieServerConfig?.setApiBaseUrl?.(nextApiBase);
+                  localStorage.setItem(
+                    "attaie_android_api_base_url",
+                    nextApiBase,
+                  );
+                } catch {
+                  // ignore storage errors
+                }
+                setAndroidApiBaseUrl(nextApiBase);
+                setShowAndroidServerSheet(false);
+              }}
+            >
+              {t("Save & Connect")}
+            </button>
+          </div>
+        </div>
+      )}
       <main className="login-card">
         <div style={{ display: "flex", justifyContent: "center", marginBottom: 14 }}>
           <img
-            src="/login-logo.png"
+            src="./logo.png"
+            onError={(e) => {
+              const img = e.currentTarget;
+              if (!img.src.endsWith("/login-logo.png")) {
+                img.src = "/login-logo.png";
+              }
+            }}
             alt="Attaie Properties"
             style={{ maxWidth: 210, width: "100%", height: "auto", display: "block" }}
           />

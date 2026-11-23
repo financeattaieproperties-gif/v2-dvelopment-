@@ -1496,3 +1496,318 @@ export function summarizeLeadConversionFunnel({
   };
 }
 
+export const LEADERBOARD_POINTS = Object.freeze({
+  lead: 1,
+  visit: 3,
+  deal: 10,
+});
+
+/**
+ * Computes the Weekly Agent Performance Leaderboard across the CRM.
+ * Scoring rule:
+ *   1 Lead = 1 point
+ *   1 Customer Visit = 3 points
+ *   1 Closed Deal = 10 points
+ *
+ * @param {{
+ *   leads?: Array<any>,
+ *   followups?: Array<any>,
+ *   assignees?: Array<any>,
+ *   leaderboardEntries?: Array<any>,
+ *   period?: 'week' | 'prev_week' | '30d' | 'all',
+ *   weekOffset?: number,
+ *   now?: string | number | Date,
+ * }} input
+ */
+export function computeWeeklyLeaderboard({
+  leads = [],
+  followups = [],
+  assignees = [],
+  leaderboardEntries = [],
+  period = "week",
+  weekOffset = 0,
+  now = new Date(),
+} = {}) {
+  const leadList = Array.isArray(leads) ? leads : [];
+  const followupList = Array.isArray(followups) ? followups : [];
+  const staffList = Array.isArray(assignees) ? assignees : [];
+  const backendEntries = Array.isArray(leaderboardEntries) ? leaderboardEntries : [];
+
+  const nowMs =
+    now instanceof Date
+      ? now.getTime()
+      : typeof now === "number"
+        ? now
+        : Date.parse(now || new Date().toISOString());
+  const safeNowMs = Number.isFinite(nowMs) ? nowMs : Date.now();
+
+  const effectiveOffset = period === "prev_week" ? -1 : Number(weekOffset) || 0;
+  let rangeStartMs = -Infinity;
+  let rangeEndMs = Infinity;
+
+  if (period === "week" || period === "prev_week") {
+    const endShiftDays = effectiveOffset * 7;
+    rangeEndMs = safeNowMs + endShiftDays * DAY + (effectiveOffset === 0 ? DAY : 0);
+    rangeStartMs = safeNowMs + (endShiftDays - 7) * DAY;
+  } else if (period === "30d") {
+    rangeStartMs = safeNowMs - 30 * DAY;
+    rangeEndMs = safeNowMs + DAY;
+  }
+
+  const inWindow = (rawTs) => {
+    if (period === "all") return true;
+    if (!rawTs) return false;
+    const ms = Date.parse(rawTs);
+    if (!Number.isFinite(ms)) return false;
+    return ms >= rangeStartMs && ms <= rangeEndMs;
+  };
+
+  const agentMap = new Map();
+
+  const ensureAgent = (id, fallbackName = "", fallbackRole = "sales", branchId = 1, branchName = null) => {
+    const numId = Number(id);
+    if (!Number.isFinite(numId) || numId <= 0) return null;
+    if (!agentMap.has(numId)) {
+      const staff = staffList.find((u) => Number(u?.id) === numId);
+      const name = String(staff?.name || fallbackName || `Agent #${numId}`);
+      agentMap.set(numId, {
+        agentId: numId,
+        agentName: name,
+        shortName: name.split(/\s+/).slice(0, 2).join(" "),
+        role: String(staff?.role || fallbackRole || "sales"),
+        departmentCode: staff?.departmentCode || "sales",
+        branchId: staff?.branchId ?? branchId ?? 1,
+        branchName: staff?.branchName ?? branchName ?? null,
+        photoUrl: staff?.photoUrl ?? null,
+        leadsCount: 0,
+        visitsCount: 0,
+        dealsCount: 0,
+        leadPoints: 0,
+        visitPoints: 0,
+        dealPoints: 0,
+        totalScore: 0,
+        closedAmount: 0,
+        rank: 0,
+      });
+    }
+    return agentMap.get(numId);
+  };
+
+  // Seed all active Sales & Call Center agents from assignees roster
+  for (const user of staffList) {
+    if (
+      user &&
+      user.active !== false &&
+      ["sales", "callcenter", "sales_leader"].includes(String(user.role))
+    ) {
+      ensureAgent(user.id, user.name, user.role, user.branchId, user.branchName);
+    }
+  }
+
+  // If pre-aggregated backend entries exist and no raw leads were loaded (e.g. non-sales role view),
+  // or for agents present in backendEntries when period === "week" and weekOffset === 0:
+  const useBackendTotals =
+    backendEntries.length > 0 &&
+    leadList.length === 0 &&
+    (period === "week" || period === "all") &&
+    effectiveOffset === 0;
+
+  if (useBackendTotals) {
+    for (const entry of backendEntries) {
+      const bucket = ensureAgent(
+        entry.agentId ?? entry.id,
+        entry.agentName ?? entry.name,
+        entry.role,
+        entry.branchId,
+        entry.branchName,
+      );
+      if (!bucket) continue;
+      bucket.leadsCount += Math.max(0, Number(entry.leadsCount || 0));
+      bucket.visitsCount += Math.max(0, Number(entry.visitsCount || 0));
+      bucket.dealsCount += Math.max(0, Number(entry.dealsCount || 0));
+      bucket.closedAmount += Math.max(0, Number(entry.closedAmount || 0));
+    }
+  } else {
+    // Track which (leadId, agentId) visits were already counted via followups/activities
+    const countedVisitLeadKeys = new Set();
+
+    // 1. Count completed customer visits from followups list where outcome === 'visit'
+    for (const f of followupList) {
+      if (!f) continue;
+      const outcome = String(f.outcome || "").trim().toLowerCase();
+      const isVisitOutcome =
+        outcome === "visit" || /-V\d+/i.test(String(f.stageSerial || f.serial || ""));
+      if (!isVisitOutcome) continue;
+      const visitTs = f.completedAt || f.scheduledAt;
+      if (!inWindow(visitTs)) continue;
+      const bucket = ensureAgent(f.assigneeId);
+      if (!bucket) continue;
+      bucket.visitsCount += 1;
+      if (f.leadId) {
+        countedVisitLeadKeys.add(`${f.leadId}:${bucket.agentId}`);
+      }
+    }
+
+    // 2. Process leads for Leads (1 pt), Visits (3 pts), and Closed Deals (10 pts)
+    for (const lead of leadList) {
+      if (!lead) continue;
+      const primaryAgentId = Number(lead.assigneeId || lead.originAgentId || 0);
+      const originAgentId = Number(lead.originAgentId || 0);
+
+      // Lead creation / call within window -> +1 Lead
+      const leadTs = lead.callAt || lead.createdAt || lead.deal?.closedAt;
+      if (inWindow(leadTs) && primaryAgentId > 0) {
+        const primaryBucket = ensureAgent(primaryAgentId);
+        if (primaryBucket) {
+          primaryBucket.leadsCount += 1;
+        }
+        // If a distinct Call Center agent originated the lead and handed it to Sales, credit their lead intake too
+        if (
+          originAgentId > 0 &&
+          originAgentId !== primaryAgentId
+        ) {
+          const originStaff = staffList.find((u) => Number(u?.id) === originAgentId);
+          if (originStaff && originStaff.role === "callcenter") {
+            const originBucket = ensureAgent(originAgentId);
+            if (originBucket) {
+              originBucket.leadsCount += 1;
+            }
+          }
+        }
+      }
+
+      // Check lead-level explicit visitsCount / activities / stageCode === 'V'
+      const explicitVisits = Number(lead.visitsCount ?? lead.visitCount ?? NaN);
+      if (Number.isFinite(explicitVisits) && explicitVisits > 0 && inWindow(leadTs)) {
+        const bucket = ensureAgent(primaryAgentId);
+        if (bucket && !countedVisitLeadKeys.has(`${lead.id}:${bucket.agentId}`)) {
+          bucket.visitsCount += explicitVisits;
+          countedVisitLeadKeys.add(`${lead.id}:${bucket.agentId}`);
+        }
+      } else {
+        if (Array.isArray(lead.activities)) {
+          for (const act of lead.activities) {
+            if (String(act?.type || "").toLowerCase() === "visit" && inWindow(act.at || leadTs)) {
+              const bucket = ensureAgent(act.actorId || primaryAgentId);
+              if (bucket) {
+                bucket.visitsCount += 1;
+                countedVisitLeadKeys.add(`${lead.id}:${bucket.agentId}`);
+              }
+            }
+          }
+        }
+        const rawStage = String(lead.stageCode || lead.stage || lead.status || "")
+          .trim()
+          .toUpperCase();
+        const isVisitStage =
+          rawStage === "V" ||
+          rawStage === "VISIT" ||
+          /-V\d+/i.test(String(lead.stageSerial || lead.serial || ""));
+        if (isVisitStage && inWindow(leadTs) && primaryAgentId > 0) {
+          const bucket = ensureAgent(primaryAgentId);
+          if (bucket && !countedVisitLeadKeys.has(`${lead.id}:${bucket.agentId}`)) {
+            bucket.visitsCount += 1;
+            countedVisitLeadKeys.add(`${lead.id}:${bucket.agentId}`);
+          }
+        }
+      }
+
+      // Check Closed Deal -> +10 points
+      const rawStatus = String(lead.status || lead.stage || "")
+        .trim()
+        .toLowerCase();
+      const isClosedDeal =
+        rawStatus === "closed" ||
+        rawStatus === "deal closed" ||
+        rawStatus === "won" ||
+        String(lead.stageCode || "").toUpperCase() === "DC" ||
+        Boolean(lead.deal);
+      const dealTs = lead.deal?.closedAt || lead.closedAt || leadTs;
+      if (isClosedDeal && inWindow(dealTs) && primaryAgentId > 0) {
+        const bucket = ensureAgent(primaryAgentId);
+        if (bucket) {
+          bucket.dealsCount += 1;
+          const amt = Number(lead.deal?.amount || lead.agreedAmount || 0);
+          if (Number.isFinite(amt) && amt > 0) {
+            bucket.closedAmount += amt;
+          }
+        }
+      }
+    }
+
+    // Merge any higher counts from backendEntries when viewing current week so non-visible leads from other teams are still reflected
+    if (backendEntries.length > 0 && period === "week" && effectiveOffset === 0) {
+      for (const entry of backendEntries) {
+        const bucket = ensureAgent(
+          entry.agentId ?? entry.id,
+          entry.agentName ?? entry.name,
+          entry.role,
+          entry.branchId,
+          entry.branchName,
+        );
+        if (!bucket) continue;
+        bucket.leadsCount = Math.max(bucket.leadsCount, Number(entry.leadsCount || 0));
+        bucket.visitsCount = Math.max(bucket.visitsCount, Number(entry.visitsCount || 0));
+        bucket.dealsCount = Math.max(bucket.dealsCount, Number(entry.dealsCount || 0));
+        bucket.closedAmount = Math.max(bucket.closedAmount, Number(entry.closedAmount || 0));
+      }
+    }
+  }
+
+  let totalLeads = 0;
+  let totalVisits = 0;
+  let totalDeals = 0;
+  let totalScore = 0;
+
+  const agents = Array.from(agentMap.values()).map((row) => {
+    const leadPoints = row.leadsCount * LEADERBOARD_POINTS.lead;
+    const visitPoints = row.visitsCount * LEADERBOARD_POINTS.visit;
+    const dealPoints = row.dealsCount * LEADERBOARD_POINTS.deal;
+    const score = leadPoints + visitPoints + dealPoints;
+
+    totalLeads += row.leadsCount;
+    totalVisits += row.visitsCount;
+    totalDeals += row.dealsCount;
+    totalScore += score;
+
+    return {
+      ...row,
+      leadPoints,
+      visitPoints,
+      dealPoints,
+      totalScore: score,
+    };
+  });
+
+  agents.sort((a, b) => {
+    if (b.totalScore !== a.totalScore) return b.totalScore - a.totalScore;
+    if (b.dealsCount !== a.dealsCount) return b.dealsCount - a.dealsCount;
+    if (b.visitsCount !== a.visitsCount) return b.visitsCount - a.visitsCount;
+    if (b.leadsCount !== a.leadsCount) return b.leadsCount - a.leadsCount;
+    return a.agentName.localeCompare(b.agentName);
+  });
+
+  agents.forEach((agent, index) => {
+    agent.rank = index + 1;
+  });
+
+  return {
+    agents,
+    totals: {
+      totalLeads,
+      totalVisits,
+      totalDeals,
+      totalLeadPoints: totalLeads * LEADERBOARD_POINTS.lead,
+      totalVisitPoints: totalVisits * LEADERBOARD_POINTS.visit,
+      totalDealPoints: totalDeals * LEADERBOARD_POINTS.deal,
+      totalScore,
+      topAgent: agents[0] || null,
+    },
+    period,
+    rangeStartIso: Number.isFinite(rangeStartMs) ? new Date(rangeStartMs).toISOString() : null,
+    rangeEndIso: Number.isFinite(rangeEndMs) ? new Date(Math.min(rangeEndMs, safeNowMs)).toISOString() : null,
+    pointsRule: LEADERBOARD_POINTS,
+  };
+}
+
+

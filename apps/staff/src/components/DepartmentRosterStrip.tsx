@@ -144,6 +144,7 @@ export function getDepartmentStaffForPage(
       );
       break;
 
+    case "leaderboard":
     case "leads":
     case "followups":
     case "customers":

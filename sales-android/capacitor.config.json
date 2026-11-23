@@ -8,7 +8,9 @@
     "allowNavigation": [
       "attaieproperties.com",
       "www.attaieproperties.com",
-      "*.attaieproperties.com"
+      "website.attaieproperties.com",
+      "*.attaieproperties.com",
+      "*.attaieproperties.af"
     ]
   },
   "plugins": {

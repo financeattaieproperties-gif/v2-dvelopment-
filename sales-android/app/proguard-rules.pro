@@ -7,4 +7,10 @@
 -keepclassmembers class af.attaieproperties.sales.DeviceBatteryBridge {
     @android.webkit.JavascriptInterface <methods>;
 }
+-keepclassmembers class af.attaieproperties.sales.ServerConfigBridge {
+    @android.webkit.JavascriptInterface <methods>;
+}
 -keep class androidx.biometric.** { *; }
+-dontwarn javax.annotation.Nullable
+-dontwarn javax.annotation.concurrent.GuardedBy
+

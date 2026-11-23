@@ -134,6 +134,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/ceo",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "customers",
       "leads",
       "projects",
@@ -154,6 +155,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/management",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "customers",
       "leads",
       "projects",
@@ -173,6 +175,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/sales-leader",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "followups",
       "customers",
       "leads",
@@ -190,6 +193,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/sales",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "followups",
       "customers",
       "leads",
@@ -206,6 +210,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/callcenter",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "followups",
       "customers",
       "leads",
@@ -222,6 +227,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/finance",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "projects",
       "contracts",
       "finance",
@@ -237,6 +243,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/marketing",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "marketing",
       "tasks",
       "team",
@@ -250,6 +257,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/marketing",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "marketing",
       "tasks",
       "profile",
@@ -262,6 +270,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/marketing",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "marketing",
       "submissions",
       "tasks",
@@ -275,6 +284,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/engineering",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "projects",
       "deliverables",
       "tasks",
@@ -288,6 +298,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/engineering",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "projects",
       "deliverables",
       "tasks",
@@ -301,6 +312,7 @@ export const ROLE_DASHBOARD_LAYOUT_MAP = Object.freeze({
     workspacePath: "/engineering",
     allowedPages: Object.freeze([
       "overview",
+      "leaderboard",
       "projects",
       "deliverables",
       "tasks",
@@ -489,6 +501,7 @@ export function resolveStaffApiEndpoint(
 export function getMobilePrimaryTabs(tabs = []) {
   const shortLabels = {
     overview: "Overview",
+    leaderboard: "Leaderboard",
     followups: "Follow-ups",
     leads: "Leads",
     customers: "Customers",
