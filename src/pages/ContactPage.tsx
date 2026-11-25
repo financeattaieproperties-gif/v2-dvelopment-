@@ -36,7 +36,7 @@ export default function ContactPage() {
             className="text-brand-gold text-xs font-bold uppercase tracking-[0.25em] mb-4 flex items-center justify-center gap-3"
           >
             <span className="inline-block w-8 h-[1px] bg-brand-gold/50" />
-            Get in Touch
+            {t('contactPage.eyebrow')}
             <span className="inline-block w-8 h-[1px] bg-brand-gold/50" />
           </motion.p>
           <motion.h1
@@ -45,7 +45,7 @@ export default function ContactPage() {
             transition={{ duration: 0.55, delay: 0.08 }}
             className="text-4xl md:text-5xl font-display font-bold text-white mb-4"
           >
-            Contact Our Team
+            {t('contactPage.title')}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -53,7 +53,7 @@ export default function ContactPage() {
             transition={{ duration: 0.5, delay: 0.18 }}
             className="text-white/60 text-lg max-w-xl mx-auto"
           >
-            Fill in the form below and one of our agents will get back to you within 24 hours.
+            {t('contactPage.subtitle')}
           </motion.p>
         </div>
       </section>

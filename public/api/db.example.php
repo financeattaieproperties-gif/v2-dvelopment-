@@ -9,6 +9,13 @@ define('DB_NAME',    'your_cpanel_db_name');
 define('ADMIN_USER', 'admin');
 define('ADMIN_PASS', 'choose_a_strong_password');
 
+// ── Isolated Submission Database (Publishing Tasks / Photo Review) ─────────────
+// Separate MySQL database for staff marketing/publishing submissions (never same as DB_NAME):
+define('SUBMISSION_DB_HOST', 'localhost');
+define('SUBMISSION_DB_USER', '');
+define('SUBMISSION_DB_PASS', '');
+define('SUBMISSION_DB_NAME', '');
+
 // V2 chat: set this to an existing private directory OUTSIDE every web document root.
 // Copy and verify existing chat data before switching; see docs/staff/v2-website-chat-migration.md.
 // An empty, public, inaccessible, or corrupt store fails closed; no local delivery is fabricated.

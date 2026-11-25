@@ -1,0 +1,37 @@
+<section id="attaie-empty-chart" data-viz-composition>
+  <div data-viz-container></div>
+  <script type="application/json" data-viz-chart>
+    {
+      "id": "attaie-empty-input",
+      "title": "What the CEO chart computes with zero leads",
+      "description": "Source-code reproduction, not live business data. OverviewAnalyticsStrip.tsx uses fixed month labels and index-based formulas. Correct counts for this empty input are zero in every month.",
+      "summary": "Despite an empty leads array, pipeline values are 2, 2, 2, 3, 4, 5 and closed values are 1, 1, 1, 1, 2, 2.",
+      "height": 280,
+      "spec": { "type": "bar", "x": "Month", "y": ["Computed pipeline", "Computed closed"], "yLabel": "Records", "showValues": true, "showLegend": true, "startAtZero": true },
+      "columns": ["Month", "Computed pipeline", "Computed closed"],
+      "rows": [["Jun", 2, 1], ["Jul", 2, 1], ["Aug", 2, 1], ["Sep", 3, 1], ["Oct", 4, 2], ["Nov", 5, 2]]
+    }
+  </script>
+</section>
+<section id="attaie-contrast-chart" data-viz-composition>
+  <div data-viz-container></div>
+  <script type="application/json" data-viz-chart>
+    {
+      "id": "attaie-color-contrast",
+      "title": "Dashboard token contrast against white",
+      "description": "Calculated from the exact hex values in source. The 4.5:1 reference applies to normal text. These are color-pair calculations, not a full accessibility audit. Dark slate and dark green are proposed text tokens; brand colors remain available for accents.",
+      "summary": "Slate #818285 and green #14A850 are below 4.5:1 on white. Blue #0072BC, dark slate #475569 and dark green #0D6042 exceed it.",
+      "height": 280,
+      "spec": { "type": "horizontalBar", "y": "Color", "x": "Contrast ratio", "xLabel": "Contrast ratio (:1)", "showValues": true, "showLegend": false, "valueFormat": { "style": "decimal", "maximumFractionDigits": 2 }, "referenceLines": [{ "axis": "x", "value": 4.5, "label": "Normal text minimum 4.5:1" }] },
+      "columns": ["Color", "Contrast ratio"],
+      "rows": [["Slate #818285", 3.8425160226846184], ["Green #14A850", 3.1126630035485436], ["Blue #0072BC", 5.08093992253943], ["Dark slate #475569", 7.577663953533317], ["Dark green #0D6042", 7.584154187761563]]
+    }
+  </script>
+</section>
+<script type="module">
+  import { mountChart } from "https://persistent.oaistatic.com/plugins/visualize/charts/1.2.3/element.js";
+  for (const id of ["attaie-empty-chart", "attaie-contrast-chart"]) {
+    const root = document.getElementById(id);
+    mountChart(root.querySelector("[data-viz-container]"), JSON.parse(root.querySelector("[data-viz-chart]").textContent));
+  }
+</script>

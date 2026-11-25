@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   Search,
   MapPin,
@@ -30,9 +31,11 @@ export const SearchBar: React.FC<SearchBarProps> = ({
   purpose: controlledPurpose,
   onPurposeChange,
   onSearchResults,
-  placeholder = 'Search by title, location, or serial number...',
+  placeholder,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const resolvedPlaceholder = placeholder ?? t('search.fullPlaceholder');
   const [internalPurpose, setInternalPurpose] = useState<'buy' | 'rent' | 'commercial'>('buy');
   const [internalQuery, setInternalQuery] = useState('');
   const [results, setResults] = useState<Property[]>([]);
@@ -179,7 +182,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                   : 'text-neutral-500 hover:text-brand-navy'
               }`}
             >
-              {p}
+              {t(`search.${p}`)}
             </button>
           ))}
         </div>
@@ -197,8 +200,8 @@ export const SearchBar: React.FC<SearchBarProps> = ({
             aria-expanded={isOpen && Boolean(trimmedQuery)}
             aria-autocomplete="list"
             aria-controls="global-property-search-results"
-            aria-label="Search properties by title, location, or serial number"
-            placeholder={placeholder}
+            aria-label={t('search.ariaLabel')}
+            placeholder={resolvedPlaceholder}
             value={query}
             onFocus={() => {
               if (trimmedQuery) setIsOpen(true);
@@ -212,13 +215,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
               <Loader2
                 size={16}
                 className="animate-spin text-brand-gold"
-                aria-label="Searching properties"
+                aria-label={t('search.searching')}
               />
             )}
             {query && (
               <button
                 type="button"
-                aria-label="Clear search"
+                aria-label={t('search.clearSearch')}
                 onClick={() => {
                   handleInputChange('');
                   setIsOpen(false);
@@ -234,7 +237,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         {/* Submit Button */}
         <Button type="submit" size="lg" className="w-full md:w-auto px-8 shrink-0 gap-2 rounded-xl">
           <Search size={20} />
-          <span>Search</span>
+          <span>{t('search.button')}</span>
         </Button>
       </div>
 
@@ -248,13 +251,13 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           <div className="px-4 py-2.5 bg-neutral-50 border-b border-neutral-100 flex items-center justify-between text-xs font-semibold text-neutral-500">
             <span>
               {loading
-                ? 'Searching properties...'
+                ? t('search.searching')
                 : totalMatches > 0
-                  ? `Found ${totalMatches} matching ${totalMatches === 1 ? 'property' : 'properties'}`
-                  : 'No matching properties'}
+                  ? t(totalMatches === 1 ? 'search.foundCount_one' : 'search.foundCount', { count: totalMatches })
+                  : t('search.noMatches')}
             </span>
             <span className="text-[11px] text-neutral-400">
-              Matched by title, location, or serial #
+              {t('search.matchedBy')}
             </span>
           </div>
 
@@ -294,7 +297,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                           </span>
                         )}
                         <span className="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold capitalize bg-brand-gold/10 text-brand-gold shrink-0">
-                          {item.type} · {item.listing_type === 'rent' ? 'For Rent' : 'For Sale'}
+                          {t(`propertyTypes.${item.type}`, item.type)} · {item.listing_type === 'rent' ? t('search.forRent') : t('search.forSale')}
                         </span>
                       </div>
                       <p className="text-sm font-bold text-brand-navy truncate">{item.title}</p>
@@ -318,7 +321,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                         {item.area !== null && (
                           <span className="inline-flex items-center gap-1">
                             <Maximize2 size={11} className="text-neutral-400" />
-                            {item.area} m²
+                            {item.area} {t('propertyCard.sqm')}
                           </span>
                         )}
                       </div>
@@ -327,10 +330,10 @@ export const SearchBar: React.FC<SearchBarProps> = ({
                     <div className="text-end shrink-0 ps-2">
                       <p className="text-sm font-extrabold text-brand-gold whitespace-nowrap">
                         ${Number(item.price).toLocaleString()}
-                        {item.listing_type === 'rent' ? '/mo' : ''}
+                        {item.listing_type === 'rent' ? t('propertyCard.perMonth') : ''}
                       </p>
                       <span className="inline-flex items-center gap-0.5 text-[11px] font-semibold text-brand-navy/70">
-                        View <ArrowUpRight size={12} />
+                        {t('search.view')} <ArrowUpRight size={12} className="rtl:-scale-x-100" />
                       </span>
                     </div>
                   </li>
@@ -340,7 +343,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
           ) : (
             !loading && (
               <div className="px-4 py-6 text-center text-sm text-neutral-500">
-                No properties found matching{' '}
+                {t('search.noResultsFor')}{' '}
                 <span className="font-bold text-brand-navy">&ldquo;{trimmedQuery}&rdquo;</span>.
               </div>
             )

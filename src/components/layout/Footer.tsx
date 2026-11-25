@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { MessageCircle, Mail, MapPin, Phone, ExternalLink } from 'lucide-react';
@@ -167,29 +168,29 @@ const Footer = () => {
               }}
             >
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                <Link to="/" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
                   {t('nav.home')}
-                </a>
+                </Link>
               </motion.li>
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/about" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                <Link to="/about" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
                   {t('nav.about')}
-                </a>
+                </Link>
               </motion.li>
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/properties" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                <Link to="/properties" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
                   {t('nav.properties')}
-                </a>
+                </Link>
               </motion.li>
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/projects" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                <Link to="/projects" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
                   {t('nav.projects')}
-                </a>
+                </Link>
               </motion.li>
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/careers" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                <Link to="/careers" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
                   {t('nav.careers')}
-                </a>
+                </Link>
               </motion.li>
             </motion.ul>
           </div>
@@ -210,19 +211,19 @@ const Footer = () => {
               }}
             >
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/properties?purpose=buy" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
-                  Buy Property
-                </a>
+                <Link to="/properties?purpose=buy" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                  {t('footer.buyProperty')}
+                </Link>
               </motion.li>
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/properties?purpose=rent" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
-                  Rent Property
-                </a>
+                <Link to="/properties?purpose=rent" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                  {t('footer.rentProperty')}
+                </Link>
               </motion.li>
               <motion.li variants={{ hidden: { opacity: 0, x: -8 }, visible: { opacity: 1, x: 0 } }}>
-                <a href="/properties?type=Commercial" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
-                  Commercial
-                </a>
+                <Link to="/properties?type=Commercial" className="text-neutral-600 hover:text-brand-gold transition-colors text-sm link-underline">
+                  {t('footer.commercial')}
+                </Link>
               </motion.li>
             </motion.ul>
           </div>
@@ -235,7 +236,7 @@ const Footer = () => {
             <ul className="flex flex-col gap-4">
               <li className="flex gap-3 text-neutral-600 text-sm">
                 <MapPin size={18} className="text-brand-gold shrink-0 mt-0.5" />
-                <span>Street #13, Wazir Akbar Khan, Kabul, Afghanistan</span>
+                <span>{t('footer.address')}</span>
               </li>
               <li className="flex gap-3 text-neutral-600 text-sm">
                 <Phone size={18} className="text-brand-gold shrink-0" />

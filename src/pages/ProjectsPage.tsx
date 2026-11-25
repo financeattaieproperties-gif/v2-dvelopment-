@@ -10,21 +10,15 @@ import { ProjectCard } from '../components/ui/ProjectCard';
 import { ProjectCardSkeleton, ProjectSpotlightSkeleton } from '../components/ui/ProjectCardSkeleton';
 import { Skeleton } from '../components/ui/Skeleton';
 import { getProjects, type Project } from '../lib/dbService';
-import { SIGNATURE_PROJECTS } from '../lib/signatureProjects';
 import { SeoHead } from '../components/seo/SeoHead';
 import { Breadcrumbs } from '../components/ui/Breadcrumbs';
 import defaultExteriorImg from '../assets/images/project_exterior_elevation_1793995966183.jpg';
-import defaultFurnishedPlanImg from '../assets/images/floorplan_furnished_3d_1793995968986.jpg';
-import categoryProjectsImg from '../assets/images/category_master_projects_1794037429266.jpg';
-import categoryCommercialImg from '../assets/images/category_commercial_plaza_1794037429778.jpg';
 
 const FILTER_STATUSES = ['All', 'Coming Soon', 'In Progress', 'Sold Out'] as const;
 
-const FALLBACK_PROJECTS: Project[] = SIGNATURE_PROJECTS;
-
 export default function ProjectsPage() {
   const { t } = useTranslation();
-  const [projects, setProjects] = useState<Project[]>(FALLBACK_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<(typeof FILTER_STATUSES)[number]>('All');
 
@@ -39,12 +33,8 @@ export default function ProjectsPage() {
           setProjects([]);
         }
       })
-      .catch((err) => {
-        if (err instanceof Error && err.message === 'STATIC_PREVIEW_NON_JSON') {
-          setProjects(FALLBACK_PROJECTS);
-        } else {
-          setProjects([]);
-        }
+      .catch(() => {
+        setProjects([]);
       })
       .finally(() => setLoading(false));
   }, []);
@@ -88,9 +78,9 @@ export default function ProjectsPage() {
         <section className="container-custom pt-12">
           <div className="flex items-center justify-between gap-4 mb-5">
             <div>
-              <span className="eyebrow">Featured Developments</span>
+              <span className="eyebrow">{t('projectsPage.featuredEyebrow')}</span>
               <h2 className="text-2xl font-display font-bold text-brand-navy mt-1">
-                Kabul’s Flagship Multi-Unit Developments
+                {t('projectsPage.featuredTitle')}
               </h2>
             </div>
           </div>
@@ -110,7 +100,7 @@ export default function ProjectsPage() {
                     <div>
                       <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-brand-gold text-white text-xs font-bold mb-4">
                         <Building2 size={13} />
-                        <span>{proj.status}</span>
+                        <span>{t(`projectCard.status.${proj.status === 'Under Construction' ? 'In Progress' : proj.status}`, proj.status)}</span>
                       </div>
                       <h3 className="text-2xl md:text-3xl font-display font-bold text-white mb-3">
                         {proj.name}
@@ -131,13 +121,13 @@ export default function ProjectsPage() {
                         {proj.available_units !== undefined && (
                           <span className="flex items-center gap-1.5 text-white/85 font-semibold">
                             <Home size={14} className="text-brand-gold" />
-                            {proj.available_units} Units Open
+                            {t('projectsPage.unitsOpen', { count: proj.available_units })}
                           </span>
                         )}
                         {proj.delivery_date && (
                           <span className="flex items-center gap-1.5 text-white/85 font-semibold">
                             <Calendar size={14} className="text-brand-gold" />
-                            Delivery: {proj.delivery_date}
+                            {t('projectsPage.deliveryLabel', { date: proj.delivery_date })}
                           </span>
                         )}
                       </div>
@@ -145,8 +135,8 @@ export default function ProjectsPage() {
                         to={`/projects/${proj.id}`}
                         className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-brand-navy hover:bg-brand-gold hover:text-white text-xs font-bold transition-colors whitespace-nowrap"
                       >
-                        <span>Explore Masterplan</span>
-                        <ArrowRight size={14} />
+                        <span>{t('projectsPage.exploreMasterplan')}</span>
+                        <ArrowRight size={14} className="rtl:rotate-180" />
                       </Link>
                     </div>
                   </div>
@@ -200,7 +190,7 @@ export default function ProjectsPage() {
             <Skeleton className="h-4 w-44 rounded bg-neutral-200" />
           ) : (
             <span className="text-xs font-bold text-neutral-500 tabular-nums">
-              Showing {visible.length} of {projects.length} Developments
+              {t('projectsPage.showingCount', { shown: visible.length, total: projects.length })}
             </span>
           )}
         </div>
@@ -235,9 +225,12 @@ export default function ProjectsPage() {
                 </div>
               ))
             ) : (
-              <p className="text-neutral-500 col-span-full py-12 text-center">
-                {t('projectsPage.empty')}
-              </p>
+              <div className="col-span-full rounded-2xl border border-neutral-200 bg-white p-12 text-center">
+                <Building2 size={32} className="mx-auto text-brand-gold/60 mb-3" />
+                <p className="text-brand-navy font-semibold text-base">
+                  {t('projectsPage.empty')}
+                </p>
+              </div>
             )}
           </motion.div>
         </AnimatePresence>

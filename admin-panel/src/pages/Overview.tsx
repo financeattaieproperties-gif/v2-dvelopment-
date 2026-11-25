@@ -1,29 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api, type Lead, type Project, type Property, type SubmissionPost, type VisitRequest } from '../api';
-
-// Design Tokens for Luxury Architectural Theme
-const THEME = {
-  lapis: '#0B2545',
-  cobalt: '#0072BC',
-  gold: '#C5A059',
-  goldSoft: '#FAF5EC',
-  goldBorder: '#EED9B3',
-  emerald: '#0D6042',
-  emeraldSoft: '#EBF7EE',
-  emeraldBorder: '#BDE8CE',
-  amber: '#B45309',
-  amberSoft: '#FFFBEB',
-  crimson: '#991B1B',
-  ink: '#0F172A',
-  slate: '#475569',
-  slateMuted: '#94A3B8',
-  slateSoft: '#F8FAFC',
-  border: '#E2E8F0',
-  borderSubtle: '#F1F5F9',
-  surface: '#FFFFFF',
-  canvas: '#F8F9FA',
-} as const;
+import { V1 } from '../components/variant1';
 
 /**
  * Calculates a smooth cubic Bézier SVG path through a series of points
@@ -131,12 +109,12 @@ function ArchitecturalWaveChart({
       <svg viewBox={`0 0 ${w} ${h + 28}`} style={{ width: '100%', height: 'auto', display: 'block' }}>
         <defs>
           <linearGradient id="wave-primary" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={THEME.cobalt} stopOpacity="0.22" />
-            <stop offset="100%" stopColor={THEME.cobalt} stopOpacity="0.0" />
+            <stop offset="0%" stopColor={V1.blue} stopOpacity="0.22" />
+            <stop offset="100%" stopColor={V1.blue} stopOpacity="0.0" />
           </linearGradient>
           <linearGradient id="wave-secondary" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={THEME.emerald} stopOpacity="0.20" />
-            <stop offset="100%" stopColor={THEME.emerald} stopOpacity="0.0" />
+            <stop offset="0%" stopColor={V1.green} stopOpacity="0.20" />
+            <stop offset="100%" stopColor={V1.green} stopOpacity="0.0" />
           </linearGradient>
         </defs>
 
@@ -145,8 +123,8 @@ function ArchitecturalWaveChart({
           const y = padY + innerH * (1 - t);
           return (
             <g key={idx}>
-              <line x1={padX} y1={y} x2={w - padX} y2={y} stroke={idx === 0 ? THEME.border : THEME.borderSubtle} strokeWidth="1" strokeDasharray={idx === 0 ? 'none' : '3 3'} />
-              <text x={8} y={y + 3.5} fontSize="10" fill={THEME.slateMuted} fontWeight="500" style={{ fontVariantNumeric: 'tabular-nums' }}>
+              <line x1={padX} y1={y} x2={w - padX} y2={y} stroke={idx === 0 ? V1.border : V1.slateSoft} strokeWidth="1" strokeDasharray={idx === 0 ? 'none' : '3 3'} />
+              <text x={8} y={y + 3.5} fontSize="10" fill={V1.slate} fontWeight="500" style={{ fontVariantNumeric: 'tabular-nums' }}>
                 {Math.round(maxVal * t)}
               </text>
             </g>
@@ -158,14 +136,14 @@ function ArchitecturalWaveChart({
         <path d={sArea} fill="url(#wave-secondary)" />
 
         {/* Spline Lines */}
-        <path d={pLine} fill="none" stroke={THEME.cobalt} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-        <path d={sLine} fill="none" stroke={THEME.emerald} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={pLine} fill="none" stroke={V1.blue} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={sLine} fill="none" stroke={V1.green} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
 
         {/* Interactive Hover Nodes */}
         {pPts.map((p, i) => (
           <g key={`node-${i}`} onMouseEnter={() => setHoverIndex(i)} onMouseLeave={() => setHoverIndex(null)} style={{ cursor: 'pointer' }}>
-            <circle cx={p.x} cy={p.y} r={hoverIndex === i ? 6 : 3.5} fill={THEME.surface} stroke={THEME.cobalt} strokeWidth="2.5" />
-            <circle cx={sPts[i].x} cy={sPts[i].y} r={hoverIndex === i ? 6 : 3.5} fill={THEME.surface} stroke={THEME.emerald} strokeWidth="2.5" />
+            <circle cx={p.x} cy={p.y} r={hoverIndex === i ? 6 : 3.5} fill={V1.surface} stroke={V1.blue} strokeWidth="2.5" />
+            <circle cx={sPts[i].x} cy={sPts[i].y} r={hoverIndex === i ? 6 : 3.5} fill={V1.surface} stroke={V1.green} strokeWidth="2.5" />
           </g>
         ))}
 
@@ -180,7 +158,7 @@ function ArchitecturalWaveChart({
               y={h + 18}
               textAnchor="middle"
               fontSize="11"
-              fill={isSelected ? THEME.ink : THEME.slate}
+              fill={isSelected ? V1.ink : V1.slate}
               fontWeight={isSelected ? '700' : '600'}
             >
               {lbl}
@@ -196,7 +174,7 @@ function ArchitecturalWaveChart({
             position: 'absolute',
             top: 10,
             right: 14,
-            background: THEME.ink,
+            background: V1.ink,
             color: '#FFFFFF',
             padding: '6px 12px',
             borderRadius: 6,
@@ -215,18 +193,18 @@ function ArchitecturalWaveChart({
       )}
 
       {/* Legend */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.6rem', padding: '0 0.5rem', fontSize: '0.78rem', color: THEME.slate }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.6rem', padding: '0 0.5rem', fontSize: '0.78rem', color: V1.slate }}>
         <div style={{ display: 'flex', gap: '1.25rem' }}>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 10, height: 10, borderRadius: 2, background: THEME.cobalt, display: 'inline-block' }} />
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: V1.blue, display: 'inline-block' }} />
             New Inbound Leads
           </span>
           <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            <span style={{ width: 10, height: 10, borderRadius: 2, background: THEME.emerald, display: 'inline-block' }} />
+            <span style={{ width: 10, height: 10, borderRadius: 2, background: V1.green, display: 'inline-block' }} />
             Site Tours &amp; Unit Additions
           </span>
         </div>
-        <span style={{ fontSize: '0.72rem', color: THEME.slateMuted, fontStyle: 'italic' }}>
+        <span style={{ fontSize: '0.72rem', color: V1.slate, fontStyle: 'italic' }}>
           Hover nodes to inspect month velocity
         </span>
       </div>
@@ -247,7 +225,7 @@ function ChannelRadialMatrix({ segments }: { segments: Array<{ label: string; va
     <div style={{ display: 'flex', alignItems: 'center', gap: '1.6rem', flexWrap: 'wrap' }}>
       <div style={{ position: 'relative', width: 136, height: 136, flexShrink: 0 }}>
         <svg width="136" height="136" viewBox="0 0 136 136">
-          <circle cx="68" cy="68" r={r} fill="none" stroke={THEME.borderSubtle} strokeWidth="16" />
+          <circle cx="68" cy="68" r={r} fill="none" stroke={V1.slateSoft} strokeWidth="16" />
           {total > 0 &&
             segments.map((seg) => {
               const dash = (seg.value / total) * c;
@@ -272,10 +250,10 @@ function ChannelRadialMatrix({ segments }: { segments: Array<{ label: string; va
             })}
         </svg>
         <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <span style={{ fontSize: '1.45rem', fontWeight: 800, color: THEME.ink, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>
+          <span style={{ fontSize: '1.45rem', fontWeight: 800, color: V1.ink, lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>
             {total}
           </span>
-          <span style={{ fontSize: '0.68rem', fontWeight: 700, color: THEME.slateMuted, textTransform: 'uppercase', letterSpacing: '0.04em', marginTop: 3 }}>
+          <span style={{ fontSize: '0.68rem', fontWeight: 700, color: V1.slate, textTransform: 'uppercase', letterSpacing: '0.04em', marginTop: 3 }}>
             Total Inquiries
           </span>
         </div>
@@ -287,15 +265,15 @@ function ChannelRadialMatrix({ segments }: { segments: Array<{ label: string; va
           return (
             <div key={seg.label}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '0.8rem', marginBottom: 3 }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, color: THEME.ink, fontWeight: 600 }}>
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 7, color: V1.ink, fontWeight: 600 }}>
                   <span style={{ width: 8, height: 8, borderRadius: 2, background: seg.color }} />
                   {seg.label}
                 </span>
-                <span style={{ color: THEME.slate, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
-                  {seg.value} <span style={{ fontSize: '0.72rem', color: THEME.slateMuted, fontWeight: 500 }}>({pct}%)</span>
+                <span style={{ color: V1.slate, fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>
+                  {seg.value} <span style={{ fontSize: '0.72rem', color: V1.slate, fontWeight: 500 }}>({pct}%)</span>
                 </span>
               </div>
-              <div style={{ width: '100%', height: 4, background: THEME.borderSubtle, borderRadius: 999, overflow: 'hidden' }}>
+              <div style={{ width: '100%', height: 4, background: V1.slateSoft, borderRadius: 999, overflow: 'hidden' }}>
                 <div style={{ width: `${pct}%`, height: '100%', background: seg.color, borderRadius: 999, transition: 'width 0.5s ease' }} />
               </div>
             </div>
@@ -376,10 +354,10 @@ export default function Overview() {
       else counts['Direct / Other'] += 1;
     }
     return [
-      { label: 'Attaie Portal', value: counts.Website, color: THEME.cobalt },
-      { label: 'WhatsApp Direct', value: counts.WhatsApp, color: THEME.emerald },
-      { label: 'Inbound Hotline', value: counts['Call Center'], color: THEME.gold },
-      { label: 'Direct / Referral', value: counts['Direct / Other'], color: THEME.slateMuted },
+      { label: 'Attaie Portal', value: counts.Website, color: V1.blue },
+      { label: 'WhatsApp Direct', value: counts.WhatsApp, color: V1.green },
+      { label: 'Inbound Hotline', value: counts['Call Center'], color: V1.blueHover },
+      { label: 'Direct / Referral', value: counts['Direct / Other'], color: V1.slate },
     ];
   }, [leads]);
 
@@ -390,10 +368,10 @@ export default function Overview() {
       subtitle: 'Exclusive Listed Properties',
       value: properties.length,
       delta: `${availableProps} Ready to Buy`,
-      tone: THEME.emerald,
-      toneBg: THEME.emeraldSoft,
-      toneBorder: THEME.emeraldBorder,
-      accentBorder: THEME.emerald,
+      tone: V1.green,
+      toneBg: V1.greenSoft,
+      toneBorder: '#BDE8CE',
+      accentBorder: V1.green,
       points: [4, 6, 5, 8, 9, Math.max(properties.length, 1)],
       to: '/properties',
       icon: (
@@ -415,10 +393,10 @@ export default function Overview() {
       subtitle: 'Tower Developments',
       value: activeProjects,
       delta: `${projects.length} Total Masterplans`,
-      tone: THEME.cobalt,
-      toneBg: '#EBF4FC',
-      toneBorder: '#BCE0F8',
-      accentBorder: THEME.lapis,
+      tone: V1.blue,
+      toneBg: V1.blueSoft,
+      toneBorder: '#B8DCF2',
+      accentBorder: V1.blue,
       points: [2, 2, 3, 3, 4, Math.max(activeProjects, 1)],
       to: '/projects',
       icon: (
@@ -435,10 +413,10 @@ export default function Overview() {
       subtitle: 'Verified Inbound Leads',
       value: leads.length,
       delta: `${leads.filter((l) => l.stage === 'new' || !l.stage).length} Inbound SLA Due`,
-      tone: THEME.gold,
-      toneBg: THEME.goldSoft,
-      toneBorder: THEME.goldBorder,
-      accentBorder: THEME.gold,
+      tone: V1.blue,
+      toneBg: V1.blueSoft,
+      toneBorder: '#B8DCF2',
+      accentBorder: V1.blue,
       points: monthlySeries.map((m) => m.leads || 1),
       to: '/leads',
       icon: (
@@ -456,10 +434,10 @@ export default function Overview() {
       subtitle: 'On-Site Client Inspections',
       value: visits.length,
       delta: `${pendingVisits} Confirmed & Pending`,
-      tone: THEME.amber,
-      toneBg: THEME.amberSoft,
-      toneBorder: '#FDE68A',
-      accentBorder: THEME.amber,
+      tone: V1.green,
+      toneBg: V1.greenSoft,
+      toneBorder: '#BDE8CE',
+      accentBorder: V1.green,
       points: monthlySeries.map((m) => m.activity || 1),
       to: '/visits',
       icon: (
@@ -476,8 +454,8 @@ export default function Overview() {
   if (loading) {
     return (
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '50vh', flexDirection: 'column', gap: 12 }}>
-        <div style={{ width: 36, height: 36, border: `3px solid ${THEME.border}`, borderTopColor: THEME.cobalt, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-        <p style={{ color: THEME.slate, fontSize: '0.86rem', fontWeight: 600 }}>Syncing Attaie Executive Console…</p>
+        <div style={{ width: 36, height: 36, border: `3px solid ${V1.border}`, borderTopColor: V1.blue, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+        <p style={{ color: V1.slate, fontSize: '0.86rem', fontWeight: 600 }}>Syncing Attaie Executive Console…</p>
         <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
       </div>
     );
@@ -495,7 +473,7 @@ export default function Overview() {
           gap: '1rem',
           marginBottom: '1.4rem',
           paddingBottom: '1.1rem',
-          borderBottom: `1px solid ${THEME.border}`,
+          borderBottom: `1px solid ${V1.border}`,
         }}
       >
         <div>
@@ -505,7 +483,7 @@ export default function Overview() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: 5,
-                background: THEME.lapis,
+                background: V1.blue,
                 color: '#FFFFFF',
                 fontSize: '0.68rem',
                 fontWeight: 800,
@@ -515,18 +493,18 @@ export default function Overview() {
                 textTransform: 'uppercase',
               }}
             >
-              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#4ADE80', display: 'inline-block' }} />
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: V1.green, display: 'inline-block' }} />
               Executive Command
             </span>
-            <span style={{ fontSize: '0.78rem', color: THEME.slateMuted, fontWeight: 500 }}>
+            <span style={{ fontSize: '0.78rem', color: V1.slate, fontWeight: 500 }}>
               Kabul UTC+04:30 · Attaie Enterprise CRM
             </span>
           </div>
 
-          <h1 style={{ fontSize: '1.55rem', fontWeight: 800, color: THEME.ink, margin: 0, letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: '1.55rem', fontWeight: 800, color: V1.ink, margin: 0, letterSpacing: '-0.02em' }}>
             Portfolio Cockpit &amp; Pipeline Engine
           </h1>
-          <p style={{ fontSize: '0.84rem', color: THEME.slate, margin: '0.25rem 0 0' }}>
+          <p style={{ fontSize: '0.84rem', color: V1.slate, margin: '0.25rem 0 0' }}>
             Real-time inventory occupancy, buyer lead velocity, and omnichannel conversion attribution.
           </p>
         </div>
@@ -537,9 +515,9 @@ export default function Overview() {
             onClick={() => navigate('/leads')}
             style={{
               padding: '0.52rem 1.05rem',
-              background: THEME.surface,
-              color: THEME.ink,
-              border: `1px solid ${THEME.border}`,
+              background: V1.surface,
+              color: V1.ink,
+              border: `1px solid ${V1.border}`,
               borderRadius: 7,
               fontWeight: 600,
               fontSize: '0.82rem',
@@ -552,7 +530,7 @@ export default function Overview() {
             }}
           >
             <span>Triage Leads</span>
-            <span style={{ padding: '0.1rem 0.4rem', borderRadius: 4, background: THEME.slateSoft, fontSize: '0.74rem', fontWeight: 700 }}>
+            <span style={{ padding: '0.1rem 0.4rem', borderRadius: 4, background: V1.slateSoft, fontSize: '0.74rem', fontWeight: 700 }}>
               {leads.length}
             </span>
           </button>
@@ -562,9 +540,9 @@ export default function Overview() {
             onClick={() => navigate('/properties/new')}
             style={{
               padding: '0.52rem 1.15rem',
-              background: THEME.lapis,
+              background: V1.blue,
               color: '#FFFFFF',
-              border: `1px solid ${THEME.lapis}`,
+              border: `1px solid ${V1.blue}`,
               borderRadius: 7,
               fontWeight: 700,
               fontSize: '0.82rem',
@@ -572,7 +550,7 @@ export default function Overview() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: 6,
-              boxShadow: '0 2px 8px rgba(11,37,69,0.2)',
+              boxShadow: '0 2px 8px rgba(0,114,188,0.2)',
               transition: 'all 0.15s ease',
             }}
           >
@@ -597,8 +575,8 @@ export default function Overview() {
             type="button"
             onClick={() => navigate(kpi.to)}
             style={{
-              background: THEME.surface,
-              border: `1px solid ${THEME.border}`,
+              background: V1.surface,
+              border: `1px solid ${V1.border}`,
               borderTop: `3px solid ${kpi.accentBorder}`,
               borderRadius: 10,
               padding: '1.1rem 1.25rem',
@@ -607,16 +585,16 @@ export default function Overview() {
               display: 'flex',
               flexDirection: 'column',
               gap: '0.75rem',
-              boxShadow: '0 1px 3px rgba(11,37,69,0.03)',
+              boxShadow: '0 1px 3px rgba(30,41,59,0.04)',
               transition: 'transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease',
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = '0 8px 20px -4px rgba(11,37,69,0.08)';
+              e.currentTarget.style.boxShadow = '0 8px 20px -4px rgba(30,41,59,0.08)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = '0 1px 3px rgba(11,37,69,0.03)';
+              e.currentTarget.style.boxShadow = '0 1px 3px rgba(30,41,59,0.04)';
             }}
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
@@ -637,10 +615,10 @@ export default function Overview() {
                   {kpi.icon}
                 </span>
                 <div>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: THEME.ink, lineHeight: 1.1 }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 700, color: V1.ink, lineHeight: 1.1 }}>
                     {kpi.label}
                   </div>
-                  <div style={{ fontSize: '0.68rem', color: THEME.slateMuted, marginTop: 2 }}>
+                  <div style={{ fontSize: '0.68rem', color: V1.slate, marginTop: 2 }}>
                     {kpi.subtitle}
                   </div>
                 </div>
@@ -667,7 +645,7 @@ export default function Overview() {
                 style={{
                   fontSize: '1.95rem',
                   fontWeight: 800,
-                  color: THEME.ink,
+                  color: V1.ink,
                   lineHeight: 1,
                   fontVariantNumeric: 'tabular-nums',
                   letterSpacing: '-0.02em',
@@ -693,19 +671,19 @@ export default function Overview() {
         {/* Wave Trend Card */}
         <div
           style={{
-            background: THEME.surface,
-            border: `1px solid ${THEME.border}`,
+            background: V1.surface,
+            border: `1px solid ${V1.border}`,
             borderRadius: 10,
             padding: '1.25rem 1.4rem',
-            boxShadow: '0 1px 3px rgba(11,37,69,0.03)',
+            boxShadow: '0 1px 3px rgba(30,41,59,0.04)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.9rem' }}>
             <div>
-              <h2 style={{ margin: 0, fontSize: '1.02rem', fontWeight: 800, color: THEME.ink }}>
+              <h2 style={{ margin: 0, fontSize: '1.02rem', fontWeight: 800, color: V1.ink }}>
                 6-Month Trajectory &amp; Portfolio Intake
               </h2>
-              <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', color: THEME.slate }}>
+              <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', color: V1.slate }}>
                 Bimonthly trend of inbound CRM inquiries vs. scheduled property viewings
               </p>
             </div>
@@ -713,8 +691,8 @@ export default function Overview() {
               style={{
                 fontSize: '0.7rem',
                 fontWeight: 700,
-                color: THEME.cobalt,
-                background: '#EBF4FC',
+                color: V1.blue,
+                background: V1.blueSoft,
                 padding: '0.2rem 0.55rem',
                 borderRadius: 4,
               }}
@@ -733,11 +711,11 @@ export default function Overview() {
         {/* Channel Breakdown Matrix */}
         <div
           style={{
-            background: THEME.surface,
-            border: `1px solid ${THEME.border}`,
+            background: V1.surface,
+            border: `1px solid ${V1.border}`,
             borderRadius: 10,
             padding: '1.25rem 1.4rem',
-            boxShadow: '0 1px 3px rgba(11,37,69,0.03)',
+            boxShadow: '0 1px 3px rgba(30,41,59,0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -746,10 +724,10 @@ export default function Overview() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <div>
-                <h2 style={{ margin: 0, fontSize: '1.02rem', fontWeight: 800, color: THEME.ink }}>
+                <h2 style={{ margin: 0, fontSize: '1.02rem', fontWeight: 800, color: V1.ink }}>
                   Inquiry Channel Attribution
                 </h2>
-                <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', color: THEME.slate }}>
+                <p style={{ margin: '0.2rem 0 0', fontSize: '0.78rem', color: V1.slate }}>
                   Acquisition funnel split across marketing touchpoints
                 </p>
               </div>
@@ -757,8 +735,8 @@ export default function Overview() {
                 style={{
                   fontSize: '0.7rem',
                   fontWeight: 700,
-                  color: THEME.emerald,
-                  background: THEME.emeraldSoft,
+                  color: V1.green,
+                  background: V1.greenSoft,
                   padding: '0.2rem 0.55rem',
                   borderRadius: 4,
                 }}
@@ -774,19 +752,19 @@ export default function Overview() {
             style={{
               marginTop: '1.1rem',
               paddingTop: '0.85rem',
-              borderTop: `1px solid ${THEME.borderSubtle}`,
+              borderTop: `1px solid ${V1.slateSoft}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               fontSize: '0.76rem',
-              color: THEME.slate,
+              color: V1.slate,
             }}
           >
             <span>Primary Inbound Driver: <strong>Attaie Portal (SEO)</strong></span>
             <button
               type="button"
               onClick={() => navigate('/leads')}
-              style={{ background: 'none', border: 'none', color: THEME.cobalt, fontWeight: 700, cursor: 'pointer', padding: 0 }}
+              style={{ background: 'none', border: 'none', color: V1.blue, fontWeight: 700, cursor: 'pointer', padding: 0 }}
             >
               Drilldown Source Logs →
             </button>
@@ -805,26 +783,26 @@ export default function Overview() {
         {/* VIP Site Tours Dispatch */}
         <div
           style={{
-            background: THEME.surface,
-            border: `1px solid ${THEME.border}`,
+            background: V1.surface,
+            border: `1px solid ${V1.border}`,
             borderRadius: 10,
             padding: '1.25rem 1.4rem',
-            boxShadow: '0 1px 3px rgba(11,37,69,0.03)',
+            boxShadow: '0 1px 3px rgba(30,41,59,0.04)',
           }}
         >
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.9rem' }}>
             <div>
-              <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: THEME.ink }}>
+              <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: V1.ink }}>
                 VIP Site Tours Radar ({visits.slice(0, 4).length})
               </h3>
-              <p style={{ margin: '0.15rem 0 0', fontSize: '0.76rem', color: THEME.slate }}>
+              <p style={{ margin: '0.15rem 0 0', fontSize: '0.76rem', color: V1.slate }}>
                 Upcoming private architectural inspections requiring branch escort
               </p>
             </div>
             <button
               type="button"
               onClick={() => navigate('/visits')}
-              style={{ background: 'none', border: 'none', color: THEME.cobalt, fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+              style={{ background: 'none', border: 'none', color: V1.blue, fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
             >
               View All ({visits.length}) →
             </button>
@@ -840,8 +818,8 @@ export default function Overview() {
                   justifyContent: 'space-between',
                   padding: '0.65rem 0.85rem',
                   borderRadius: 7,
-                  background: THEME.slateSoft,
-                  border: `1px solid ${THEME.borderSubtle}`,
+                  background: V1.canvas,
+                  border: `1px solid ${V1.slateSoft}`,
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -850,7 +828,7 @@ export default function Overview() {
                       width: 32,
                       height: 32,
                       borderRadius: 6,
-                      background: THEME.lapis,
+                      background: V1.blue,
                       color: '#FFFFFF',
                       fontSize: '0.74rem',
                       fontWeight: 800,
@@ -862,10 +840,10 @@ export default function Overview() {
                     {(v.name || 'VIP').slice(0, 2).toUpperCase()}
                   </div>
                   <div>
-                    <div style={{ fontSize: '0.82rem', fontWeight: 700, color: THEME.ink }}>
+                    <div style={{ fontSize: '0.82rem', fontWeight: 700, color: V1.ink }}>
                       {v.name || 'Private VIP Client'}
                     </div>
-                    <div style={{ fontSize: '0.72rem', color: THEME.slateMuted }}>
+                    <div style={{ fontSize: '0.72rem', color: V1.slate }}>
                       {v.phone || 'Direct Phone'} · {v.requested_at || 'Scheduled'}
                     </div>
                   </div>
@@ -877,9 +855,9 @@ export default function Overview() {
                     fontWeight: 700,
                     padding: '0.18rem 0.5rem',
                     borderRadius: 4,
-                    background: v.status === 'confirmed' ? THEME.emeraldSoft : THEME.goldSoft,
-                    color: v.status === 'confirmed' ? THEME.emerald : THEME.gold,
-                    border: `1px solid ${v.status === 'confirmed' ? THEME.emeraldBorder : THEME.goldBorder}`,
+                    background: v.status === 'confirmed' ? V1.greenSoft : V1.blueSoft,
+                    color: v.status === 'confirmed' ? V1.green : V1.blue,
+                    border: `1px solid ${v.status === 'confirmed' ? '#BDE8CE' : '#B8DCF2'}`,
                     textTransform: 'capitalize',
                   }}
                 >
@@ -889,7 +867,7 @@ export default function Overview() {
             ))}
 
             {visits.length === 0 && (
-              <div style={{ padding: '1.5rem', textAlign: 'center', color: THEME.slateMuted, fontSize: '0.82rem' }}>
+              <div style={{ padding: '1.5rem', textAlign: 'center', color: V1.slate, fontSize: '0.82rem' }}>
                 No pending VIP visits scheduled today.
               </div>
             )}
@@ -899,11 +877,11 @@ export default function Overview() {
         {/* Master Project Occupancy Health */}
         <div
           style={{
-            background: THEME.surface,
-            border: `1px solid ${THEME.border}`,
+            background: V1.surface,
+            border: `1px solid ${V1.border}`,
             borderRadius: 10,
             padding: '1.25rem 1.4rem',
-            boxShadow: '0 1px 3px rgba(11,37,69,0.03)',
+            boxShadow: '0 1px 3px rgba(30,41,59,0.04)',
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
@@ -912,17 +890,17 @@ export default function Overview() {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.9rem' }}>
               <div>
-                <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: THEME.ink }}>
+                <h3 style={{ margin: 0, fontSize: '0.96rem', fontWeight: 800, color: V1.ink }}>
                   Active Tower Developments ({projects.slice(0, 3).length})
                 </h3>
-                <p style={{ margin: '0.15rem 0 0', fontSize: '0.76rem', color: THEME.slate }}>
+                <p style={{ margin: '0.15rem 0 0', fontSize: '0.76rem', color: V1.slate }}>
                   Masterplan inventory progression &amp; unit reservation status
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => navigate('/projects')}
-                style={{ background: 'none', border: 'none', color: THEME.cobalt, fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
+                style={{ background: 'none', border: 'none', color: V1.blue, fontSize: '0.78rem', fontWeight: 700, cursor: 'pointer' }}
               >
                 Tower Catalog →
               </button>
@@ -940,30 +918,30 @@ export default function Overview() {
                     style={{
                       padding: '0.7rem 0.85rem',
                       borderRadius: 7,
-                      border: `1px solid ${THEME.borderSubtle}`,
-                      background: THEME.slateSoft,
+                      border: `1px solid ${V1.slateSoft}`,
+                      background: V1.canvas,
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 5 }}>
                       <div>
-                        <span style={{ fontSize: '0.84rem', fontWeight: 700, color: THEME.ink }}>
+                        <span style={{ fontSize: '0.84rem', fontWeight: 700, color: V1.ink }}>
                           {p.name}
                         </span>
-                        <span style={{ fontSize: '0.7rem', color: THEME.slateMuted, marginLeft: 6 }}>
+                        <span style={{ fontSize: '0.7rem', color: V1.slate, marginLeft: 6 }}>
                           ({p.location || 'Kabul'})
                         </span>
                       </div>
-                      <span style={{ fontSize: '0.74rem', fontWeight: 700, color: THEME.cobalt, fontVariantNumeric: 'tabular-nums' }}>
+                      <span style={{ fontSize: '0.74rem', fontWeight: 700, color: V1.blue, fontVariantNumeric: 'tabular-nums' }}>
                         {pct}% Contracted
                       </span>
                     </div>
 
-                    <div style={{ width: '100%', height: 6, background: '#E2E8F0', borderRadius: 999, overflow: 'hidden' }}>
+                    <div style={{ width: '100%', height: 6, background: V1.border, borderRadius: 999, overflow: 'hidden' }}>
                       <div
                         style={{
                           width: `${pct}%`,
                           height: '100%',
-                          background: pct > 80 ? THEME.emerald : THEME.cobalt,
+                          background: pct > 80 ? V1.green : V1.blue,
                           borderRadius: 999,
                         }}
                       />
@@ -973,7 +951,7 @@ export default function Overview() {
               })}
 
               {projects.length === 0 && (
-                <div style={{ padding: '1.5rem', textAlign: 'center', color: THEME.slateMuted, fontSize: '0.82rem' }}>
+                <div style={{ padding: '1.5rem', textAlign: 'center', color: V1.slate, fontSize: '0.82rem' }}>
                   No active master projects recorded.
                 </div>
               )}
@@ -984,19 +962,19 @@ export default function Overview() {
             style={{
               marginTop: '1.1rem',
               paddingTop: '0.85rem',
-              borderTop: `1px solid ${THEME.borderSubtle}`,
+              borderTop: `1px solid ${V1.slateSoft}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               fontSize: '0.76rem',
-              color: THEME.slate,
+              color: V1.slate,
             }}
           >
             <span>Media Desk: <strong>{pendingSubmissions} Submissions</strong> Pending</span>
             <button
               type="button"
               onClick={() => navigate('/tasks')}
-              style={{ background: 'none', border: 'none', color: THEME.cobalt, fontWeight: 700, cursor: 'pointer', padding: 0 }}
+              style={{ background: 'none', border: 'none', color: V1.blue, fontWeight: 700, cursor: 'pointer', padding: 0 }}
             >
               Review Desk →
             </button>

@@ -73,18 +73,18 @@
 }
 
 @theme {
-  /* ── Core brand ── */
-  --color-brand-gold:        #0145F2;
-  --color-brand-gold-dark:   #0136C5;
-  --color-brand-gold-lt:     #D4E1FD;
-  --color-brand-navy:        #020E3A;
-  --color-brand-navy-light:  #0A1F5C;
-  --color-brand-navy-deep:   #010826;
-  --color-brand-ivory:       #EDF1F5;
-  --color-brand-cream:       #F5F7FB;
+  /* ── Core brand (UI Variant 1 — Logo Tri-Color) ── */
+  --color-brand-gold:        #0072BC;
+  --color-brand-gold-dark:   #005E9B;
+  --color-brand-gold-lt:     #E6F2FA;
+  --color-brand-navy:        #1E293B;
+  --color-brand-navy-light:  #334155;
+  --color-brand-navy-deep:   #0F172A;
+  --color-brand-ivory:       #F1F5F9;
+  --color-brand-cream:       #F8FAFC;
 
   /* ── Status ── */
-  --color-status-available: #22C55E;
+  --color-status-available: #14A850;
   --color-status-pending:   #F59E0B;
   --color-status-sold:      #EF4444;
   --color-status-rented:    #3B82F6;
@@ -92,7 +92,7 @@
   /* ── Neutrals ── */
   --color-neutral-50:  #FAFAFA;
   --color-neutral-100: #F4F4F5;
-  --color-neutral-200: #E4E4E7;
+  --color-neutral-200: #E2E8F0;
   --color-neutral-300: #D4D4D8;
   --color-neutral-400: #A1A1AA;
   --color-neutral-500: #71717A;
@@ -116,15 +116,15 @@
   --foreground: var(--color-neutral-900);
 
   /* Blue glow helpers */
-  --gold-glow-sm: 0 4px 14px rgba(1,69,242,0.30);
-  --gold-glow-md: 0 8px 28px rgba(1,69,242,0.35);
-  --gold-glow-lg: 0 16px 48px rgba(1,69,242,0.30);
+  --gold-glow-sm: 0 4px 14px rgba(0,114,188,0.28);
+  --gold-glow-md: 0 8px 28px rgba(0,114,188,0.32);
+  --gold-glow-lg: 0 16px 48px rgba(0,114,188,0.28);
 
   /* Elevation system */
-  --shadow-sm:  0 1px 3px rgba(2,14,58,0.08), 0 1px 2px rgba(2,14,58,0.04);
-  --shadow-md:  0 4px 16px rgba(2,14,58,0.10), 0 2px 6px rgba(2,14,58,0.06);
-  --shadow-lg:  0 12px 40px rgba(2,14,58,0.14), 0 4px 12px rgba(2,14,58,0.08);
-  --shadow-xl:  0 24px 64px rgba(2,14,58,0.18), 0 8px 20px rgba(2,14,58,0.10);
+  --shadow-sm:  0 1px 3px rgba(30,41,59,0.08), 0 1px 2px rgba(30,41,59,0.04);
+  --shadow-md:  0 4px 16px rgba(30,41,59,0.10), 0 2px 6px rgba(30,41,59,0.06);
+  --shadow-lg:  0 12px 40px rgba(30,41,59,0.14), 0 4px 12px rgba(30,41,59,0.08);
+  --shadow-xl:  0 24px 64px rgba(30,41,59,0.18), 0 8px 20px rgba(30,41,59,0.10);
 
   /* Easing curves */
   --ease-out-expo:    cubic-bezier(0.16, 1, 0.3, 1);
@@ -139,9 +139,9 @@
   --dur-enter: 600ms;
 
   /* Swiper brand integration */
-  --swiper-theme-color: #0145F2;
-  --swiper-pagination-color: #0145F2;
-  --swiper-pagination-bullet-inactive-color: #020E3A;
+  --swiper-theme-color: #0072BC;
+  --swiper-pagination-color: #0072BC;
+  --swiper-pagination-bullet-inactive-color: #1E293B;
   --swiper-pagination-bullet-inactive-opacity: 0.25;
   --swiper-navigation-size: 18px;
 }

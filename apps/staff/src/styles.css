@@ -24,28 +24,9 @@
 }
 :root {
   font-family: StaffSans, system-ui, sans-serif;
-  color: #0A192F;
-  background: #F8F9FB;
+  color: var(--navy, #1E293B);
+  background: var(--background, #F8FAFC);
   font-synthesis: none;
-  --navy: #0B2545;
-  --gold: #C5A059;
-  --gold-light: #FAF5EC;
-  --brand-blue: #0072BC;
-  --brand-blue-hover: #005E9B;
-  --brand-blue-lt: #EBF4FC;
-  --brand-green: #0D6042;
-  --brand-green-lt: #EBF7EE;
-  --brand-gray: #64748B;
-  --muted: #818285;
-  --line: rgba(15, 23, 42, 0.08);
-  --line-highlight: rgba(255, 255, 255, 0.85);
-  --card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.06);
-  --card-shadow-hover: 0 6px 18px -2px rgba(15, 23, 42, 0.08), 0 0 0 1px rgba(15, 23, 42, 0.09);
-  --red: #991B1B;
-  --radius: 10px;
-  --rail: 64px;
-  --drawer: 236px;
-  --sidebar: 288px;
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
   -webkit-font-smoothing: antialiased;
@@ -56,8 +37,8 @@
 }
 body {
   margin: 0;
-  background: #F8F9FB;
-  color: #0A192F;
+  background: var(--background, #F8FAFC);
+  color: var(--navy, #1E293B);
   padding-top: env(safe-area-inset-top, 0px);
   padding-bottom: env(safe-area-inset-bottom, 0px);
   padding-left: env(safe-area-inset-left, 0px);

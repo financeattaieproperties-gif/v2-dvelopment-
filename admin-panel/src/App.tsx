@@ -22,6 +22,7 @@ import CareerForm from './pages/CareerForm';
 import CareerApplications from './pages/CareerApplications';
 import ChatInbox from './pages/ChatInbox';
 import PublishingTasks from './pages/PublishingTasks';
+import VaultPage from './pages/VaultPage';
 
 const FullscreenCalendar = lazy(() => import('./components/ui/FullscreenCalendar').then(m => ({ default: m.default })));
 
@@ -59,6 +60,7 @@ function ProtectedRoutes() {
         <Route path="/tasks" element={<PublishingTasks />} />
         <Route path="/leads" element={<Leads />} />
         <Route path="/chat" element={<ChatInbox />} />
+        <Route path="/vault" element={<VaultPage />} />
         <Route path="/visits" element={<Visits />} />
         <Route path="/agents" element={<Agents />} />
         <Route path="/agents/new" element={<AgentForm />} />

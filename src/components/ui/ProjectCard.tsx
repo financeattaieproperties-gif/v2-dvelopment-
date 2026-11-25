@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { MapPin, Calendar, Home, ArrowRight, Building2 } from 'lucide-react';
 import { Badge } from './Badge';
+
+const MotionLink = motion.create(Link);
 
 export interface ProjectCardProps {
   id: string;
@@ -26,6 +30,7 @@ export const ProjectCard = ({
   description,
   image,
 }: ProjectCardProps) => {
+  const { t } = useTranslation();
   const [isHovered, setIsHovered] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
 
@@ -39,8 +44,8 @@ export const ProjectCard = ({
       : null;
 
   return (
-    <motion.a
-      href={`/projects/${id}`}
+    <MotionLink
+      to={`/projects/${id}`}
       layout
       whileHover={{ y: -6 }}
       transition={{ type: 'spring', stiffness: 300, damping: 22 }}
@@ -85,22 +90,22 @@ export const ProjectCard = ({
         <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/85 via-brand-navy/25 to-transparent" />
 
         {/* Status badge */}
-        <div className="absolute top-3 left-3 z-10">
+        <div className="absolute top-3 start-3 z-10">
           <Badge
             status={statusColor as 'available' | 'pending' | 'sold' | 'rented'}
             className="bg-white/95 backdrop-blur-sm shadow-md"
           >
-            {displayStatus}
+            {t(`projectCard.status.${displayStatus}`, displayStatus)}
           </Badge>
         </div>
 
         {/* Units available overlay */}
         {availableUnits !== undefined && (
-          <div className="absolute bottom-3 left-3 right-3 z-10 flex items-center justify-between gap-2">
+          <div className="absolute bottom-3 start-3 end-3 z-10 flex items-center justify-between gap-2">
             <span className="inline-flex items-center gap-1.5 bg-brand-gold text-white text-xs font-bold px-3 py-1.5 rounded-xl shadow-md backdrop-blur-xs tabular-nums border border-white/20">
               <Home size={14} strokeWidth={2.2} />
               {availableUnits}
-              {totalUnits ? ` / ${totalUnits}` : ''} Units Available
+              {totalUnits ? ` / ${totalUnits}` : ''} {t('projectCard.unitsAvailable')}
             </span>
           </div>
         )}
@@ -110,13 +115,13 @@ export const ProjectCard = ({
       <div className="p-5 flex-1 flex flex-col justify-between">
         <div>
           <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-brand-gold mb-1">
-            Signature Development
+            {t('projectCard.eyebrow')}
           </p>
           <h3 className="font-heading text-xl font-bold text-brand-navy mb-1.5 group-hover:text-brand-gold transition-colors duration-200 line-clamp-1">
             {name}
           </h3>
           <div className="flex items-center text-neutral-600 mb-3 text-sm font-medium">
-            <MapPin size={15} strokeWidth={2.2} className="mr-1.5 text-brand-gold shrink-0" />
+            <MapPin size={15} strokeWidth={2.2} className="me-1.5 text-brand-gold shrink-0" />
             <span className="line-clamp-1">{location}</span>
           </div>
 
@@ -129,8 +134,8 @@ export const ProjectCard = ({
           {availabilityPct !== null && (
             <div className="mb-4">
               <div className="flex items-center justify-between text-[11px] text-neutral-500 mb-1 tabular-nums">
-                <span>Inventory Availability</span>
-                <span className="font-bold text-brand-navy">{availabilityPct}% Open</span>
+                <span>{t('projectCard.inventoryAvailability')}</span>
+                <span className="font-bold text-brand-navy">{t('projectCard.openPct', { pct: availabilityPct })}</span>
               </div>
               <div className="h-1.5 w-full rounded-full bg-neutral-100 overflow-hidden">
                 <motion.div
@@ -149,8 +154,8 @@ export const ProjectCard = ({
           <div className="flex items-center gap-2 text-neutral-700 text-xs tabular-nums">
             <Calendar size={15} strokeWidth={2.2} className="text-brand-gold shrink-0" />
             <span>
-              Delivery:{' '}
-              <span className="font-bold text-brand-navy">{deliveryDate || 'Scheduled'}</span>
+              {t('projectCard.delivery')}{' '}
+              <span className="font-bold text-brand-navy">{deliveryDate || t('projectCard.scheduled')}</span>
             </span>
           </div>
           <motion.div
@@ -158,11 +163,11 @@ export const ProjectCard = ({
             transition={{ type: 'spring', stiffness: 400, damping: 17 }}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-gold/12 text-brand-gold border border-brand-gold/25 group-hover:bg-brand-gold group-hover:text-white group-hover:border-brand-gold text-xs font-bold transition-all duration-300 shrink-0 shadow-2xs"
           >
-            <span>Explore</span>
-            <ArrowRight size={14} strokeWidth={2.4} />
+            <span>{t('projectCard.explore')}</span>
+            <ArrowRight size={14} strokeWidth={2.4} className="rtl:rotate-180" />
           </motion.div>
         </div>
       </div>
-    </motion.a>
+    </MotionLink>
   );
 };

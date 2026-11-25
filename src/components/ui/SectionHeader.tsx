@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 
@@ -53,15 +54,15 @@ export const SectionHeader = ({ eyebrow, title, subtitle, cta, light }: SectionH
     {cta && (
       <motion.div variants={{ hidden: { opacity: 0, x: 12 }, visible: { opacity: 1, x: 0, transition: { duration: 0.4 } } }}
         className="shrink-0">
-        <a
-          href={cta.href}
+        <Link
+          to={cta.href}
           className={`inline-flex items-center gap-2 font-semibold text-sm group transition-colors duration-200 ${
             light ? 'text-white hover:text-brand-gold' : 'text-brand-navy hover:text-brand-gold'
           }`}
         >
           {cta.label}
-          <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1.5" />
-        </a>
+          <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1.5 rtl:rotate-180" />
+        </Link>
       </motion.div>
     )}
   </motion.div>

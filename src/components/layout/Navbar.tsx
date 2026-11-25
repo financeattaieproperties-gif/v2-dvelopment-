@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'motion/react';
 import { toggleLanguage } from '../../i18n/index';
 import { Button, cn } from '../ui/Button';
@@ -156,6 +156,7 @@ export const KabulHeaderWidgets: React.FC<{ className?: string }> = ({ className
 const Navbar = () => {
   const { t } = useTranslation('common');
   const { pathname } = useLocation();
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [aboutHoverOpen, setAboutHoverOpen] = useState(false);
   const [aboutPinnedOpen, setAboutPinnedOpen] = useState(false);
@@ -232,14 +233,14 @@ const Navbar = () => {
       <div className="container-custom flex justify-between items-center gap-3">
         {/* Logo + Date, Time & Weather right beside the logo */}
         <div className="flex items-center gap-3.5 shrink-0">
-          <a href="/" className="group flex items-center shrink-0">
+          <Link to="/" className="group flex items-center shrink-0">
             <img
               src="/logo.png"
               alt="Attaie Properties"
               className="h-14 xl:h-16 w-auto object-contain transition-opacity duration-200 group-hover:opacity-85"
               decoding="async"
             />
-          </a>
+          </Link>
           <KabulHeaderWidgets className="hidden md:flex ps-3.5 border-s border-white/15" />
         </div>
 
@@ -257,8 +258,8 @@ const Navbar = () => {
                   onMouseLeave={() => setAboutHoverOpen(false)}
                 >
                   <div className="inline-flex items-center">
-                    <a
-                      href={link.href}
+                    <Link
+                      to={link.href}
                       className={cn(
                         'relative inline-flex items-center gap-1 font-medium text-sm tracking-wide transition-colors duration-200 py-1 px-2.5 xl:px-3 rounded-full whitespace-nowrap',
                         active
@@ -274,10 +275,10 @@ const Navbar = () => {
                           transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                         />
                       )}
-                    </a>
+                    </Link>
                     <button
                       type="button"
-                      aria-label="Toggle About submenu"
+                      aria-label={t('nav.toggleAboutSubmenu')}
                       aria-expanded={aboutMenuOpen}
                       data-testid="nav-about-dropdown-btn"
                       onClick={() => {
@@ -313,9 +314,9 @@ const Navbar = () => {
                         {link.subLinks.map((sub) => {
                           const SubIcon = sub.icon;
                           return (
-                            <a
+                            <Link
                               key={sub.href}
-                              href={sub.href}
+                              to={sub.href}
                               onClick={() => {
                                 setAboutPinnedOpen(false);
                                 setAboutHoverOpen(false);
@@ -324,7 +325,7 @@ const Navbar = () => {
                             >
                               <SubIcon size={15} className="text-brand-gold shrink-0" />
                               <span>{sub.name}</span>
-                            </a>
+                            </Link>
                           );
                         })}
                       </motion.div>
@@ -335,9 +336,9 @@ const Navbar = () => {
             }
 
             return (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
                 className={cn(
                   'relative font-medium text-sm tracking-wide transition-colors duration-200 py-1 px-2.5 xl:px-3 rounded-full whitespace-nowrap',
                   active
@@ -353,7 +354,7 @@ const Navbar = () => {
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
-              </a>
+              </Link>
             );
           })}
         </div>
@@ -362,13 +363,13 @@ const Navbar = () => {
         <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0">
           <div className="hidden xl:flex items-center gap-2 text-white whitespace-nowrap">
             <Phone size={16} strokeWidth={2.2} className="text-brand-gold" />
-            <span className="font-bold text-sm tabular-nums">+93 782 222 279</span>
+            <span className="font-bold text-sm tabular-nums" dir="ltr">+93 782 222 279</span>
           </div>
           <div className="hidden xl:block h-4 w-[1px] bg-white/20" />
           <button
             onClick={toggleLanguage}
             className="flex items-center gap-1.5 p-2 text-sm font-medium text-white/70 transition-colors hover:text-brand-gold whitespace-nowrap"
-            aria-label="Switch language"
+            aria-label={t('nav.switchLanguage')}
           >
             <Globe size={17} strokeWidth={2.2} />
             {t('nav.langToggle')}
@@ -376,7 +377,7 @@ const Navbar = () => {
           <Button
             variant="primary"
             className={cn(showPulse && 'pulse-gold', 'whitespace-nowrap')}
-            onClick={() => (window.location.href = '/about?tab=contact')}
+            onClick={() => navigate('/about?tab=contact')}
           >
             {t('nav.enquire')}
           </Button>
@@ -386,7 +387,7 @@ const Navbar = () => {
         <button
           className="lg:hidden p-2 text-white"
           onClick={() => setIsOpen(!isOpen)}
-          aria-label={isOpen ? 'Close menu' : 'Open menu'}
+          aria-label={isOpen ? t('nav.closeMenu') : t('nav.openMenu')}
         >
           {isOpen ? <X size={26} /> : <Menu size={26} />}
         </button>
@@ -410,16 +411,16 @@ const Navbar = () => {
                 link.subLinks ? (
                   <div key={link.name} className="border-b border-white/8">
                     <div className="flex items-center justify-between py-3.5">
-                      <a
-                        href={link.href}
+                      <Link
+                        to={link.href}
                         className="text-lg font-semibold text-white hover:text-brand-gold transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
                         {link.name}
-                      </a>
+                      </Link>
                       <button
                         type="button"
-                        aria-label="Toggle About submenu"
+                        aria-label={t('nav.toggleAboutSubmenu')}
                         aria-expanded={mobileAboutExpanded}
                         onClick={() => setMobileAboutExpanded((v) => !v)}
                         className="p-1.5 text-white/75 hover:text-brand-gold"
@@ -433,30 +434,34 @@ const Navbar = () => {
                     {mobileAboutExpanded && (
                       <div className="pb-3 ps-4 flex flex-col gap-1.5">
                         {link.subLinks.map((sub) => (
-                          <a
+                          <Link
                             key={sub.href}
-                            href={sub.href}
+                            to={sub.href}
                             className="py-1.5 text-sm font-medium text-white/80 hover:text-brand-gold transition-colors"
                             onClick={() => setIsOpen(false)}
                           >
                             {sub.name}
-                          </a>
+                          </Link>
                         ))}
                       </div>
                     )}
                   </div>
                 ) : (
-                  <motion.a
+                  <motion.div
                     key={link.name}
-                    href={link.href}
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: i * 0.05, duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                    className="text-lg font-semibold text-white border-b border-white/8 py-3.5 hover:text-brand-gold transition-colors"
-                    onClick={() => setIsOpen(false)}
+                    className="border-b border-white/8"
                   >
-                    {link.name}
-                  </motion.a>
+                    <Link
+                      to={link.href}
+                      className="block text-lg font-semibold text-white py-3.5 hover:text-brand-gold transition-colors"
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {link.name}
+                    </Link>
+                  </motion.div>
                 ),
               )}
               <motion.div
@@ -467,12 +472,12 @@ const Navbar = () => {
               >
                 <div className="flex items-center gap-3 text-white">
                   <Phone size={18} className="text-brand-gold" />
-                  <span className="font-bold">+93 782 222 279</span>
+                  <span className="font-bold" dir="ltr">+93 782 222 279</span>
                 </div>
                 <Button
                   className="w-full"
                   onClick={() => {
-                    window.location.href = '/about?tab=contact';
+                    navigate('/about?tab=contact');
                     setIsOpen(false);
                   }}
                 >

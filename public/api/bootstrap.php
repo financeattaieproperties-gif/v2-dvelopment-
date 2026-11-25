@@ -231,10 +231,11 @@ function attaie_ensure_schema(): void {
           price        DECIMAL(12,2) DEFAULT NULL,
           currency     CHAR(3) NOT NULL DEFAULT 'USD',
           status       ENUM('available','reserved','sold','rented') NOT NULL DEFAULT 'available',
-          image_url    VARCHAR(500) DEFAULT NULL,
-          gallery_images TEXT DEFAULT NULL,
-          video_url    VARCHAR(1000) DEFAULT NULL,
-          description  TEXT DEFAULT NULL,
+          image_url          VARCHAR(500) DEFAULT NULL,
+          gallery_images     TEXT DEFAULT NULL,
+          video_url          VARCHAR(1000) DEFAULT NULL,
+          technical_plan_url VARCHAR(512) DEFAULT NULL,
+          description        TEXT DEFAULT NULL,
           created_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
           updated_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
           UNIQUE KEY uq_project_unit (project_id, unit_number),
@@ -365,6 +366,33 @@ function attaie_ensure_schema(): void {
           INDEX idx_career_apps_job_created (job_id, created_at),
           INDEX idx_career_apps_ip_created (ip_address, created_at)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+
+        "CREATE TABLE IF NOT EXISTS digital_vault_folders (
+          id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          name VARCHAR(255) NOT NULL,
+          parent_id INT UNSIGNED DEFAULT NULL,
+          created_by_name VARCHAR(150) NOT NULL DEFAULT 'System',
+          created_by_uid VARCHAR(128) DEFAULT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+          INDEX idx_vault_parent (parent_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
+
+        "CREATE TABLE IF NOT EXISTS digital_vault_files (
+          id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+          folder_id INT UNSIGNED DEFAULT NULL,
+          original_name VARCHAR(255) NOT NULL,
+          stored_filename VARCHAR(255) NOT NULL,
+          file_url VARCHAR(500) NOT NULL,
+          file_size BIGINT UNSIGNED NOT NULL DEFAULT 0,
+          mime_type VARCHAR(120) NOT NULL DEFAULT 'application/octet-stream',
+          uploader_name VARCHAR(150) NOT NULL DEFAULT 'Anonymous',
+          uploader_uid VARCHAR(128) DEFAULT NULL,
+          uploader_role VARCHAR(60) DEFAULT NULL,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          INDEX idx_vault_folder (folder_id),
+          INDEX idx_vault_created (created_at)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4",
     ];
 
     foreach ($tableStatements as $sql) {
@@ -390,6 +418,7 @@ function attaie_ensure_schema(): void {
         "ALTER TABLE visit_requests ADD COLUMN ip_address VARCHAR(45) DEFAULT NULL AFTER phone",
         "ALTER TABLE project_units ADD COLUMN gallery_images TEXT DEFAULT NULL",
         "ALTER TABLE project_units ADD COLUMN video_url VARCHAR(1000) DEFAULT NULL",
+        "ALTER TABLE project_units ADD COLUMN technical_plan_url VARCHAR(512) DEFAULT NULL",
         "ALTER TABLE leads ADD COLUMN client_request_id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL",
         "ALTER TABLE leads ADD COLUMN payload_hash CHAR(64) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL",
         "ALTER TABLE leads ADD COLUMN receipt_reference VARCHAR(36) CHARACTER SET ascii COLLATE ascii_bin DEFAULT NULL",

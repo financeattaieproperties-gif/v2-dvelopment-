@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'motion/react';
 import { MotionCarousel } from './MotionCarousel';
 import {
@@ -12,6 +14,8 @@ import {
   Images,
 } from 'lucide-react';
 import { Badge } from './Badge';
+
+const MotionLink = motion.create(Link);
 
 export interface PropertyCardProps {
   id: string;
@@ -48,13 +52,16 @@ export const PropertyCard = ({
   listingType,
   tag,
 }: PropertyCardProps) => {
+  const { t } = useTranslation();
   const [saved, setSaved] = useState(false);
   const [heartAnim, setHeartAnim] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
 
   const priceDisplay =
-    listingType === 'rent' ? `$${price.toLocaleString()}/mo` : `$${price.toLocaleString()}`;
+    listingType === 'rent'
+      ? `$${price.toLocaleString()}${t('propertyCard.perMonth')}`
+      : `$${price.toLocaleString()}`;
 
   // Consolidate primary image + galleryImages into a unique array for the Swiper photo slider
   const photoList = React.useMemo(() => {
@@ -69,8 +76,8 @@ export const PropertyCard = ({
 
   return (
     <>
-      <motion.a
-        href={`/properties/${id}`}
+      <MotionLink
+        to={`/properties/${id}`}
         layout
         className="group flex flex-col h-full bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden transition-colors duration-300 border border-brand-navy/8 hover:border-brand-gold/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2"
         whileHover={{ y: -6 }}
@@ -158,7 +165,7 @@ export const PropertyCard = ({
 
           {/* Tag override / For Sale / For Rent badge */}
           {(tag || listingType) && (
-            <div className="absolute top-3 left-3 z-20">
+            <div className="absolute top-3 start-3 z-20">
               <span
                 className={`text-xs font-bold px-3 py-1.5 rounded-xl shadow-md whitespace-nowrap ${
                   tag
@@ -168,20 +175,22 @@ export const PropertyCard = ({
                     : 'bg-brand-gold text-white'
                 }`}
               >
-                {tag ?? (listingType === 'rent' ? 'For Rent' : 'For Sale')}
+                {tag ?? (listingType === 'rent' ? t('propertyCard.forRent') : t('propertyCard.forSale'))}
               </span>
             </div>
           )}
 
           {/* Status badge */}
-          <div className="absolute top-3 right-12 z-20">
-            <Badge status={status} className="bg-white/90 backdrop-blur-sm shadow-md" />
+          <div className="absolute top-3 end-12 z-20">
+            <Badge status={status} className="bg-white/90 backdrop-blur-sm shadow-md">
+              {t(`propertyCard.status.${status}`, status)}
+            </Badge>
           </div>
 
           {/* Save button */}
           <motion.button
             type="button"
-            aria-label={saved ? 'Remove from saved' : 'Save property'}
+            aria-label={saved ? t('propertyCard.removeSaved') : t('propertyCard.save')}
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
@@ -191,7 +200,7 @@ export const PropertyCard = ({
             }}
             animate={heartAnim ? { scale: [1, 1.4, 1] } : { scale: 1 }}
             transition={{ duration: 0.35, ease: [0.34, 1.56, 0.64, 1] }}
-            className="absolute top-3 right-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-md border border-black/5 flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
+            className="absolute top-3 end-3 z-20 w-9 h-9 rounded-full bg-white/95 backdrop-blur-md border border-black/5 flex items-center justify-center shadow-md hover:scale-110 transition-transform cursor-pointer"
           >
             <Heart
               size={16}
@@ -201,7 +210,7 @@ export const PropertyCard = ({
           </motion.button>
 
           {/* Price overlay at bottom of image */}
-          <div className="absolute bottom-3 left-3 z-20 pointer-events-none">
+          <div className="absolute bottom-3 start-3 z-20 pointer-events-none">
             <span className="text-white font-bold text-xl drop-shadow-lg tabular-nums">
               {priceDisplay}
             </span>
@@ -212,10 +221,12 @@ export const PropertyCard = ({
         <div className="p-5 flex-1 flex flex-col justify-between">
           <div>
             <div className="flex items-center justify-between gap-2 mb-1.5 text-xs text-neutral-500">
-              <span className="font-semibold text-brand-navy">{type}</span>
+              <span className="font-semibold text-brand-navy">
+                {t(`propertyTypes.${type}`, type)}
+              </span>
               {serialNumber && (
                 <span className="font-mono text-xs font-semibold tracking-wide text-brand-gold tabular-nums">
-                  Ref. {serialNumber}
+                  {t('propertyCard.ref')} {serialNumber}
                 </span>
               )}
             </div>
@@ -223,7 +234,7 @@ export const PropertyCard = ({
               {title}
             </h3>
             <div className="flex items-center text-neutral-600 mb-4 text-sm font-medium">
-              <MapPin size={15} strokeWidth={2.2} className="mr-1.5 text-brand-gold shrink-0" />
+              <MapPin size={15} strokeWidth={2.2} className="me-1.5 text-brand-gold shrink-0" />
               <span className="line-clamp-1">{location}</span>
             </div>
           </div>
@@ -235,45 +246,45 @@ export const PropertyCard = ({
               className="grid grid-cols-2 sm:flex sm:items-center sm:flex-wrap gap-2.5 pt-4 border-t border-neutral-100 text-neutral-700 text-xs tabular-nums"
             >
               {beds !== undefined && (
-                <div className="flex items-center gap-2" title={`${beds} Bedrooms`}>
+                <div className="flex items-center gap-2" title={`${beds} ${t('propertyCard.beds')}`}>
                   <span className="w-8 h-8 rounded-xl bg-brand-gold/12 border border-brand-gold/25 text-brand-gold flex items-center justify-center shrink-0 shadow-2xs">
                     <Bed size={16} strokeWidth={2.2} aria-hidden="true" />
                   </span>
                   <div className="leading-tight">
                     <span className="font-bold text-brand-navy">{beds}</span>{' '}
-                    <span className="text-neutral-500 font-medium">Beds</span>
+                    <span className="text-neutral-500 font-medium">{t('propertyCard.beds')}</span>
                   </div>
                 </div>
               )}
               {baths !== undefined && (
-                <div className="flex items-center gap-2" title={`${baths} Bathrooms`}>
+                <div className="flex items-center gap-2" title={`${baths} ${t('propertyCard.baths')}`}>
                   <span className="w-8 h-8 rounded-xl bg-brand-gold/12 border border-brand-gold/25 text-brand-gold flex items-center justify-center shrink-0 shadow-2xs">
                     <Bath size={16} strokeWidth={2.2} aria-hidden="true" />
                   </span>
                   <div className="leading-tight">
                     <span className="font-bold text-brand-navy">{baths}</span>{' '}
-                    <span className="text-neutral-500 font-medium">Baths</span>
+                    <span className="text-neutral-500 font-medium">{t('propertyCard.baths')}</span>
                   </div>
                 </div>
               )}
               {area !== undefined && (
-                <div className="flex items-center gap-2" title={`Area: ${area} m²`}>
+                <div className="flex items-center gap-2" title={`${area} ${t('propertyCard.sqm')}`}>
                   <span className="w-8 h-8 rounded-xl bg-brand-gold/12 border border-brand-gold/25 text-brand-gold flex items-center justify-center shrink-0 shadow-2xs">
                     <Maximize2 size={15} strokeWidth={2.2} aria-hidden="true" />
                   </span>
                   <div className="leading-tight">
                     <span className="font-bold text-brand-navy">{area}</span>{' '}
-                    <span className="text-neutral-500 font-medium">m²</span>
+                    <span className="text-neutral-500 font-medium">{t('propertyCard.sqm')}</span>
                   </div>
                 </div>
               )}
               {floor !== undefined && (
-                <div className="flex items-center gap-2" title={`Floor ${floor}`}>
+                <div className="flex items-center gap-2" title={`${t('propertyCard.floor')} ${floor}`}>
                   <span className="w-8 h-8 rounded-xl bg-brand-gold/12 border border-brand-gold/25 text-brand-gold flex items-center justify-center shrink-0 shadow-2xs">
                     <Layers size={15} strokeWidth={2.2} aria-hidden="true" />
                   </span>
                   <div className="leading-tight">
-                    <span className="text-neutral-500 font-medium">Fl.</span>{' '}
+                    <span className="text-neutral-500 font-medium">{t('propertyCard.floor')}</span>{' '}
                     <span className="font-bold text-brand-navy">{floor}</span>
                   </div>
                 </div>
@@ -283,12 +294,12 @@ export const PropertyCard = ({
             {/* View Details action bar */}
             <div className="pt-3 border-t border-neutral-100 flex items-center justify-between gap-2">
               <span className="text-xs font-semibold text-neutral-500 group-hover:text-brand-gold transition-colors whitespace-nowrap">
-                View Details →
+                {t('propertyCard.viewDetails')} <span className="inline-block rtl:rotate-180">→</span>
               </span>
             </div>
           </div>
         </div>
-      </motion.a>
+      </MotionLink>
     </>
   );
 };

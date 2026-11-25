@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CheckCircle2, ArrowRight, Building2 } from 'lucide-react';
 import defaultExteriorImg from '../../assets/images/project_exterior_elevation_1793995966183.jpg';
@@ -186,14 +187,14 @@ export const PromoBanner = ({
               </ul>
             )}
 
-            <a
-              href={ctaHref}
+            <Link
+              to={ctaHref}
               className="inline-flex items-center gap-2 self-start px-6 py-3.5 rounded-xl font-bold text-sm text-white transition-transform duration-200 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold focus-visible:ring-offset-2"
               style={{ background: 'var(--color-brand-gold)', boxShadow: 'var(--gold-glow-md)' }}
             >
               {ctaLabel}
-              <ArrowRight size={17} strokeWidth={2.4} />
-            </a>
+              <ArrowRight size={17} strokeWidth={2.4} className="rtl:rotate-180" />
+            </Link>
           </motion.div>
 
           {/* Visual Exterior Showcase Half of the Card */}

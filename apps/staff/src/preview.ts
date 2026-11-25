@@ -738,6 +738,9 @@ export function previewClient(management: boolean, initialRoleOverride?: Role) {
     async login(_username: string, _password: string): Promise<Session> {
       throw new Error("Preview does not accept credentials. Use the preview role selector.");
     },
+    async loginWithFirebaseToken(_idToken: string): Promise<Session> {
+      throw new Error("Preview does not accept credentials. Use the preview role selector.");
+    },
     async loginWithGoogle(): Promise<Session> {
       throw new Error("Preview does not accept credentials. Use the preview role selector.");
     },

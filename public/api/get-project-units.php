@@ -95,14 +95,18 @@ $total = (int) ($totalRow['total'] ?? 0);
 // Check if columns exist
 $hasGalleryCol = false;
 $hasVideoCol = false;
+$hasTechPlanCol = false;
 $checkCols = db()->query("SHOW COLUMNS FROM project_units LIKE 'gallery_images'");
 if ($checkCols && $checkCols->num_rows > 0) $hasGalleryCol = true;
 $checkCols2 = db()->query("SHOW COLUMNS FROM project_units LIKE 'video_url'");
 if ($checkCols2 && $checkCols2->num_rows > 0) $hasVideoCol = true;
+$checkCols3 = db()->query("SHOW COLUMNS FROM project_units LIKE 'technical_plan_url'");
+if ($checkCols3 && $checkCols3->num_rows > 0) $hasTechPlanCol = true;
 
 $extraCols = '';
-if ($hasGalleryCol) $extraCols .= ', u.gallery_images';
-if ($hasVideoCol)   $extraCols .= ', u.video_url';
+if ($hasGalleryCol)  $extraCols .= ', u.gallery_images';
+if ($hasVideoCol)    $extraCols .= ', u.video_url';
+if ($hasTechPlanCol) $extraCols .= ', u.technical_plan_url';
 
 $sql = 'SELECT u.id, u.project_id, p.name AS project_name, p.location AS project_location,
                u.unit_number, u.title, u.beds, u.baths, u.area, u.floor, u.price,

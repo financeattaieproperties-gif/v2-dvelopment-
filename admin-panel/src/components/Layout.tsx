@@ -242,6 +242,7 @@ const ADMIN_PILLARS: AdminPillarGroup[] = [
       { to: '/overview', label: 'Overview', icon: 'command', sourceTag: 'Core' },
       { to: '/properties', label: 'Properties', icon: 'home', sourceTag: 'Core' },
       { to: '/projects', label: 'Projects', icon: 'layers', sourceTag: 'Core' },
+      { to: '/vault', label: 'Digital Vault', icon: 'layers', sourceTag: 'Core' },
     ],
   },
   {
@@ -598,13 +599,20 @@ export default function Layout({ children }: { children: ReactNode }) {
       }
     };
 
-    const checkUnread = async () => {
+    let consecutiveErrors = 0;
+    let pollTimer: ReturnType<typeof setTimeout> | null = null;
+    const BASE_POLL_MS = 3500;
+    const MAX_BACKOFF_MS = 60000;
+
+    const checkUnread = async (): Promise<boolean> => {
+      let ok = false;
       try {
         const res = await fetch(`/chat-service.php?action=admin_list&t=${Date.now()}`, {
           credentials: 'include',
           cache: 'no-store',
         });
         if (res.ok) {
+          ok = true;
           const data = (await res.json()) as {
             conversations?: Array<{
               id?: string;
@@ -616,7 +624,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           };
           if (Array.isArray(data.conversations)) {
             processConversations(data.conversations);
-            return;
+            return true;
           }
         }
       } catch {
@@ -633,10 +641,44 @@ export default function Layout({ children }: { children: ReactNode }) {
       } catch {
         // ignore
       }
+      return ok;
     };
 
-    void checkUnread();
-    const timer = setInterval(() => void checkUnread(), 3500);
+    const scheduleNextPoll = () => {
+      if (pollTimer !== null) {
+        clearTimeout(pollTimer);
+        pollTimer = null;
+      }
+      if (!mounted || document.hidden) return;
+      const delay = consecutiveErrors === 0
+        ? BASE_POLL_MS
+        : Math.min(BASE_POLL_MS * Math.pow(2, consecutiveErrors), MAX_BACKOFF_MS);
+      pollTimer = setTimeout(() => {
+        void runPoll();
+      }, delay);
+    };
+
+    const runPoll = async () => {
+      if (!mounted || document.hidden) return;
+      const ok = await checkUnread();
+      consecutiveErrors = ok ? 0 : Math.min(consecutiveErrors + 1, 5);
+      scheduleNextPoll();
+    };
+
+    const onVisibilityChange = () => {
+      if (document.hidden) {
+        if (pollTimer !== null) {
+          clearTimeout(pollTimer);
+          pollTimer = null;
+        }
+      } else if (mounted) {
+        consecutiveErrors = 0;
+        void runPoll();
+      }
+    };
+
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    void runPoll();
 
     const onStorage = (e: StorageEvent) => {
       if (e.key === 'attaie_chat_conversations_v1') {
@@ -664,7 +706,8 @@ export default function Layout({ children }: { children: ReactNode }) {
 
     return () => {
       mounted = false;
-      clearInterval(timer);
+      if (pollTimer !== null) clearTimeout(pollTimer);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
       window.removeEventListener('storage', onStorage);
       window.removeEventListener('attaie-admin-new-chat-alert', onCustomAlert);
       bc?.close();

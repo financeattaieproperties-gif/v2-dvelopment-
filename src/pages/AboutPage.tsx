@@ -36,12 +36,6 @@ import stitchVillaImg from '../assets/images/stitch_villa_exterior.jpg';
 
 // Brand story chapters driven by motion/react whileInView
 
-const stats = [
-  { icon: Home, value: '500+', label: 'Verified Properties Listed' },
-  { icon: Users, value: '1,200+', label: 'Families & Investors Served' },
-  { icon: Award, value: '10+ Years', label: 'Operating Across Kabul' },
-];
-
 const BRAND_STORY_CHAPTERS = [
   {
     year: '2015',
@@ -200,25 +194,25 @@ export default function AboutPage() {
             />
           </div>
           <p className="text-brand-gold text-xs font-bold uppercase tracking-[0.3em] mb-4">
-            Kabul, Afghanistan
+            {t('aboutPage.kabulLocation')}
           </p>
           <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-6">
             {activeTab === 'agents'
-              ? 'Meet Our Senior Property Advisors'
+              ? t('aboutPage.agentsTitle')
               : activeTab === 'careers'
-              ? t('careersPage.title', 'Careers at Attaie Properties')
+              ? t('careersPage.title')
               : activeTab === 'contact'
-              ? 'Contact Our Team'
-              : 'About Attaie Properties'}
+              ? t('aboutPage.contactTitle')
+              : t('aboutPage.overviewTitle')}
           </h1>
           <p className="text-white/70 max-w-2xl mx-auto text-lg leading-relaxed">
             {activeTab === 'agents'
-              ? 'Multilingual specialists in Dari, Pashto, and English guiding buyers, diaspora families, and institutional investors across Kabul’s prime districts.'
+              ? t('aboutPage.agentsSubtitle')
               : activeTab === 'careers'
               ? t('careersPage.subtitle')
               : activeTab === 'contact'
-              ? 'Fill in the form below or visit our Kabul offices and one of our advisors will assist you within 24 hours.'
-              : 'Kabul’s premier real estate agency and development partner — trusted by Afghan families, diplomatic missions, and the global diaspora for over a decade.'}
+              ? t('aboutPage.contactSubtitle')
+              : t('aboutPage.overviewSubtitle')}
           </p>
         </div>
       </section>
@@ -266,7 +260,11 @@ export default function AboutPage() {
       <section className="bg-white border-b border-neutral-100">
         <div className="container-custom py-12">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 tabular-nums">
-            {stats.map(({ icon: Icon, value, label }, i) => (
+            {[
+              { icon: Home, value: '500+', label: t('aboutPage.stat1Label') },
+              { icon: Users, value: '1,200+', label: t('aboutPage.stat2Label') },
+              { icon: Award, value: t('aboutPage.stat3Value'), label: t('aboutPage.stat3Label') },
+            ].map(({ icon: Icon, value, label }, i) => (
               <motion.div
                 key={label}
                 initial={{ opacity: 0, y: 20 }}
@@ -292,18 +290,17 @@ export default function AboutPage() {
           <div className="lg:col-span-5 lg:sticky lg:top-28 bg-brand-navy text-white rounded-2xl p-8 md:p-10 shadow-brand-xl relative overflow-hidden">
             <div className="absolute inset-0 islamic-pattern opacity-15 pointer-events-none" />
             <div className="relative z-10">
-              <span className="eyebrow inline-block mb-3">OUR BRAND STORY</span>
+              <span className="eyebrow inline-block mb-3">{t('aboutPage.storyEyebrow')}</span>
               <h2 className="text-3xl font-display font-bold text-white leading-tight mb-4">
-                A Decade of Verified Trust in Afghanistan’s Capital
+                {t('aboutPage.storyTitle')}
               </h2>
               <p className="text-white/70 text-sm leading-relaxed mb-6">
-                Attaie Properties was founded with a single mission: to make buying, selling, and
-                investing in Kabul real estate transparent, legally verified, and straightforward.
+                {t('aboutPage.storyBody')}
               </p>
 
               <div className="p-4 rounded-xl bg-white/10 border border-white/15 mb-6">
                 <p className="text-xs font-bold text-brand-gold uppercase tracking-wider mb-1">
-                  Active Chapter · {BRAND_STORY_CHAPTERS[activeStoryIdx]?.year}
+                  {t('aboutPage.activeChapter')} · {BRAND_STORY_CHAPTERS[activeStoryIdx]?.year}
                 </p>
                 <p className="text-base font-bold text-white">
                   {BRAND_STORY_CHAPTERS[activeStoryIdx]?.title}
@@ -313,15 +310,15 @@ export default function AboutPage() {
               <div className="space-y-2.5 text-xs text-white/80">
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-brand-gold shrink-0" />
-                  <span>100% Title-Verified Listings (Qabala Sharaee &amp; Customary Deeds)</span>
+                  <span>{t('aboutPage.trust1')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-brand-gold shrink-0" />
-                  <span>Trilingual Legal &amp; Advisory Team (Dari, Pashto, English)</span>
+                  <span>{t('aboutPage.trust2')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle2 size={15} className="text-brand-gold shrink-0" />
-                  <span>Direct Developer Representation with Zero Hidden Commissions</span>
+                  <span>{t('aboutPage.trust3')}</span>
                 </div>
               </div>
             </div>
@@ -348,7 +345,7 @@ export default function AboutPage() {
                 >
                   <div className="flex items-center justify-between gap-4 mb-3 tabular-nums">
                     <span className="text-xs font-bold uppercase tracking-[0.2em] text-brand-gold">
-                      {ch.number} Milestone
+                      {ch.number} {t('aboutPage.milestoneLabel')}
                     </span>
                     <span className="px-3 py-1 rounded-lg bg-brand-navy text-white text-xs font-bold">
                       {ch.year}
@@ -372,14 +369,13 @@ export default function AboutPage() {
         <div className="container-custom">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
             <div>
-              <span className="eyebrow">ARCHITECTURAL MILESTONES</span>
+              <span className="eyebrow">{t('aboutPage.milestonesEyebrow')}</span>
               <h2 className="text-3xl font-display font-bold text-brand-navy mt-1">
-                Shaping Kabul’s Residential &amp; Commercial Skyline
+                {t('aboutPage.milestonesTitle')}
               </h2>
             </div>
             <p className="text-sm text-neutral-500 max-w-md">
-              Swipe through key architectural milestones across Wazir Akbar Khan, Shahr-e-Naw, and
-              Karte Parwan.
+              {t('aboutPage.milestonesSubtitle')}
             </p>
           </div>
 
@@ -419,10 +415,10 @@ export default function AboutPage() {
       <section className="container-custom py-16">
         <div className="mb-8">
           <p className="text-xs font-bold uppercase tracking-[0.22em] text-brand-gold mb-2">
-            Find us
+            {t('aboutPage.branchesEyebrow')}
           </p>
           <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy">
-            Our Kabul Branches
+            {t('aboutPage.branchesTitle')}
           </h2>
         </div>
         {branchesLoading ? (
@@ -486,19 +482,19 @@ export default function AboutPage() {
               id: 'agents' as const,
               icon: Users,
               title: t('nav.agents', 'Our Agents'),
-              desc: 'Meet our senior multilingual real estate specialists across Kabul.',
+              desc: t('aboutPage.quickAgentsDesc'),
             },
             {
               id: 'careers' as const,
               icon: Briefcase,
               title: t('nav.careers', 'Careers'),
-              desc: 'Explore open positions and submit your application online.',
+              desc: t('aboutPage.quickCareersDesc'),
             },
             {
               id: 'contact' as const,
               icon: Mail,
               title: t('nav.contact', 'Contact'),
-              desc: 'Send an inquiry, request a callback, or view Kabul office directions.',
+              desc: t('aboutPage.quickContactDesc'),
             },
           ].map(({ id, icon: CardIcon, title, desc }) => (
             <button
@@ -508,14 +504,14 @@ export default function AboutPage() {
                 setActiveTab(id);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
               }}
-              className="group text-left bg-white rounded-2xl border border-brand-navy/10 hover:border-brand-gold p-6 shadow-brand-sm hover:shadow-brand-md transition-all cursor-pointer flex items-start gap-4"
+              className="group text-start bg-white rounded-2xl border border-brand-navy/10 hover:border-brand-gold p-6 shadow-brand-sm hover:shadow-brand-md transition-all cursor-pointer flex items-start gap-4"
             >
               <div className="w-11 h-11 rounded-xl bg-brand-gold/10 text-brand-gold group-hover:bg-brand-gold group-hover:text-white transition-colors flex items-center justify-center shrink-0">
                 <CardIcon size={20} />
               </div>
               <div>
                 <h3 className="text-base font-bold text-brand-navy group-hover:text-brand-gold transition-colors">
-                  {title} →
+                  {title} <span className="inline-block rtl:rotate-180">→</span>
                 </h3>
                 <p className="text-xs text-neutral-600 mt-1 leading-relaxed">{desc}</p>
               </div>
@@ -531,13 +527,13 @@ export default function AboutPage() {
             {[
               {
                 icon: MapPin,
-                label: 'Address',
-                value: 'Street #13, Wazir Akbar Khan, Kabul, Afghanistan',
+                label: t('aboutPage.addressLabel'),
+                value: t('footer.address'),
               },
-              { icon: Phone, label: 'Phone', value: '+93 782 222 279', href: 'tel:+93782222279' },
+              { icon: Phone, label: t('aboutPage.phoneLabel'), value: '+93 782 222 279', href: 'tel:+93782222279' },
               {
                 icon: Mail,
-                label: 'Email',
+                label: t('aboutPage.emailLabel'),
                 value: 'info@attaieproperties.com',
                 href: 'mailto:info@attaieproperties.com',
               },
@@ -568,7 +564,7 @@ export default function AboutPage() {
           {/* Official Facebook & YouTube Channels row */}
           <div className="pt-8">
             <p className="text-brand-gold text-xs font-bold uppercase tracking-widest mb-4">
-              Follow Our Official Facebook &amp; YouTube Channels
+              {t('aboutPage.socialHeading')}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
               {OFFICIAL_SOCIAL_LINKS.map((social) => {

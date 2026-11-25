@@ -3,16 +3,16 @@
  * Designed for High-End Real Estate CRM, Staff Workspace, and Standalone Dashboards.
  */
 :root {
-  /* Architectural Alabaster Canvas & Layered Surfaces */
-  --alabaster-bg: #F8F9FB;
+  /* Architectural Alabaster Canvas & Layered Surfaces (Variant 1) */
+  --alabaster-bg: #F8FAFC;
   --alabaster-surface: #FFFFFF;
   --alabaster-surface-elevated: #FFFFFF;
-  --alabaster-rail-bg: #F5F7FA;
+  --alabaster-rail-bg: #FBFBFD;
   --alabaster-subtle: #F1F3F7;
   --alabaster-hover: #F1F5F9;
   
   /* Micro-Layered Architectural Borders & Rims */
-  --alabaster-border: rgba(15, 23, 42, 0.08);
+  --alabaster-border: #E2E8F0;
   --alabaster-border-soft: rgba(15, 23, 42, 0.05);
   --alabaster-border-highlight: rgba(255, 255, 255, 0.85);
   --alabaster-card-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 0 0 1px rgba(15, 23, 42, 0.06);
@@ -20,20 +20,20 @@
   --alabaster-drawer-shadow: -8px 0 32px -4px rgba(15, 23, 42, 0.12), -1px 0 0 0 rgba(15, 23, 42, 0.06);
 
   /* Regal Ink & Typography Hierarchy */
-  --alabaster-ink: #0A192F;
+  --alabaster-ink: #1E293B;
   --alabaster-primary: #0B2545;
   --alabaster-primary-hover: #0072BC;
   --alabaster-secondary-text: #475569;
   --alabaster-muted: #818285;
   --alabaster-subtle-text: #94A3B8;
 
-  /* Gemstone Real Estate Palette */
+  /* Logo Tri-Color & Gemstone Real Estate Palette */
   --alabaster-cobalt: #0072BC;
   --alabaster-cobalt-hover: #005E9B;
-  --alabaster-cobalt-soft: #EBF4FC;
+  --alabaster-cobalt-soft: #E6F2FA;
   
-  --alabaster-emerald: #0D6042;
-  --alabaster-emerald-soft: #EBF7EE;
+  --alabaster-emerald: #14A850;
+  --alabaster-emerald-soft: #E8F7EE;
   
   --alabaster-gold: #C5A059;
   --alabaster-gold-hover: #B38E46;
@@ -73,6 +73,33 @@
   --alabaster-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
   --alabaster-transition-fast: 140ms var(--alabaster-ease-spring);
   --alabaster-transition-normal: 220ms var(--alabaster-ease-spring);
+
+  /* Canonical Variant 1 Aliases (Single Source of Truth) */
+  --primary: var(--alabaster-cobalt);
+  --accent: var(--alabaster-cobalt-hover);
+  --secondary: var(--alabaster-cobalt-soft);
+  --surface: var(--alabaster-surface);
+  --rail-bg: var(--alabaster-rail-bg);
+  --background: var(--alabaster-bg);
+  --navy: var(--alabaster-ink);
+  --gold: var(--alabaster-cobalt);
+  --gold-light: var(--alabaster-cobalt-soft);
+  --brand-blue: var(--alabaster-cobalt);
+  --brand-blue-hover: var(--alabaster-cobalt-hover);
+  --brand-blue-lt: var(--alabaster-cobalt-soft);
+  --brand-green: var(--alabaster-emerald);
+  --brand-green-lt: var(--alabaster-emerald-soft);
+  --brand-gray: var(--alabaster-neutral);
+  --muted: var(--alabaster-muted);
+  --line: var(--alabaster-border);
+  --line-highlight: var(--alabaster-border-highlight);
+  --card-shadow: var(--alabaster-card-shadow);
+  --card-shadow-hover: var(--alabaster-card-shadow-hover);
+  --red: var(--alabaster-crimson);
+  --radius: 10px;
+  --rail: var(--alabaster-rail-width);
+  --drawer: var(--alabaster-drawer-width);
+  --sidebar: 288px;
 }
 
 .alabaster-tabular {

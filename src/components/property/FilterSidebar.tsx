@@ -47,7 +47,7 @@ export const FilterSidebar = ({ filters, onChange, className }: FilterSidebarPro
       <div className="flex justify-between items-center mb-6 pb-4 border-b border-brand-gold/15">
         <div className="flex items-center gap-3">
           <div className="w-1 h-5 bg-brand-gold rounded-full" />
-          <h3 className="font-bold text-brand-navy text-base uppercase tracking-wide">Filters</h3>
+          <h3 className="font-bold text-brand-navy text-base uppercase tracking-wide">{t('filters')}</h3>
           {activeCount > 0 && (
             <motion.span
               initial={{ scale: 0 }}
@@ -88,7 +88,7 @@ export const FilterSidebar = ({ filters, onChange, className }: FilterSidebarPro
                     transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                   />
                 )}
-                <span className="relative z-10">{p}</span>
+                <span className="relative z-10">{t(`search.${p}`)}</span>
               </button>
             ))}
           </div>
@@ -106,7 +106,9 @@ export const FilterSidebar = ({ filters, onChange, className }: FilterSidebarPro
                   onChange={() => handleArrayToggle('type', type)}
                   className="rounded border-neutral-300 text-brand-gold focus:ring-brand-gold"
                 />
-                <span className="text-sm text-neutral-700 group-hover:text-brand-navy transition-colors duration-150">{type}</span>
+                <span className="text-sm text-neutral-700 group-hover:text-brand-navy transition-colors duration-150">
+                  {t(`propertyTypes.${type}`, type)}
+                </span>
               </label>
             ))}
           </div>
@@ -129,7 +131,7 @@ export const FilterSidebar = ({ filters, onChange, className }: FilterSidebarPro
                     : 'bg-white text-neutral-700 border-neutral-200 hover:border-brand-gold/50 hover:text-brand-navy'
                 }`}
               >
-                {bed}
+                {bed === 'Studio' ? t('propertyTypes.Studio', 'Studio') : bed}
               </motion.button>
             ))}
           </div>

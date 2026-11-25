@@ -1,0 +1,71 @@
+[
+  {
+    "name": "home-desktop",
+    "width": 1440,
+    "height": 1000,
+    "language": "en",
+    "errors": [],
+    "direction": "ltr",
+    "h1": "Find Your\nIdeal Property With Us",
+    "pageWidth": 1440,
+    "viewportWidth": 1440,
+    "firstPropertyCardTop": 1790.671875,
+    "propertyCards": [
+      {
+        "href": "/properties/101",
+        "text": "For Sale\nAVAILABLE\n$185,000\nApartment\nRef. ATP-101\nWazir Akbar Khan Luxury Residence\nStreet 10, Wazir Akbar Khan, Kabul\n4 Beds\n3 Baths\n220 m²\nFl. 5\nView Details →"
+      },
+      {
+        "href": "/properties/103",
+        "text": "For Rent\nAVAILABLE\n$1,800/mo\nVilla\nRef. ATP-103\nKarte Parwan Panoramic Hillside Villa\nKarte Parwan, District 2, Kabul\n5 Beds\n4 Baths\n420 m²\nFl. 2\nView Details →"
+      }
+    ],
+    "nestedButtonsInPropertyLinks": 2
+  },
+  {
+    "name": "home-mobile",
+    "width": 375,
+    "height": 812,
+    "language": "en",
+    "errors": [],
+    "direction": "ltr",
+    "h1": "Find Your\nIdeal Property With Us",
+    "pageWidth": 375,
+    "viewportWidth": 375,
+    "firstPropertyCardTop": 2144.75,
+    "propertyCards": [
+      {
+        "href": "/properties/101",
+        "text": "For Sale\nAVAILABLE\n$185,000\nApartment\nRef. ATP-101\nWazir Akbar Khan Luxury Residence\nStreet 10, Wazir Akbar Khan, Kabul\n4 Beds\n3 Baths\n220 m²\nFl. 5\nView Details →"
+      },
+      {
+        "href": "/properties/103",
+        "text": "For Rent\nAVAILABLE\n$1,800/mo\nVilla\nRef. ATP-103\nKarte Parwan Panoramic Hillside Villa\nKarte Parwan, District 2, Kabul\n5 Beds\n4 Baths\n420 m²\nFl. 2\nView Details →"
+      }
+    ],
+    "nestedButtonsInPropertyLinks": 2
+  },
+  {
+    "name": "home-dari-mobile",
+    "width": 375,
+    "height": 812,
+    "language": "fa",
+    "errors": [],
+    "direction": "rtl",
+    "h1": "Find Your\nIdeal Property With Us",
+    "pageWidth": 375,
+    "viewportWidth": 375,
+    "firstPropertyCardTop": 2103.75,
+    "propertyCards": [
+      {
+        "href": "/properties/101",
+        "text": "For Sale\nAVAILABLE\n$185,000\nApartment\nRef. ATP-101\nWazir Akbar Khan Luxury Residence\nStreet 10, Wazir Akbar Khan, Kabul\n4 Beds\n3 Baths\n220 m²\nFl. 5\nView Details →"
+      },
+      {
+        "href": "/properties/103",
+        "text": "For Rent\nAVAILABLE\n$1,800/mo\nVilla\nRef. ATP-103\nKarte Parwan Panoramic Hillside Villa\nKarte Parwan, District 2, Kabul\n5 Beds\n4 Baths\n420 m²\nFl. 2\nView Details →"
+      }
+    ],
+    "nestedButtonsInPropertyLinks": 2
+  }
+]

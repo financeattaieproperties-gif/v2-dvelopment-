@@ -1,0 +1,46 @@
+{
+  "basis": "Deterministic source-code calculations, not customer analytics or hosted measurements.",
+  "emptyInputExecutiveChart": {
+    "labels": [
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov"
+    ],
+    "pipeline": [
+      2,
+      2,
+      2,
+      3,
+      4,
+      5
+    ],
+    "closed": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2
+    ],
+    "expected": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ]
+  },
+  "contrastOnWhite": {
+    "475569": 7.577663953533317,
+    "818285": 3.8425160226846184,
+    "14A850": 3.1126630035485436,
+    "0072BC": 5.08093992253943,
+    "0D6042": 7.584154187761563
+  },
+  "projectAvailabilityWithZeroAvailable": 8,
+  "contractedFor100UnitsWithoutReadingSoldCount": 72
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import {
   motion,
   AnimatePresence,
@@ -31,62 +32,9 @@ import { ClickToCallButton } from '../ui/ClickToCallButton';
 import { ExpandingCards } from '../ui/expanding-cards';
 import { mapProjectsToExpandingCards } from '../ui/demo';
 import { getProperties, getProjects, type Property, type Project } from '../../lib/dbService';
-import { SIGNATURE_PROJECTS } from '../../lib/signatureProjects';
-import stitchHeroImg from '../../assets/images/stitch_hero_kabul_panorama.jpg';
-import stitchInteriorImg from '../../assets/images/stitch_apartment_interior.jpg';
-import stitchVillaImg from '../../assets/images/stitch_villa_exterior.jpg';
 import { LandingHeroBackground } from './LandingHeroBackground';
 
 const WHATSAPP_NUMBER = '93782222279';
-
-const FALLBACK_SHOWCASE_PROPERTIES: Property[] = [
-  {
-    id: 101,
-    serial_number: 'ATP-101',
-    title: 'Wazir Akbar Khan Luxury Residence',
-    price: 185000,
-    location: 'Street 10, Wazir Akbar Khan, Kabul',
-    beds: 4,
-    baths: 3,
-    area: 220,
-    floor: 5,
-    status: 'available',
-    type: 'Apartment',
-    listing_type: 'sale',
-    image_url: stitchInteriorImg,
-    gallery_images: [stitchInteriorImg],
-    video_url: null,
-    floor_plan_url: null,
-    three_d_plan_url: null,
-    description:
-      'Sunlit luxury 4-bedroom apartment featuring panoramic mountain views, marble flooring, and 24/7 solar-hybrid backup power.',
-    created_at: '2026-02-01T08:00:00Z',
-  },
-  {
-    id: 103,
-    serial_number: 'ATP-103',
-    title: 'Karte Parwan Panoramic Hillside Villa',
-    price: 1800,
-    location: 'Karte Parwan, District 2, Kabul',
-    beds: 5,
-    baths: 4,
-    area: 420,
-    floor: 2,
-    status: 'available',
-    type: 'Villa',
-    listing_type: 'rent',
-    image_url: stitchVillaImg,
-    gallery_images: [stitchVillaImg],
-    video_url: null,
-    floor_plan_url: null,
-    three_d_plan_url: null,
-    description:
-      'Executive residence with private landscaped courtyard, formal Mehmankhana reception hall, and diplomatic-grade security.',
-    created_at: '2026-02-05T08:00:00Z',
-  }
-];
-
-const FALLBACK_PREVIEW_PROJECTS: Project[] = SIGNATURE_PROJECTS;
 
 const FEATURED_PROPERTIES_LIMIT = 6;
 const FEATURED_PROJECTS_LIMIT = 8;
@@ -111,49 +59,11 @@ function toPropertyCardProps(p: Property) {
 }
 
 type FilterTab = 'All' | 'For Sale' | 'For Rent' | 'Commercial';
-const FILTER_TABS: FilterTab[] = ['All', 'For Sale', 'For Rent', 'Commercial'];
-
-const KABUL_LOCATIONS = [
-  { label: 'All Kabul', value: '' },
-  { label: 'Wazir Akbar Khan', value: 'Wazir Akbar Khan' },
-  { label: 'Shahr-e-Naw', value: 'Shahr-e-Naw' },
-  { label: 'Sherpur Enclave', value: 'Sherpur' },
-  { label: 'Karte Parwan', value: 'Karte Parwan' },
-  { label: 'Karte Char', value: 'Karte Char' },
-  { label: 'Karte Se', value: 'Karte Se' },
-  { label: 'Kolola Pushta', value: 'Kolola Pushta' },
-  { label: 'Darulaman', value: 'Darulaman' },
-  { label: 'Microrayan', value: 'Microrayan' },
-  { label: 'Taimani', value: 'Taimani' },
-];
-
-const PROPERTY_TYPE_OPTIONS = [
-  { label: 'All Types', value: '' },
-  { label: 'Apartments', value: 'Apartment' },
-  { label: 'Houses', value: 'House' },
-  { label: 'Luxury Villas', value: 'Villa' },
-  { label: 'Commercial Spaces', value: 'Commercial' },
-  { label: 'Development Land', value: 'Land' },
-];
-
-const BEDROOM_OPTIONS = [
-  { label: 'Any', value: '' },
-  { label: 'Studio / 1 Bed', value: '1' },
-  { label: '2+ Bedrooms', value: '2' },
-  { label: '3+ Bedrooms', value: '3' },
-  { label: '4+ Bedrooms', value: '4' },
-  { label: '5+ Bedrooms', value: '5+' },
-  { label: '6+ Bedrooms', value: '6+' },
-];
-
-const BUDGET_OPTIONS = [
-  { label: 'Any Budget', value: '' },
-  { label: 'Under $75,000', value: '75000' },
-  { label: 'Up to $125,000', value: '125000' },
-  { label: 'Up to $200,000', value: '200000' },
-  { label: 'Up to $350,000', value: '350000' },
-  { label: 'Up to $500,000', value: '500000' },
-  { label: '$500,000+ Luxury', value: '1000000' },
+const FILTER_TABS: Array<{ id: FilterTab; labelKey: string }> = [
+  { id: 'All', labelKey: 'landing.filterAll' },
+  { id: 'For Sale', labelKey: 'landing.filterForSale' },
+  { id: 'For Rent', labelKey: 'landing.filterForRent' },
+  { id: 'Commercial', labelKey: 'landing.filterCommercial' },
 ];
 
 interface HeroSelectOption {
@@ -207,7 +117,7 @@ function HeroCustomSelect({
     <div
       ref={containerRef}
       className={`${colSpanClass} relative flex items-center gap-3 px-4 py-2 ${
-        hasRightDivider ? 'lg:border-r border-neutral-200' : ''
+        hasRightDivider ? 'lg:border-e border-neutral-200' : ''
       }`}
     >
       <div
@@ -234,7 +144,7 @@ function HeroCustomSelect({
           aria-expanded={open}
           aria-labelledby={`${id}-label`}
           onClick={() => setOpen((prev) => !prev)}
-          className="w-full flex items-center justify-between gap-2 text-left font-bold text-sm text-brand-navy hover:text-brand-gold focus:outline-none cursor-pointer pt-0.5 transition-colors group"
+          className="w-full flex items-center justify-between gap-2 text-start font-bold text-sm text-brand-navy hover:text-brand-gold focus:outline-none cursor-pointer pt-0.5 transition-colors group"
         >
           <span className="truncate">{selectedOption.label}</span>
           <ChevronDown
@@ -256,13 +166,13 @@ function HeroCustomSelect({
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
             role="listbox"
             aria-labelledby={`${id}-label`}
-            className="absolute left-2 right-2 top-[calc(100%+10px)] z-50 rounded-2xl bg-white/98 backdrop-blur-xl border border-brand-navy/12 shadow-brand-xl p-1.5 max-h-56 overflow-y-auto custom-scrollbar"
+            className="absolute start-2 end-2 top-[calc(100%+10px)] z-50 rounded-2xl bg-white/98 backdrop-blur-xl border border-brand-navy/12 shadow-brand-xl p-1.5 max-h-56 overflow-y-auto custom-scrollbar"
           >
             {options.map((opt) => {
               const isSelected = opt.value === value;
               return (
                 <button
-                  key={opt.label}
+                  key={opt.value || opt.label}
                   type="button"
                   role="option"
                   aria-selected={isSelected}
@@ -270,7 +180,7 @@ function HeroCustomSelect({
                     onChange(opt.value);
                     setOpen(false);
                   }}
-                  className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-left ${
+                  className={`w-full flex items-center justify-between gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-start ${
                     isSelected
                       ? 'bg-brand-navy text-white shadow-xs'
                       : 'text-brand-navy hover:bg-brand-ivory hover:text-brand-gold'
@@ -289,11 +199,55 @@ function HeroCustomSelect({
 }
 
 export const LandingPageContent = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeFilter, setActiveFilter] = useState<FilterTab>('All');
   const [properties, setProperties] = useState<Property[]>([]);
-  const [projects, setProjects] = useState<Project[]>(FALLBACK_PREVIEW_PROJECTS);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loadingFeatured, setLoadingFeatured] = useState(true);
+
+  const kabulLocations: HeroSelectOption[] = [
+    { label: t('landing.allKabul'), value: '' },
+    { label: t('locations.wakName'), value: 'Wazir Akbar Khan' },
+    { label: t('locations.snName'), value: 'Shahr-e-Naw' },
+    { label: 'Sherpur', value: 'Sherpur' },
+    { label: 'Karte Parwan', value: 'Karte Parwan' },
+    { label: 'Karte Char', value: 'Karte Char' },
+    { label: 'Karte Se', value: 'Karte Se' },
+    { label: 'Kolola Pushta', value: 'Kolola Pushta' },
+    { label: 'Darulaman', value: 'Darulaman' },
+    { label: 'Microrayan', value: 'Microrayan' },
+    { label: t('locations.taimaniName'), value: 'Taimani' },
+  ];
+
+  const propertyTypeOptions: HeroSelectOption[] = [
+    { label: t('landing.allTypes'), value: '' },
+    { label: t('propertyTypes.Apartment'), value: 'Apartment' },
+    { label: t('propertyTypes.House'), value: 'House' },
+    { label: t('propertyTypes.Villa'), value: 'Villa' },
+    { label: t('propertyTypes.Commercial'), value: 'Commercial' },
+    { label: t('propertyTypes.Land'), value: 'Land' },
+  ];
+
+  const bedroomOptions: HeroSelectOption[] = [
+    { label: t('landing.any'), value: '' },
+    { label: t('landing.studioOneBed'), value: '1' },
+    { label: t('landing.bedsPlus', { count: 2 }), value: '2' },
+    { label: t('landing.bedsPlus', { count: 3 }), value: '3' },
+    { label: t('landing.bedsPlus', { count: 4 }), value: '4' },
+    { label: t('landing.bedsPlus', { count: 5 }), value: '5+' },
+    { label: t('landing.bedsPlus', { count: 6 }), value: '6+' },
+  ];
+
+  const budgetOptions: HeroSelectOption[] = [
+    { label: t('landing.anyBudget'), value: '' },
+    { label: t('landing.budgetUnder75k'), value: '75000' },
+    { label: t('landing.budgetUpTo125k'), value: '125000' },
+    { label: t('landing.budgetUpTo200k'), value: '200000' },
+    { label: t('landing.budgetUpTo350k'), value: '350000' },
+    { label: t('landing.budgetUpTo500k'), value: '500000' },
+    { label: t('landing.budget500kPlus'), value: '1000000' },
+  ];
 
   // Hero Search Bar state
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -314,16 +268,16 @@ export const LandingPageContent = () => {
       getProjects().catch(() => null),
     ])
       .then(([props, projs]) => {
-        if (Array.isArray(props) && props.length > 0) {
+        if (Array.isArray(props)) {
           setProperties(props.slice(0, FEATURED_PROPERTIES_LIMIT));
         } else {
-          setProperties(FALLBACK_SHOWCASE_PROPERTIES);
+          setProperties([]);
         }
 
-        if (Array.isArray(projs) && projs.length > 0) {
+        if (Array.isArray(projs)) {
           setProjects(projs.slice(0, FEATURED_PROJECTS_LIMIT));
         } else {
-          setProjects(FALLBACK_PREVIEW_PROJECTS.slice(0, FEATURED_PROJECTS_LIMIT));
+          setProjects([]);
         }
       })
       .finally(() => setLoadingFeatured(false));
@@ -372,18 +326,17 @@ export const LandingPageContent = () => {
               className="max-w-xl"
             >
               <span className="eyebrow inline-block mb-3 tracking-[0.22em]">
-                Attaie Properties
+                {t('landing.heroEyebrow')}
               </span>
 
               <h1 className="font-display font-extrabold text-brand-navy text-display tracking-tight leading-[1.06] mb-5">
-                Find Your
+                {t('landing.heroTitleLine1')}
                 <br />
-                Ideal Property With Us
+                {t('landing.heroTitleLine2')}
               </h1>
 
               <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-md mb-7">
-                Apartments, houses and investment opportunities in Kabul with the trust of Attaie
-                Properties.
+                {t('landing.heroSubtitle')}
               </p>
 
               {/* 3 Trust Pillars with high-visibility icon badges */}
@@ -392,19 +345,19 @@ export const LandingPageContent = () => {
                   <span className="w-10 h-10 rounded-xl bg-white border border-brand-navy/10 shadow-brand-sm text-brand-gold flex items-center justify-center shrink-0">
                     <ShieldCheck size={20} strokeWidth={2.2} />
                   </span>
-                  <span>Trusted Company</span>
+                  <span>{t('landing.pillar1')}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs md:text-sm font-bold text-brand-navy">
                   <span className="w-10 h-10 rounded-xl bg-white border border-brand-navy/10 shadow-brand-sm text-brand-gold flex items-center justify-center shrink-0">
                     <Building2 size={20} strokeWidth={2.2} />
                   </span>
-                  <span>Quality Projects</span>
+                  <span>{t('landing.pillar2')}</span>
                 </div>
                 <div className="flex items-center gap-2.5 text-xs md:text-sm font-bold text-brand-navy">
                   <span className="w-10 h-10 rounded-xl bg-white border border-brand-navy/10 shadow-brand-sm text-brand-gold flex items-center justify-center shrink-0">
                     <Users size={20} strokeWidth={2.2} />
                   </span>
-                  <span>Professional Agents</span>
+                  <span>{t('landing.pillar3')}</span>
                 </div>
               </div>
             </motion.div>
@@ -422,9 +375,9 @@ export const LandingPageContent = () => {
               {/* 1. Location */}
               <HeroCustomSelect
                 id="hero-location"
-                label="Location"
+                label={t('landing.searchLocationLabel')}
                 value={selectedLocation}
-                options={KABUL_LOCATIONS}
+                options={kabulLocations}
                 onChange={setSelectedLocation}
                 icon={MapPin}
                 hasRightDivider={true}
@@ -434,9 +387,9 @@ export const LandingPageContent = () => {
               {/* 2. Property Type */}
               <HeroCustomSelect
                 id="hero-type"
-                label="Property Type"
+                label={t('landing.searchTypeLabel')}
                 value={selectedType}
-                options={PROPERTY_TYPE_OPTIONS}
+                options={propertyTypeOptions}
                 onChange={setSelectedType}
                 icon={Building2}
                 hasRightDivider={true}
@@ -446,9 +399,9 @@ export const LandingPageContent = () => {
               {/* 3. Bedrooms */}
               <HeroCustomSelect
                 id="hero-beds"
-                label="Bedrooms"
+                label={t('landing.searchBedsLabel')}
                 value={selectedBeds}
-                options={BEDROOM_OPTIONS}
+                options={bedroomOptions}
                 onChange={setSelectedBeds}
                 icon={Bed}
                 hasRightDivider={true}
@@ -458,9 +411,9 @@ export const LandingPageContent = () => {
               {/* 4. Budget */}
               <HeroCustomSelect
                 id="hero-budget"
-                label="Budget"
+                label={t('landing.searchBudgetLabel')}
                 value={selectedBudget}
-                options={BUDGET_OPTIONS}
+                options={budgetOptions}
                 onChange={setSelectedBudget}
                 icon={CircleDollarSign}
                 hasRightDivider={false}
@@ -468,13 +421,13 @@ export const LandingPageContent = () => {
               />
 
               {/* 5. Search CTA Button */}
-              <div className="lg:col-span-2 pl-0 lg:pl-3">
+              <div className="lg:col-span-2 ps-0 lg:ps-3">
                 <button
                   type="submit"
                   className="w-full py-3.5 px-5 rounded-xl bg-brand-gold hover:bg-brand-gold-dark text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-gold-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.98]"
                 >
                   <Search size={18} strokeWidth={2.4} />
-                  <span>Search Properties</span>
+                  <span>{t('landing.searchButton')}</span>
                 </button>
               </div>
             </motion.form>
@@ -490,14 +443,14 @@ export const LandingPageContent = () => {
                   className="mt-3 px-4 py-2.5 rounded-xl bg-brand-navy/90 backdrop-blur-md text-white text-xs flex flex-wrap items-center justify-between gap-3 shadow-brand-md"
                 >
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-bold text-brand-gold">Active Search Filter:</span>
+                    <span className="font-bold text-brand-gold">{t('landing.activeFilter')}</span>
                     <span>
                       {[
-                        selectedLocation || 'All Kabul',
-                        selectedType || 'All Property Types',
-                        selectedBeds ? `${selectedBeds}+ Beds` : null,
+                        selectedLocation || t('landing.allKabul'),
+                        selectedType ? t(`propertyTypes.${selectedType}`, selectedType) : t('landing.allPropertyTypes'),
+                        selectedBeds ? t('landing.bedsPlus', { count: Number(selectedBeds.replace('+', '')) }) : null,
                         selectedBudget
-                          ? `Up to $${Number(selectedBudget).toLocaleString()}`
+                          ? `$${Number(selectedBudget).toLocaleString()}`
                           : null,
                       ]
                         .filter(Boolean)
@@ -515,7 +468,7 @@ export const LandingPageContent = () => {
                     className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white font-semibold transition-colors cursor-pointer"
                   >
                     <RotateCcw size={13} strokeWidth={2.2} />
-                    <span>Reset</span>
+                    <span>{t('landing.reset')}</span>
                   </button>
                 </motion.div>
               )}
@@ -531,12 +484,24 @@ export const LandingPageContent = () => {
       >
         <div className="container-custom">
           <SectionHeader
-            eyebrow="Developments"
-            title="Signature Projects"
-            subtitle="Explore Kabul's most ambitious residential and commercial developments. Hover or click on a project card to unveil its story."
-            cta={{ label: 'View all projects', href: '/projects' }}
+            eyebrow={t('landing.projectsEyebrow')}
+            title={t('landing.projectsTitle')}
+            subtitle={t('landing.projectsSubtitle')}
+            cta={{ label: t('landing.viewAllProjects'), href: '/projects' }}
           />
-          <ExpandingCards items={expandingProjectItems} defaultActiveIndex={0} />
+          {expandingProjectItems.length > 0 ? (
+            <ExpandingCards items={expandingProjectItems} defaultActiveIndex={0} />
+          ) : (
+            <div className="rounded-2xl border border-neutral-200 bg-white p-12 text-center">
+              <Building2 size={32} className="mx-auto text-brand-gold/60 mb-3" />
+              <p className="text-brand-navy font-semibold text-base mb-1">
+                {t('landing.projectsEmptyTitle')}
+              </p>
+              <p className="text-neutral-500 text-sm">
+                {t('landing.projectsEmptySubtitle')}
+              </p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -546,17 +511,17 @@ export const LandingPageContent = () => {
           {/* Header Row matching Stitch design */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
             <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-navy">
-              Latest Properties
+              {t('landing.latestPropertiesTitle')}
             </h2>
             <Link
               to="/properties"
               className="inline-flex items-center gap-2 text-sm font-bold text-brand-gold hover:text-brand-gold-dark transition-colors group"
             >
-              <span>View All Properties</span>
+              <span>{t('landing.viewAllProperties')}</span>
               <ArrowRight
                 size={17}
                 strokeWidth={2.4}
-                className="group-hover:translate-x-1 transition-transform"
+                className="group-hover:translate-x-1 transition-transform rtl:rotate-180"
               />
             </Link>
           </div>
@@ -565,19 +530,19 @@ export const LandingPageContent = () => {
           <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div className="flex items-center gap-2 flex-wrap">
               {FILTER_TABS.map((tab) => {
-                const isActive = tab === activeFilter;
+                const isActive = tab.id === activeFilter;
                 return (
                   <button
-                    key={tab}
+                    key={tab.id}
                     type="button"
-                    onClick={() => setActiveFilter(tab)}
+                    onClick={() => setActiveFilter(tab.id)}
                     className={`relative px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                       isActive
                         ? 'bg-brand-navy text-white shadow-brand-sm'
                         : 'bg-white text-neutral-600 border border-brand-navy/10 hover:border-brand-gold hover:text-brand-navy'
                     }`}
                   >
-                    {tab}
+                    {t(tab.labelKey)}
                   </button>
                 );
               })}
@@ -620,8 +585,18 @@ export const LandingPageContent = () => {
                   ))}
                 </MotionCarousel>
               ) : (
-                <div className="py-16 text-center text-neutral-400 text-sm">
-                  No properties match this filter.
+                <div className="rounded-2xl border border-neutral-200 bg-white p-12 text-center">
+                  <Building2 size={32} className="mx-auto text-brand-gold/60 mb-3" />
+                  <p className="text-brand-navy font-semibold text-base mb-1">
+                    {properties.length === 0
+                      ? t('landing.propertiesEmptyTitle')
+                      : t('landing.noMatchingFilter')}
+                  </p>
+                  {properties.length === 0 && (
+                    <p className="text-neutral-500 text-sm">
+                      {t('landing.propertiesEmptySubtitle')}
+                    </p>
+                  )}
                 </div>
               )}
             </motion.div>
@@ -630,16 +605,16 @@ export const LandingPageContent = () => {
       </section>
 
       <PromoBanner
-        eyebrow="List With Us"
-        title="List Your Property With Us"
-        description="Get maximum visibility and the best value for your property, backed by our agents and marketing network."
+        eyebrow={t('landing.promoEyebrow')}
+        title={t('landing.promoTitle')}
+        description={t('landing.promoDesc')}
         bullets={[
-          'Free property evaluation',
-          'Professional photography',
-          'Targeted marketing',
-          'Expert negotiation',
+          t('landing.promoBullet1'),
+          t('landing.promoBullet2'),
+          t('landing.promoBullet3'),
+          t('landing.promoBullet4'),
         ]}
-        ctaLabel="List Your Property"
+        ctaLabel={t('landing.promoCta')}
         ctaHref="/contact"
         imageSide="left"
         projectCovers={projects
@@ -666,20 +641,20 @@ export const LandingPageContent = () => {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              'radial-gradient(ellipse 70% 60% at 50% 100%, rgba(1,69,242,0.22) 0%, transparent 70%)',
+              'radial-gradient(ellipse 70% 60% at 50% 100%, rgba(0,114,188,0.22) 0%, transparent 70%)',
           }}
         />
         <div className="absolute inset-0 islamic-pattern opacity-25 pointer-events-none" />
         <div
           className="absolute inset-x-0 top-0 h-px"
           style={{
-            background: 'linear-gradient(to right, transparent, rgba(1,69,242,0.5), transparent)',
+            background: 'linear-gradient(to right, transparent, rgba(0,114,188,0.5), transparent)',
           }}
         />
         <div
           className="absolute inset-x-0 bottom-0 h-px"
           style={{
-            background: 'linear-gradient(to right, transparent, rgba(1,69,242,0.5), transparent)',
+            background: 'linear-gradient(to right, transparent, rgba(0,114,188,0.5), transparent)',
           }}
         />
 
@@ -693,12 +668,12 @@ export const LandingPageContent = () => {
           >
             <span
               className="inline-block w-8 h-px"
-              style={{ background: 'rgba(1,69,242,0.4)' }}
+              style={{ background: 'rgba(0,114,188,0.4)' }}
             />
-            Get in Touch
+            {t('landing.ctaEyebrow')}
             <span
               className="inline-block w-8 h-px"
-              style={{ background: 'rgba(1,69,242,0.4)' }}
+              style={{ background: 'rgba(0,114,188,0.4)' }}
             />
           </motion.p>
 
@@ -710,9 +685,9 @@ export const LandingPageContent = () => {
             className="font-heading font-bold text-white mb-6 leading-tight"
             style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)' }}
           >
-            Ready to Find Your
+            {t('landing.ctaTitleBefore')}
             <br />
-            <span style={{ color: 'var(--color-brand-gold)' }}>Dream Property</span> in Kabul?
+            <span style={{ color: 'var(--color-brand-gold)' }}>{t('landing.ctaTitleHighlight')}</span> {t('landing.ctaTitleAfter')}
           </motion.h2>
 
           <motion.p
@@ -723,8 +698,7 @@ export const LandingPageContent = () => {
             className="text-base mb-12 max-w-xl mx-auto leading-relaxed"
             style={{ color: 'rgba(255,255,255,0.55)' }}
           >
-            Our local experts know every district. Whether buying, renting, or investing — we'll
-            find the right property for you.
+            {t('landing.ctaSubtitle')}
           </motion.p>
 
           <motion.div
@@ -736,7 +710,7 @@ export const LandingPageContent = () => {
           >
             <motion.a
               href={`https://wa.me/${WHATSAPP_NUMBER}`}
-              aria-label="Contact us via WhatsApp"
+              aria-label={t('landing.whatsappUs')}
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ scale: 1.04, y: -2 }}
@@ -748,7 +722,7 @@ export const LandingPageContent = () => {
                 boxShadow: '0 8px 28px rgba(37,211,102,0.35)',
               }}
             >
-              <MessageCircle size={22} strokeWidth={2.4} aria-hidden="true" /> WhatsApp Us
+              <MessageCircle size={22} strokeWidth={2.4} aria-hidden="true" /> {t('landing.whatsappUs')}
             </motion.a>
             <motion.a
               href="tel:+93782222279"
@@ -759,10 +733,10 @@ export const LandingPageContent = () => {
               className="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-2xl font-bold text-base text-white transition-colors"
               style={{
                 background: 'var(--color-brand-gold)',
-                boxShadow: '0 8px 28px rgba(1,69,242,0.4)',
+                boxShadow: '0 8px 28px rgba(0,114,188,0.4)',
               }}
             >
-              <Phone size={21} strokeWidth={2.4} aria-hidden="true" /> +93 782 222 279
+              <Phone size={21} strokeWidth={2.4} aria-hidden="true" /> <span dir="ltr">+93 782 222 279</span>
             </motion.a>
             <ClickToCallButton className="px-8 py-4 rounded-2xl font-bold text-base" />
           </motion.div>

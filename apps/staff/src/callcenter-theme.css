@@ -1,16 +1,5 @@
-/* Option 2 Alabaster Architectural Split-Rail Palette across all Staff Dashboards (Call Center, Management, Sales, HR, Finance, Marketing, Engineering) */
+/* Option 2 Alabaster Architectural Split-Rail Palette across all Staff Dashboards (tokens inherited from shared/alabaster-dashboard.css) */
 html[data-staff-role] {
-  --primary: #0072BC;
-  --accent: #005E9B;
-  --secondary: #E6F2FA;
-  --surface: #FFFFFF;
-  --rail-bg: #FBFBFD;
-  --background: #F8FAFC;
-  --navy: #1E293B;
-  --gold: #0072BC;
-  --gold-light: #E6F2FA;
-  --muted: #818285;
-  --line: #E2E8F0;
   color: var(--navy);
   background: var(--background);
 }

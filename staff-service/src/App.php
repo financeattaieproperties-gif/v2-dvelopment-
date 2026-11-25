@@ -156,6 +156,7 @@ final class App {
         $cutoff=gmdate('Y-m-d H:i:s',time()-900);
         $this->execute('INSERT INTO core_login_limits(bucket,attempts,window_start) VALUES (?,1,?) ON DUPLICATE KEY UPDATE attempts=IF(window_start < ?,1,attempts+1),window_start=IF(window_start < ?,VALUES(window_start),window_start)',[$bucket,$this->now,$cutoff,$cutoff]);
         if ($this->one('SELECT attempts FROM core_login_limits WHERE bucket=?',[$bucket])['attempts']>20) { header('Retry-After: 900'); throw new HttpError(429,'Too many sign-in attempts. Try again later.'); }
+
         $username = strtolower(trim((string)($body['username'] ?? '')));
         $password = (string)($body['password'] ?? '');
         if ($username === '' || $password === '') throw new HttpError(401, 'Email and password are required.');
@@ -164,6 +165,7 @@ final class App {
         if (!$row || $hash === '' || !password_verify($password, $hash)) {
             throw new HttpError(401, 'Invalid email or password.');
         }
+
         if (!$row['active'] || $row['role'] === 'finance_assistant') throw new HttpError(403,'This account has no active workspace access. Contact your administrator.');
         session_regenerate_id(true);
         $_SESSION=['user_id'=>$row['id'],'auth_version'=>$row['auth_version'],'created'=>time(),'last_seen'=>time(),'csrf'=>bin2hex(random_bytes(32))];

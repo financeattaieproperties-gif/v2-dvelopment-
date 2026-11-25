@@ -44,8 +44,16 @@ try {
         $row = $stmt->get_result()->fetch_assoc();
         if (!$row) throw new WebsiteInquiryException('Inquiry not found', 404);
         if ((int)$row['version'] !== $version) throw new WebsiteInquiryException('Inquiry changed. Reload before saving.', 409);
-        $stmt = $db->prepare('UPDATE leads SET followup_status=?,followup_notes=?,followup_at=?,version=version+1 WHERE id=? AND version=?');
-        $stmt->bind_param('sssii', $status, $notes, $followupAt, $id, $version); $stmt->execute();
+        $statusMap = [
+            'new'         => 'Pending',
+            'in_progress' => 'In Progress',
+            'resolved'    => 'Resolved',
+        ];
+        $leadStatus = isset($input['lead_status']) && is_string($input['lead_status']) && trim($input['lead_status']) !== ''
+            ? trim($input['lead_status'])
+            : ($statusMap[$status] ?? 'Pending');
+        $stmt = $db->prepare('UPDATE leads SET followup_status=?,status=?,followup_notes=?,followup_at=?,version=version+1 WHERE id=? AND version=?');
+        $stmt->bind_param('ssssii', $status, $leadStatus, $notes, $followupAt, $id, $version); $stmt->execute();
         $nextVersion = $version + 1;
         $actor = (string)($_SESSION['admin_user'] ?? 'admin');
         $event = $db->prepare('INSERT INTO website_inquiry_events (inquiry_id,actor,previous_status,next_status,notes,followup_at,version,created_at) VALUES (?,?,?,?,?,?,?,UTC_TIMESTAMP())');

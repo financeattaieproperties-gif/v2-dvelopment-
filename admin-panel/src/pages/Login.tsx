@@ -2,6 +2,7 @@ import { useState, useEffect, type FormEvent } from 'react';
 import { ShieldCheck, Eye, EyeOff, Mail, Lock, Globe, Calendar, Clock } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { getAdminServerUrl, isDesktopClient, setAdminServerUrl } from '../api';
+import { V1 } from '../components/variant1';
 
 const S = {
   page: {
@@ -216,23 +217,23 @@ const S = {
     display: 'flex',
     alignItems: 'center',
     gap: 12,
-    margin: '1.25rem 0',
+    margin: '1.15rem 0',
     fontSize: 12,
-    color: '#64748B',
+    color: V1.slate,
     fontWeight: 500,
   } as const,
   dividerLine: {
     flex: 1,
     height: 1,
-    background: 'rgba(255, 255, 255, 0.12)',
+    background: V1.border,
   } as const,
   googleBtn: {
     width: '100%',
-    padding: '0.78rem 1rem',
-    background: 'rgba(255, 255, 255, 0.06)',
-    border: '1px solid rgba(255, 255, 255, 0.14)',
-    borderRadius: 12,
-    color: '#FFFFFF',
+    padding: '0.75rem 1rem',
+    background: V1.surface,
+    border: `1px solid ${V1.border}`,
+    borderRadius: 10,
+    color: V1.ink,
     fontWeight: 600,
     fontSize: '0.88rem',
     cursor: 'pointer',
@@ -240,12 +241,12 @@ const S = {
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    transition: 'background-color 0.15s',
+    transition: 'background-color 0.15s, border-color 0.15s',
   } as const,
   err: {
-    background: 'rgba(239, 68, 68, 0.15)',
-    color: '#FCA5A5',
-    border: '1px solid rgba(239, 68, 68, 0.35)',
+    background: V1.dangerSoft,
+    color: V1.danger,
+    border: `1px solid ${V1.dangerBorder}`,
     padding: '0.65rem 1rem',
     borderRadius: 10,
     marginBottom: '1rem',
@@ -456,17 +457,17 @@ export default function Login() {
         </h1>
 
         {desktopMode && (
-          <div style={{ marginBottom: '1rem', padding: '8px 10px', borderRadius: 8, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.1)', fontSize: 11, color: '#CBD5E1' }}>
+          <div style={{ marginBottom: '1rem', padding: '8px 10px', borderRadius: 8, background: V1.canvas, border: `1px solid ${V1.border}`, fontSize: 11, color: V1.slate }}>
             {!editingServer ? (
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8 }}>
-                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  <Globe size={13} />
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', color: V1.ink }}>
+                  <Globe size={13} color={V1.blue} />
                   <span>{serverUrl.replace(/^https?:\/\//, '')}</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => { setServerDraft(serverUrl); setEditingServer(true); }}
-                  style={{ background: 'none', border: 'none', color: '#93C5FD', fontSize: 11, fontWeight: 600, cursor: 'pointer', padding: 0, flexShrink: 0 }}
+                  style={{ background: 'none', border: 'none', color: V1.blue, fontSize: 11, fontWeight: 600, cursor: 'pointer', padding: 0, flexShrink: 0 }}
                 >
                   Change Server
                 </button>
@@ -478,16 +479,16 @@ export default function Login() {
                   value={serverDraft}
                   onChange={e => setServerDraft(e.target.value)}
                   placeholder="https://attaieproperties.com"
-                  style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: '1px solid rgba(255,255,255,0.2)', background: 'rgba(0,0,0,0.25)', color: '#fff', fontSize: 11, boxSizing: 'border-box' }}
+                  style={{ width: '100%', padding: '6px 8px', borderRadius: 6, border: `1px solid ${V1.border}`, background: V1.surface, color: V1.ink, fontSize: 11, boxSizing: 'border-box' }}
                 />
                 <div style={{ display: 'flex', gap: 6, justifyContent: 'space-between', alignItems: 'center' }}>
                   <div style={{ display: 'flex', gap: 4 }}>
-                    <button type="button" onClick={() => setServerDraft('https://attaieproperties.com')} style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#E2E8F0', fontSize: 10, padding: '3px 6px', borderRadius: 4, cursor: 'pointer' }}>Main</button>
-                    <button type="button" onClick={() => setServerDraft('https://www.attaieproperties.com')} style={{ background: 'rgba(255,255,255,0.08)', border: 'none', color: '#E2E8F0', fontSize: 10, padding: '3px 6px', borderRadius: 4, cursor: 'pointer' }}>WWW</button>
+                    <button type="button" onClick={() => setServerDraft('https://attaieproperties.com')} style={{ background: V1.slateSoft, border: `1px solid ${V1.border}`, color: V1.ink, fontSize: 10, padding: '3px 6px', borderRadius: 4, cursor: 'pointer' }}>Main</button>
+                    <button type="button" onClick={() => setServerDraft('https://www.attaieproperties.com')} style={{ background: V1.slateSoft, border: `1px solid ${V1.border}`, color: V1.ink, fontSize: 10, padding: '3px 6px', borderRadius: 4, cursor: 'pointer' }}>WWW</button>
                   </div>
                   <div style={{ display: 'flex', gap: 6 }}>
-                    <button type="button" onClick={() => setEditingServer(false)} style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: 11, cursor: 'pointer' }}>Cancel</button>
-                    <button type="button" onClick={saveServer} style={{ background: '#0145F2', border: 'none', color: '#fff', fontSize: 11, fontWeight: 600, padding: '4px 9px', borderRadius: 5, cursor: 'pointer' }}>Save</button>
+                    <button type="button" onClick={() => setEditingServer(false)} style={{ background: 'none', border: 'none', color: V1.slate, fontSize: 11, cursor: 'pointer' }}>Cancel</button>
+                    <button type="button" onClick={saveServer} style={{ background: V1.blue, border: 'none', color: '#fff', fontSize: 11, fontWeight: 600, padding: '4px 9px', borderRadius: 5, cursor: 'pointer' }}>Save</button>
                   </div>
                 </div>
               </div>
@@ -564,7 +565,7 @@ export default function Login() {
             </div>
           )}
 
-          <button style={S.btn} disabled={busy || googleBusy}>
+          <button style={S.btn} disabled={busy}>
             <span>{busy ? 'Signing in…' : 'Sign In'}</span>
             <span aria-hidden="true">→</span>
           </button>

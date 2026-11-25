@@ -19,7 +19,6 @@ import type {
 } from "../../../packages/staff-contracts/types";
 
 import { resolveStaffApiEndpoint } from "../../../packages/staff-contracts/role-preference.mjs";
-import { testConnection } from "../../../shared/googleWorkspaceAuth";
 
 const envApiBaseUrl = import.meta.env.VITE_STAFF_API_BASE_URL || "";
 let csrf = "";
@@ -99,7 +98,7 @@ export const api = {
     return data;
   },
   async loginWithGoogle(): Promise<Session> {
-    throw new Error("Google sign-in is disabled.");
+    throw new Error("Password authentication is enabled; Google sign-in is disabled.");
   },
   async logout() {
     return await request("auth/logout", "POST", {});

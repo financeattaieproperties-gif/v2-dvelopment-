@@ -110,9 +110,10 @@ if ($method === 'POST' || $method === 'PUT') {
     // Check if columns exist in INFORMATION_SCHEMA.COLUMNS (standard MySQL 8.0 & MariaDB compatible)
     $hasGalleryCol = false;
     $hasVideoCol = false;
+    $hasTechPlanCol = false;
     $colStmt = $db->prepare("
         SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'project_units' AND COLUMN_NAME IN ('gallery_images', 'video_url')
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'project_units' AND COLUMN_NAME IN ('gallery_images', 'video_url', 'technical_plan_url')
     ");
     if ($colStmt) {
         $colStmt->execute();
@@ -120,6 +121,7 @@ if ($method === 'POST' || $method === 'PUT') {
         while ($colRow = $colRes->fetch_assoc()) {
             if ($colRow['COLUMN_NAME'] === 'gallery_images') $hasGalleryCol = true;
             if ($colRow['COLUMN_NAME'] === 'video_url') $hasVideoCol = true;
+            if ($colRow['COLUMN_NAME'] === 'technical_plan_url') $hasTechPlanCol = true;
         }
         $colStmt->close();
     }
@@ -134,9 +136,17 @@ if ($method === 'POST' || $method === 'PUT') {
             $hasVideoCol = true;
         }
     }
+    if (!$hasTechPlanCol) {
+        if (@$db->query("ALTER TABLE project_units ADD COLUMN technical_plan_url VARCHAR(512) DEFAULT NULL")) {
+            $hasTechPlanCol = true;
+        }
+    }
 
     if ($method === 'POST') {
-        if ($hasGalleryCol && $hasVideoCol) {
+        if ($hasGalleryCol && $hasVideoCol && $hasTechPlanCol) {
+            $stmt = $db->prepare('INSERT INTO project_units (project_id,unit_number,title,beds,baths,area,floor,price,currency,status,image_url,gallery_images,video_url,technical_plan_url,description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+            $stmt->bind_param('issiididsssssss', $projectId, $unit, $title, $beds, $baths, $area, $floor, $price, $currency, $status, $image, $galleryJson, $videoUrl, $techPlan, $descToStore);
+        } elseif ($hasGalleryCol && $hasVideoCol) {
             $stmt = $db->prepare('INSERT INTO project_units (project_id,unit_number,title,beds,baths,area,floor,price,currency,status,image_url,gallery_images,video_url,description) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
             $stmt->bind_param('issiididssssss', $projectId, $unit, $title, $beds, $baths, $area, $floor, $price, $currency, $status, $image, $galleryJson, $videoUrl, $descToStore);
         } else {
@@ -153,7 +163,10 @@ if ($method === 'POST' || $method === 'PUT') {
     }
 
     if (!$id) json_out(['error' => 'id required'], 400);
-    if ($hasGalleryCol && $hasVideoCol) {
+    if ($hasGalleryCol && $hasVideoCol && $hasTechPlanCol) {
+        $stmt = $db->prepare('UPDATE project_units SET unit_number=?,title=?,beds=?,baths=?,area=?,floor=?,price=?,currency=?,status=?,image_url=?,gallery_images=?,video_url=?,technical_plan_url=?,description=? WHERE id=? AND project_id=?');
+        $stmt->bind_param('ssiididsssssssii', $unit, $title, $beds, $baths, $area, $floor, $price, $currency, $status, $image, $galleryJson, $videoUrl, $techPlan, $descToStore, $id, $projectId);
+    } elseif ($hasGalleryCol && $hasVideoCol) {
         $stmt = $db->prepare('UPDATE project_units SET unit_number=?,title=?,beds=?,baths=?,area=?,floor=?,price=?,currency=?,status=?,image_url=?,gallery_images=?,video_url=?,description=? WHERE id=? AND project_id=?');
         $stmt->bind_param('ssiididssssssii', $unit, $title, $beds, $baths, $area, $floor, $price, $currency, $status, $image, $galleryJson, $videoUrl, $descToStore, $id, $projectId);
     } else {
