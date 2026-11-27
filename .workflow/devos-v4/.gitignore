@@ -1,0 +1,3 @@
+# Runtime SQLite state, provider logs and duplicate curated source stay local.
+runtime*/
+curated-source/

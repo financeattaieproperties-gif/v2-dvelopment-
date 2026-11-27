@@ -1,0 +1,462 @@
+[
+  [
+    "Platform overview",
+    [
+      [
+        "Customer",
+        "Public website"
+      ],
+      [
+        "Publishing",
+        "Website Admin"
+      ],
+      [
+        "Operations",
+        "Staff workspaces"
+      ],
+      [
+        "Field work",
+        "Android / iOS"
+      ],
+      [
+        "Desk work",
+        "Electron wrappers"
+      ]
+    ],
+    "Separate customer, publishing and operational experiences share consistent product foundations."
+  ],
+  [
+    "System architecture",
+    [
+      [
+        "Public zone",
+        "Website + Admin"
+      ],
+      [
+        "Website API",
+        "Website database"
+      ],
+      [
+        "Identity",
+        "Firebase Authentication"
+      ],
+      [
+        "Staff API",
+        "Internal CRM database"
+      ],
+      [
+        "Publishing bridge",
+        "Submission database"
+      ],
+      [
+        "Private zone",
+        "Config / sessions / files"
+      ]
+    ],
+    "Three separate databases. Private configuration lives outside all web roots. Arrows describe relationships, not shared credentials."
+  ],
+  [
+    "Customer lifecycle",
+    [
+      [
+        "Call Center",
+        "Capture and qualify"
+      ],
+      [
+        "Identity review",
+        "Match customer/property"
+      ],
+      [
+        "Sales",
+        "Follow up and visit"
+      ],
+      [
+        "Sales",
+        "Submit closure evidence"
+      ],
+      [
+        "Management",
+        "Verify and issue contract"
+      ],
+      [
+        "Finance",
+        "Collect and receipt"
+      ]
+    ],
+    "Correction, duplicate review, rescheduling and lost outcomes remain explicit alternate paths. Closed, contracted and paid are separate milestones."
+  ],
+  [
+    "Marketing lifecycle",
+    [
+      [
+        "Manager",
+        "Property intake"
+      ],
+      [
+        "Videographer",
+        "Schedule and film"
+      ],
+      [
+        "Editor",
+        "Edit and prepare"
+      ],
+      [
+        "Editor",
+        "Record post + submit"
+      ],
+      [
+        "Submission bridge",
+        "Queue and retry"
+      ],
+      [
+        "Website Admin",
+        "Review and publish"
+      ]
+    ],
+    "Rejected content returns for correction. Recorded posting status is not proof of automated external social publication."
+  ],
+  [
+    "Engineering lifecycle",
+    [
+      [
+        "CEO",
+        "Assign work"
+      ],
+      [
+        "Engineering",
+        "Upload version"
+      ],
+      [
+        "CEO",
+        "Review evidence"
+      ],
+      [
+        "Decision",
+        "Approve or revise"
+      ],
+      [
+        "Engineering",
+        "Retain version history"
+      ]
+    ],
+    "Revision creates another version. Previously approved files and review history remain auditable."
+  ],
+  [
+    "Permissions map",
+    [
+      [
+        "Website Admin",
+        "Website + publication"
+      ],
+      [
+        "CEO",
+        "Global oversight"
+      ],
+      [
+        "Management",
+        "Branch operations"
+      ],
+      [
+        "Sales Leader",
+        "Team oversight"
+      ],
+      [
+        "Staff",
+        "Own / assigned work"
+      ],
+      [
+        "Finance",
+        "Restricted finance data"
+      ]
+    ],
+    "Server authorization is authoritative. Hidden navigation alone does not enforce permissions."
+  ],
+  [
+    "Website Admin",
+    [
+      [
+        "Input",
+        "Approved submissions"
+      ],
+      [
+        "Website Admin",
+        "Review catalog and content"
+      ],
+      [
+        "Decision",
+        "Approve / return / publish"
+      ],
+      [
+        "Output",
+        "Website visitors"
+      ]
+    ],
+    "/admin \u2014 Website database; separate authentication. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "CEO",
+    [
+      [
+        "Input",
+        "Cross-branch exceptions"
+      ],
+      [
+        "CEO",
+        "Assign inventory and staff"
+      ],
+      [
+        "Decision",
+        "Review engineering versions"
+      ],
+      [
+        "Output",
+        "Branch owners"
+      ]
+    ],
+    "/ceo \u2014 Only global internal role. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Management",
+    [
+      [
+        "Input",
+        "Qualified closure evidence"
+      ],
+      [
+        "Management",
+        "Verify sellers and boundaries"
+      ],
+      [
+        "Decision",
+        "Issue contract / amend"
+      ],
+      [
+        "Output",
+        "Finance installments"
+      ]
+    ],
+    "/management \u2014 Active branch scope. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Call Center",
+    [
+      [
+        "Input",
+        "Inquiry or phone contact"
+      ],
+      [
+        "Call Center",
+        "Match customer and property"
+      ],
+      [
+        "Decision",
+        "Qualify / schedule / hand off"
+      ],
+      [
+        "Output",
+        "Assigned Sales agent"
+      ]
+    ],
+    "/callcenter \u2014 Branch and assigned work. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Sales",
+    [
+      [
+        "Input",
+        "Assigned lead and history"
+      ],
+      [
+        "Sales",
+        "Call / follow up / visit"
+      ],
+      [
+        "Decision",
+        "Closed / lost / reschedule"
+      ],
+      [
+        "Output",
+        "Management verification"
+      ]
+    ],
+    "/sales \u2014 Own and explicitly shared leads. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Sales Leader",
+    [
+      [
+        "Input",
+        "Team queue and deadlines"
+      ],
+      [
+        "Sales Leader",
+        "Allocate work and coach"
+      ],
+      [
+        "Decision",
+        "Resolve team exceptions"
+      ],
+      [
+        "Output",
+        "Assigned team agents"
+      ]
+    ],
+    "/sales-leader \u2014 Team within branch. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Finance",
+    [
+      [
+        "Input",
+        "Issued contract installments"
+      ],
+      [
+        "Finance",
+        "Record and verify deposit"
+      ],
+      [
+        "Decision",
+        "Post / correct / reverse"
+      ],
+      [
+        "Output",
+        "Receipt and balance"
+      ]
+    ],
+    "/finance \u2014 Authorized finance records. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Marketing",
+    [
+      [
+        "Input",
+        "Property production intake"
+      ],
+      [
+        "Marketing",
+        "Film then edit content"
+      ],
+      [
+        "Decision",
+        "Post / submit / correct"
+      ],
+      [
+        "Output",
+        "Website Admin review"
+      ]
+    ],
+    "/marketing \u2014 Manager / Videographer / Editor. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Engineering",
+    [
+      [
+        "Input",
+        "CEO assignment and deadline"
+      ],
+      [
+        "Engineering",
+        "Upload versioned deliverable"
+      ],
+      [
+        "Decision",
+        "CEO approves / revises"
+      ],
+      [
+        "Output",
+        "Next approved version"
+      ]
+    ],
+    "/engineering \u2014 Assigned work; retain history. Proposed panel: due-work queue, searchable records, filter pills, contextual verification drawer and audit history."
+  ],
+  [
+    "Panel structure",
+    [
+      [
+        "Navigation",
+        "64px rail + drawer"
+      ],
+      [
+        "Header",
+        "Search and breadcrumbs"
+      ],
+      [
+        "Overview",
+        "Observed KPIs only"
+      ],
+      [
+        "Records",
+        "Filters and pagination"
+      ],
+      [
+        "Action queue",
+        "Checklist and drawer"
+      ],
+      [
+        "States",
+        "Empty / error / offline"
+      ]
+    ],
+    "Variant 1 blue, green and slate. No invented historical series. Accessible keyboard focus and clear status labels."
+  ],
+  [
+    "Platform layouts",
+    [
+      [
+        "Desktop",
+        "Split-rail workspace"
+      ],
+      [
+        "Tablet",
+        "Collapsible drawer"
+      ],
+      [
+        "Mobile",
+        "Today / Leads / Follow-ups"
+      ],
+      [
+        "Android",
+        "Kotlin host"
+      ],
+      [
+        "iOS",
+        "Capacitor host"
+      ],
+      [
+        "Desktop app",
+        "Electron loopback proxy"
+      ]
+    ],
+    "One approved staff source. Product remains English/Dari with RTL; safe areas, keyboard, files and sessions require device verification."
+  ],
+  [
+    "Delivery roadmap",
+    [
+      [
+        "Baseline",
+        "GitHub + protected changes"
+      ],
+      [
+        "Audit and design",
+        "Evidence + visual approval"
+      ],
+      [
+        "Core repair",
+        "Auth / roles / truthful data"
+      ],
+      [
+        "Vertical workflows",
+        "Departments + handoffs"
+      ],
+      [
+        "Verification",
+        "DB / browser / native QA"
+      ],
+      [
+        "Release packet",
+        "Manual V2 staging upload"
+      ]
+    ],
+    "No production deployment is authorized. Each phase advances only on recorded evidence; pending checks stay visible."
+  ]
+]

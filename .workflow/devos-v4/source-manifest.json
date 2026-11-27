@@ -1,0 +1,1686 @@
+{
+  "baseline": "e1b25244b61e4dda5a7c0182fbd16ee8621ce40d",
+  "count": 336,
+  "files": [
+    {
+      "path": "admin-panel/package.json",
+      "bytes": 1307,
+      "sha256": "c6ab3ba5b9b7e87994c9796171c67f1308572d8721b68eb663c735395a8106c2"
+    },
+    {
+      "path": "admin-panel/src/App.tsx",
+      "bytes": 4129,
+      "sha256": "d6bddfa7535e8626c22860d105eb261dd982ae71fda8eb97ea665131e9bab693"
+    },
+    {
+      "path": "admin-panel/src/api.ts",
+      "bytes": 39708,
+      "sha256": "c9f0a3045b6c9a25de439338ff8a6329bc4b57e8160eb0412edeef0c024fd30c"
+    },
+    {
+      "path": "admin-panel/src/components/ApartmentGalleryReorder.tsx",
+      "bytes": 17586,
+      "sha256": "a6a1131d46980fbf34a28841da3893624c9f3f9577411c11b9d104bef2eabf41"
+    },
+    {
+      "path": "admin-panel/src/components/AttaieLogoEntrance.tsx",
+      "bytes": 3029,
+      "sha256": "9e3a88f2cf174258a1f57b59b580a1dfa5dd6bd7193e66356bec3fd6ed6cc991"
+    },
+    {
+      "path": "admin-panel/src/components/GoogleWorkspaceTools.tsx",
+      "bytes": 45630,
+      "sha256": "c50bf7708e1272834cc26dc634ade489fb158606ba8fd5f205d7f8d7eba4a9fd"
+    },
+    {
+      "path": "admin-panel/src/components/ImageUpload.tsx",
+      "bytes": 9565,
+      "sha256": "14f3b8a0a96f38fbf03b4adb83b0f5b9d51171f77bb607e0939aab27d49bd61b"
+    },
+    {
+      "path": "admin-panel/src/components/InquiryFollowupEditor.tsx",
+      "bytes": 5463,
+      "sha256": "7a0616e91b406e8e0e7340a029741da46a18fe28e5365f9e7cc05f91dfcce1cf"
+    },
+    {
+      "path": "admin-panel/src/components/Layout.tsx",
+      "bytes": 33321,
+      "sha256": "27cef389186107d826a3d0b0b9ee21ff95a01e2c495f8b258899e462e2cdc5a8"
+    },
+    {
+      "path": "admin-panel/src/components/ProjectOccupancyCard.tsx",
+      "bytes": 13833,
+      "sha256": "54f5913ad0130c5598f02f046262834f11ddd5bb321cb2b5a01f09730fe23840"
+    },
+    {
+      "path": "admin-panel/src/components/SeoContentManagementPanel.tsx",
+      "bytes": 18668,
+      "sha256": "b704a444bc51f9ba9709baf880b17f447f2923767e37bbbce44b1f1fadbdf725"
+    },
+    {
+      "path": "admin-panel/src/components/SitemapStatusWidget.tsx",
+      "bytes": 14432,
+      "sha256": "f16cf68aafb1756069119ba6e2d9d38cdc085176d905d02d127592225dfb451b"
+    },
+    {
+      "path": "admin-panel/src/components/TitleBar.tsx",
+      "bytes": 2790,
+      "sha256": "bf184289fe6e1759559ac117bf25da8a644371ebe28c5cc9b322627c39b07e95"
+    },
+    {
+      "path": "admin-panel/src/components/ui/BeforeAfterComparison.tsx",
+      "bytes": 1180,
+      "sha256": "2bd9cafbcb4084c4ad9a3c1958bfb49ce6f130ae7ea3d9e806e41ea350ad72e9"
+    },
+    {
+      "path": "admin-panel/src/components/ui/DateRangePicker.tsx",
+      "bytes": 2076,
+      "sha256": "30e6ec64b5118453479ed03c652dc13fa07710a4cbf1883b190127d02dc7abec"
+    },
+    {
+      "path": "admin-panel/src/components/ui/FullscreenCalendar.tsx",
+      "bytes": 5078,
+      "sha256": "9911bc3152b7434ed0ec4e4d64378331d760d6b19eda2bdbb7c3cfb7f68a6120"
+    },
+    {
+      "path": "admin-panel/src/components/ui/LiquidProgressBar.tsx",
+      "bytes": 943,
+      "sha256": "2b2a57663bed5549aae364b3ac108b2df111ef416ea94e95d60e52445f262b2a"
+    },
+    {
+      "path": "admin-panel/src/components/ui/PaymentPlanCards.tsx",
+      "bytes": 1123,
+      "sha256": "9702c204473edf1731c8e36d25802083af2593b3cef8464443864cffb44df060"
+    },
+    {
+      "path": "admin-panel/src/components/ui/badge.tsx",
+      "bytes": 1165,
+      "sha256": "e8fd69aa50e5e63b841c1afe743a5295e371c324b3f3900418665a9c3a1b1898"
+    },
+    {
+      "path": "admin-panel/src/components/ui/button.tsx",
+      "bytes": 1860,
+      "sha256": "bf9936b737c3741279a05772bb53c85da3faea19da19d7d73995417b35ea69c2"
+    },
+    {
+      "path": "admin-panel/src/components/ui/checkbox.tsx",
+      "bytes": 1101,
+      "sha256": "124f080302a953d255926dd206c00a28edc7f805d97b5280b85fd83cfa49602c"
+    },
+    {
+      "path": "admin-panel/src/components/ui/dialog.tsx",
+      "bytes": 3495,
+      "sha256": "fc5dea12da8552aa1879609e94c763828a8f0b27dd11d8db6f226edc61a91902"
+    },
+    {
+      "path": "admin-panel/src/components/ui/table-with-dialog.tsx",
+      "bytes": 2854,
+      "sha256": "bc649e04109a53343c4c8b3df2e81fb7700aafb78f43b3a21cb1d27447486a9f"
+    },
+    {
+      "path": "admin-panel/src/components/ui/table.tsx",
+      "bytes": 2883,
+      "sha256": "c3255fe8828d6277cad91d5a018b25ba9542f9cf1b42dc432d7722a04c492632"
+    },
+    {
+      "path": "admin-panel/src/components/variant1.tsx",
+      "bytes": 6462,
+      "sha256": "ba162aac004523a9421551ab415d9e74e4b0f6014be0ad59215d0eaea051c1fc"
+    },
+    {
+      "path": "admin-panel/src/components/visual/ExplorerEditor.tsx",
+      "bytes": 13151,
+      "sha256": "c1b44c32dac6fd6845af0f616da87cd8110b984af14ffc3f470b93067b1d9f76"
+    },
+    {
+      "path": "admin-panel/src/components/visual/ImageRegionEditor.tsx",
+      "bytes": 8687,
+      "sha256": "747acfaf659f3097ea22fc6a655f4d296b8c766a49f771bfe0b1224301cf57e3"
+    },
+    {
+      "path": "admin-panel/src/components/visual/LandingBackgroundSettings.tsx",
+      "bytes": 6727,
+      "sha256": "4cffcdeb7ee7f6f5670672494c80f20e7f75f494bb431a90363bd8b6d66fbedf"
+    },
+    {
+      "path": "admin-panel/src/components/visual/LoginBackgroundSettings.tsx",
+      "bytes": 6337,
+      "sha256": "72e933fe97dfdaea261340dd16f81fcbafa914f6d9be62f6e7d9331856d6ea13"
+    },
+    {
+      "path": "admin-panel/src/context/AuthContext.tsx",
+      "bytes": 2180,
+      "sha256": "2a3bcc1b821bfab7dc66251406e2bfe64f01135b73d1ff00ae2af9bf7d9d800b"
+    },
+    {
+      "path": "admin-panel/src/electron.d.ts",
+      "bytes": 740,
+      "sha256": "b3afc9edc51ea06fc5e151247e1a89749e806b2a80333e0b4459949cbe8e408f"
+    },
+    {
+      "path": "admin-panel/src/lib/seoKeywords.ts",
+      "bytes": 4524,
+      "sha256": "b2a0f0e29399c418276d91dcc3ea44d85158274495f1ab4d34501183f4cee709"
+    },
+    {
+      "path": "admin-panel/src/lib/utils.ts",
+      "bytes": 175,
+      "sha256": "9e45d6d21e0d57bf85930ba2bf6fdd9f5f0175d1129844356081a6050975deb1"
+    },
+    {
+      "path": "admin-panel/src/main.tsx",
+      "bytes": 217,
+      "sha256": "e0b99899f4e3779222aec84e8086b1b7c85248b32b1dd658577629856a430158"
+    },
+    {
+      "path": "admin-panel/src/pages/AgentForm.tsx",
+      "bytes": 5958,
+      "sha256": "670d01fe2273b64256d278f72feff906d49ab56b0332b65707ddb5fe1892ad56"
+    },
+    {
+      "path": "admin-panel/src/pages/Agents.tsx",
+      "bytes": 3100,
+      "sha256": "572089ec2fb6e1d123a65e3c12c5c85b0719defc9e5200e23edb4766f6c0cf84"
+    },
+    {
+      "path": "admin-panel/src/pages/BranchForm.tsx",
+      "bytes": 4390,
+      "sha256": "78db574e45f8dfefa07c6171f5df4e126d9560510d5320198e0c208b5666f960"
+    },
+    {
+      "path": "admin-panel/src/pages/Branches.tsx",
+      "bytes": 2711,
+      "sha256": "7a5958d44ec453426d02eeab2c872d6b432ca5c944627162ec89465340450851"
+    },
+    {
+      "path": "admin-panel/src/pages/CareerApplications.tsx",
+      "bytes": 11642,
+      "sha256": "b2cb0e22c66a0e2e0b34d5beda6dd7590fd6ed0cef0bd22a87503b8dd9e62be2"
+    },
+    {
+      "path": "admin-panel/src/pages/CareerForm.tsx",
+      "bytes": 9492,
+      "sha256": "6a032c49191e9b3ea802a4fde56e56eee4d74b13d95a6c02a8dd6629b5ad3482"
+    },
+    {
+      "path": "admin-panel/src/pages/Careers.tsx",
+      "bytes": 10075,
+      "sha256": "5ce8ee9e19c5d98a4adbaf7d127506bd6dcbbafd8a6c0f959f2b0081f9aa5490"
+    },
+    {
+      "path": "admin-panel/src/pages/ChatInbox.tsx",
+      "bytes": 47635,
+      "sha256": "d2a46eb3932bedc8f8472cdd4664901dfcefe49e7c0ffd007c65fe8c683dfecd"
+    },
+    {
+      "path": "admin-panel/src/pages/Leads.tsx",
+      "bytes": 25605,
+      "sha256": "707aed914ebcb6e90f467b32be55c8ffaaa4a94ea66b418cb5b428c388c571e9"
+    },
+    {
+      "path": "admin-panel/src/pages/Login.tsx",
+      "bytes": 18945,
+      "sha256": "8f3862a3ba14e53c96f662315756e73b7fd125782b4ce0e4b9f74302f93aef02"
+    },
+    {
+      "path": "admin-panel/src/pages/Overview.tsx",
+      "bytes": 38456,
+      "sha256": "7ab33404f66bdb9b0bbb10dbe34728838a0364219fad752f6bfc4b72cceb1460"
+    },
+    {
+      "path": "admin-panel/src/pages/ProjectForm.tsx",
+      "bytes": 41552,
+      "sha256": "93eb039c6a7b6e6dc919eacf75b284b632fc8880ec9765738d7c7695ad116e50"
+    },
+    {
+      "path": "admin-panel/src/pages/Projects.tsx",
+      "bytes": 11633,
+      "sha256": "cb3717d17209ce70b76924e169da403b3577247ef9adce5b126fa254534e1364"
+    },
+    {
+      "path": "admin-panel/src/pages/Properties.tsx",
+      "bytes": 9050,
+      "sha256": "81d677bea21be56c7be34abe96922d9162d3e365ed4be1f989db17ae60dce957"
+    },
+    {
+      "path": "admin-panel/src/pages/PropertyForm.tsx",
+      "bytes": 14870,
+      "sha256": "74a98cc1df6d7c1f3f6f538c44eefd1ea54b89d4a4aa5acd374f2debc4555a65"
+    },
+    {
+      "path": "admin-panel/src/pages/PublishingTasks.tsx",
+      "bytes": 16001,
+      "sha256": "a20ef0ed85a7998c8880666de751a6c472a3fb852996c11d91112d1888566ea3"
+    },
+    {
+      "path": "admin-panel/src/pages/SeoPage.tsx",
+      "bytes": 37675,
+      "sha256": "1f8939a9952cedf8907ecbe7b341e7195d0ef1ec401981190d007bb01ba01242"
+    },
+    {
+      "path": "admin-panel/src/pages/SettingsPage.tsx",
+      "bytes": 7125,
+      "sha256": "e7329f871d9d4bbf3233890e5b4e47f43f548f38ab147022aa88d49ecaf07a30"
+    },
+    {
+      "path": "admin-panel/src/pages/VaultPage.tsx",
+      "bytes": 619,
+      "sha256": "1082690963bd724f9cc1a1e377352ab1088d521b0ef50028dce28a61f5ef536d"
+    },
+    {
+      "path": "admin-panel/src/pages/Visits.tsx",
+      "bytes": 17975,
+      "sha256": "1ea06d88081f9d27861309b1e6c2b048e30b3dbf7274468d19eaa238b3e59ea1"
+    },
+    {
+      "path": "admin-panel/src/visualConfigApi.ts",
+      "bytes": 3883,
+      "sha256": "4bfa71093be35ffa137e4a677dba307519a8daa25e7e9e0ae535879516869f4b"
+    },
+    {
+      "path": "admin-panel/src/vite-env.d.ts",
+      "bytes": 39,
+      "sha256": "424faf9241dd699dda995b367ed36665732da1e6ec1f33b2fd40394488ecac92"
+    },
+    {
+      "path": "admin-panel/tsconfig.json",
+      "bytes": 659,
+      "sha256": "0b336774ef79059913d0890c95f58d3f647737b2ed0f08e61e34f487d6a61732"
+    },
+    {
+      "path": "apps/staff/package.json",
+      "bytes": 518,
+      "sha256": "b0b19c09d2a8857c9564a9d8dd83cce037318809aac2825cfef4708635ad09be"
+    },
+    {
+      "path": "apps/staff/src/api.ts",
+      "bytes": 7461,
+      "sha256": "5a845668bf6152b41091a3afbd8017092dac0eaa64303cbff78b4ef75786600a"
+    },
+    {
+      "path": "apps/staff/src/auth/biometric.ts",
+      "bytes": 6039,
+      "sha256": "b73f8f882641e128f7f3f5d81867b243b3e19d2ab3d60dbdce950417ca7690d2"
+    },
+    {
+      "path": "apps/staff/src/auth/firebase.mjs",
+      "bytes": 1372,
+      "sha256": "200d9cbed33ab3ab14d9164cbad204ed4ab80afae5bf7bd19f52d3077df2e705"
+    },
+    {
+      "path": "apps/staff/src/callcenter-theme.css",
+      "bytes": 8791,
+      "sha256": "9071ba1e2a3e6be59bd57619e6bcaa40add22b55026f43ef06efef08fe0ff640"
+    },
+    {
+      "path": "apps/staff/src/components/AgentConversionChart.tsx",
+      "bytes": 13162,
+      "sha256": "bec0dbd43f8eb2a50e056e405bee5c641ae0101012a4a7310404ac34e77653b9"
+    },
+    {
+      "path": "apps/staff/src/components/AgreementVerification.tsx",
+      "bytes": 1724,
+      "sha256": "4e3870e865dad361efde0176077da351720017c90bbc5729ddabfb82593c1716"
+    },
+    {
+      "path": "apps/staff/src/components/AttaieLogoEntrance.tsx",
+      "bytes": 3038,
+      "sha256": "9c44ba2a1074d04b84f9cd848e60231b2273654a48de83d98742beb4bf96c119"
+    },
+    {
+      "path": "apps/staff/src/components/CrmRecordsWorkspace.tsx",
+      "bytes": 27049,
+      "sha256": "ef63384403eb830b1efae20a26c934a2a800b927e7ca2dea3858cf26fb1c606a"
+    },
+    {
+      "path": "apps/staff/src/components/DepartmentRosterStrip.tsx",
+      "bytes": 19428,
+      "sha256": "62706522c9a61fcb04e2400aec8ca119fb9479219529bf74be5061efee41a330"
+    },
+    {
+      "path": "apps/staff/src/components/DigitalVault.tsx",
+      "bytes": 49,
+      "sha256": "afdffe9a2937a6418be98ff94030de8f55687159d2b1ae52314dc7cb9a0cd426"
+    },
+    {
+      "path": "apps/staff/src/components/EngineeringWorkspace.tsx",
+      "bytes": 37130,
+      "sha256": "935e10e29de97029c1cb89f19fd34c69cede97e979054624e20ac030357c6915"
+    },
+    {
+      "path": "apps/staff/src/components/FinanceWorkspace.tsx",
+      "bytes": 37539,
+      "sha256": "8c489a5da76ebc7bb75b09ff12bea2faea89c38ab6d1c8e56ae596b13ae91f5e"
+    },
+    {
+      "path": "apps/staff/src/components/GoogleWorkspaceIntegration.tsx",
+      "bytes": 42654,
+      "sha256": "0b7f5b9494684be5f469ac6844b30b046feefa3ad5321d4cdc57ee885176c53c"
+    },
+    {
+      "path": "apps/staff/src/components/HrContractsWorkspace.tsx",
+      "bytes": 54429,
+      "sha256": "f1261f6684b7459a3372f779a2fe484afdc4c1b1d2ac1a3d9adf71ad3185f0d4"
+    },
+    {
+      "path": "apps/staff/src/components/HrProjectPreparation.tsx",
+      "bytes": 8083,
+      "sha256": "1ad16ee546f83751bb627707b8fb3ddb3f418b1b08ea28c2dd8e99626130c7ab"
+    },
+    {
+      "path": "apps/staff/src/components/LeadConversionFunnelChart.tsx",
+      "bytes": 13742,
+      "sha256": "dc5b419b4a2f2d8b055d37b042f7521883384b541c0b00fc12cc8872a12f2e0c"
+    },
+    {
+      "path": "apps/staff/src/components/MarketingWorkspace.tsx",
+      "bytes": 51638,
+      "sha256": "f6860f3f13b4609814ffb19b26a868967fdef92e73e196fd4da0bf24627c8803"
+    },
+    {
+      "path": "apps/staff/src/components/OverviewAnalyticsStrip.tsx",
+      "bytes": 11781,
+      "sha256": "3d67033ddffe429849a536e3d64904a7ff4d42a7b5047c8421372c90c0c5edee"
+    },
+    {
+      "path": "apps/staff/src/components/OverviewWorkspace.tsx",
+      "bytes": 8040,
+      "sha256": "344ebe99ae089fe949a85da0392d679b5d3f301c717c8d6e0231c95960e8d4b7"
+    },
+    {
+      "path": "apps/staff/src/components/ProfileWorkspace.tsx",
+      "bytes": 8303,
+      "sha256": "85bc78b5e43626080a5ab53597bf6099401dd4172329584c296316736e7349d0"
+    },
+    {
+      "path": "apps/staff/src/components/ProjectInventoryWizard.css",
+      "bytes": 9400,
+      "sha256": "70629de51202984ae4bda320ce0ee60f42038ef73c115d1398faf489669152af"
+    },
+    {
+      "path": "apps/staff/src/components/ProjectInventoryWizard.tsx",
+      "bytes": 25249,
+      "sha256": "06a4204e39d41698c33b2209ccd76ffe1a807f306990298921373088da28d416"
+    },
+    {
+      "path": "apps/staff/src/components/ProjectOccupancyChart.tsx",
+      "bytes": 13812,
+      "sha256": "427939bcd16e922a9b6060feabb43445a0c09184f20aa797496f826cac4ddfc6"
+    },
+    {
+      "path": "apps/staff/src/components/SalesMobileCards.tsx",
+      "bytes": 10840,
+      "sha256": "39a377d4be394beb65e9acc5119b271a6debb1971c6031d79b740b9b2917e1a0"
+    },
+    {
+      "path": "apps/staff/src/components/StaffAdminModals.tsx",
+      "bytes": 11975,
+      "sha256": "4f8e6fda45999ada6da9a6c03d05117d06f9b8c0ea5c0fa9ec4cbb1e4e228825"
+    },
+    {
+      "path": "apps/staff/src/components/StaffLeadModals.tsx",
+      "bytes": 27208,
+      "sha256": "26cf1683de9e8c67677e67ddd82a844f3d4737bfcc11c74336f3cf04a2d251b4"
+    },
+    {
+      "path": "apps/staff/src/components/StaffLoginView.tsx",
+      "bytes": 27778,
+      "sha256": "1d349906e85c9134aa4e0f1e43ca387ed88a650626daea0b7153e4bdd26bb734"
+    },
+    {
+      "path": "apps/staff/src/components/StaffPhotoUpload.tsx",
+      "bytes": 2795,
+      "sha256": "462bef15ef82eaa044212f2678ef869edbaf0603c687297f21f49065b5a40238"
+    },
+    {
+      "path": "apps/staff/src/components/StaffUiPrimitives.tsx",
+      "bytes": 4188,
+      "sha256": "2b7cc0f83e96424b72bd03ffa2357d2235cc2c5f9e07646e4528cd6002092a81"
+    },
+    {
+      "path": "apps/staff/src/components/WeeklyLeaderboardPage.tsx",
+      "bytes": 32774,
+      "sha256": "c551a39c6325ae2afad6acc60b78fcab02bf361d068987e13d9c9b89f6fb5ffb"
+    },
+    {
+      "path": "apps/staff/src/components/readUpload.ts",
+      "bytes": 387,
+      "sha256": "891ee278476ef36792a780c654ef967327330ec7d57dbf40ebedf3c10daff520"
+    },
+    {
+      "path": "apps/staff/src/components/staff-documents.css",
+      "bytes": 3815,
+      "sha256": "c13ae0b9b33a011c45efbe1664aaf29868039eb78480f24b48d2149ba16c1838"
+    },
+    {
+      "path": "apps/staff/src/components/ui/circle-menu.tsx",
+      "bytes": 7927,
+      "sha256": "99e7d511dabc53bf8b1727464fcf6a6190f10ded052cf7f7e15016822dc10074"
+    },
+    {
+      "path": "apps/staff/src/components/ui/date-range-picker.tsx",
+      "bytes": 23824,
+      "sha256": "cdd20a7c36f98a0bcf1ca617a1eb3f2f6a63e0628f4ece426a510ed5c2e227ae"
+    },
+    {
+      "path": "apps/staff/src/components/ui/loaders-liquid-progress.tsx",
+      "bytes": 5061,
+      "sha256": "f79e969944cc94c749039f67687de4e90f8b9158617d9356c7d1467244bd5a51"
+    },
+    {
+      "path": "apps/staff/src/env.d.ts",
+      "bytes": 164,
+      "sha256": "86bad47f2243b503a4dfc854ccf2d99a4ca3a561a047b2e688f74d43e23efc18"
+    },
+    {
+      "path": "apps/staff/src/hooks/useBatteryStatus.ts",
+      "bytes": 3213,
+      "sha256": "65c39970343836500e89279954def2698a185fa8d183fd5be5e387219a170d75"
+    },
+    {
+      "path": "apps/staff/src/hooks/useLeadNotifications.ts",
+      "bytes": 2865,
+      "sha256": "961594f8f2096f0acd68b7833a38e6c3106b4556d8aa9202c39fe84e4b4f05c1"
+    },
+    {
+      "path": "apps/staff/src/hooks/useLowBatteryWarning.ts",
+      "bytes": 1391,
+      "sha256": "293b216d638b74c52476ac0eb7e2b8c90d098a54000f5e142820105facf5f135"
+    },
+    {
+      "path": "apps/staff/src/hooks/useOnlineStatus.ts",
+      "bytes": 647,
+      "sha256": "d75b84e66ee169b113fa6b16327f154d51b1f42697952a2080895c27ad5f9a8a"
+    },
+    {
+      "path": "apps/staff/src/hooks/usePWAInstall.ts",
+      "bytes": 3598,
+      "sha256": "499c2f43440f67b66e82cd97fb92274aabc41aff1c7764c00f736f04664ea010"
+    },
+    {
+      "path": "apps/staff/src/i18n/en.json",
+      "bytes": 20428,
+      "sha256": "efc2a13cd310390d90c963fa4838222f404d607f6e8c1d66763eaceb92c50d45"
+    },
+    {
+      "path": "apps/staff/src/i18n/fa.json",
+      "bytes": 27050,
+      "sha256": "40c070e80ce6c2937ec1f0ed3875523d8c243550e8aa5459eb031547c4926a74"
+    },
+    {
+      "path": "apps/staff/src/main.tsx",
+      "bytes": 75612,
+      "sha256": "285ff45979a775c3f9b2e8590e74059ad118ac17f21874cf911287cd1bc748c7"
+    },
+    {
+      "path": "apps/staff/src/preview.ts",
+      "bytes": 41257,
+      "sha256": "48d7bf2521c43b7d9699705f3b5e22ca57149b1c087803c7f39911408b53511b"
+    },
+    {
+      "path": "apps/staff/src/pwa/leadNotificationService.ts",
+      "bytes": 10758,
+      "sha256": "eeaede126a087371b2c2978c25e29f266b3244980932d28fb8dc09a3e08b6115"
+    },
+    {
+      "path": "apps/staff/src/pwa/register.ts",
+      "bytes": 1762,
+      "sha256": "1e091ea25a35d7ef50d48746fb2fe5e4f1fd592e94c122ff84b6baf55c9c7604"
+    },
+    {
+      "path": "apps/staff/src/staffConfig.ts",
+      "bytes": 5516,
+      "sha256": "57fa05595dd6596efa466e1a084c75c898a9e6365e62ee5ebadff058ea6cfecd"
+    },
+    {
+      "path": "apps/staff/src/styles.css",
+      "bytes": 71757,
+      "sha256": "9c40fb59c215aeaeb9c32a3c33ad671c9149de0d0ac528b3b477f7af26b5b228"
+    },
+    {
+      "path": "apps/staff/tsconfig.json",
+      "bytes": 379,
+      "sha256": "4b03dfd02fe16158e73ca47de126c76fd19826198998226950962a69a7375fc4"
+    },
+    {
+      "path": "callcenter-desktop/package.json",
+      "bytes": 694,
+      "sha256": "9f93c8e55a2efed49e8ba6cd62f51bca2a82f51f49c62cef309d44ca4a6086bd"
+    },
+    {
+      "path": "package.json",
+      "bytes": 2068,
+      "sha256": "4c6d3b5dea6aea1c431c15ed86ae419324d1a78c6628098717e5ce7d09d01da3"
+    },
+    {
+      "path": "packages/staff-contracts/__tests__/panels-and-roles.test.ts",
+      "bytes": 8805,
+      "sha256": "1a2d42eea8edb05df4d7799717f6d10ff88c9493dac45332d613a3f54fa8e322"
+    },
+    {
+      "path": "packages/staff-contracts/__tests__/workflow.test.ts",
+      "bytes": 13346,
+      "sha256": "4e783cdaa8a78ff81b348be3b87d94372be6fe714a295ed6e7b94a0fb44209ee"
+    },
+    {
+      "path": "packages/staff-contracts/branch-policy.mjs",
+      "bytes": 1762,
+      "sha256": "919fc6b1fdb64ec0183e6d5bb8eba1770e28aab688f513a8038cdb3013a967e3"
+    },
+    {
+      "path": "packages/staff-contracts/documents.mjs",
+      "bytes": 1521,
+      "sha256": "a3fef8bfe641fc2863381388b30ce585181da4cf51a70b5d6b2be2c0f4d85cef"
+    },
+    {
+      "path": "packages/staff-contracts/inventory.mjs",
+      "bytes": 3782,
+      "sha256": "1a0b607ceb345389c41ff78315635be57ecec3de21da97042008b87e303f5c00"
+    },
+    {
+      "path": "packages/staff-contracts/offline-cache.mjs",
+      "bytes": 19501,
+      "sha256": "fea492b9f7dbee01dd39d1b10e567d9610fbae0f40c773677f9269e007cc1a54"
+    },
+    {
+      "path": "packages/staff-contracts/role-preference.mjs",
+      "bytes": 19436,
+      "sha256": "0c23af221db11c53a2c6a5ea5396ac7426fa87954a73ef225fd177f5c35833f2"
+    },
+    {
+      "path": "packages/staff-contracts/types.ts",
+      "bytes": 14232,
+      "sha256": "9280ded941a124054bc7288630fd6e5fb1e35d0685269f359e0b9c2e2aa2664f"
+    },
+    {
+      "path": "packages/staff-contracts/workflow.mjs",
+      "bytes": 61234,
+      "sha256": "65e4d0d143edeb65b44abd3292e345754401deff307f62aaea5ef40ec5c627c9"
+    },
+    {
+      "path": "public/api/admin-login.php",
+      "bytes": 4486,
+      "sha256": "f2003b04a1784fd3567b5715fb6db6153587c7132d772b3da73f407d20750882"
+    },
+    {
+      "path": "public/api/admin-logout.php",
+      "bytes": 530,
+      "sha256": "e2ad45f2a9018fa6a9bff783abdabd4d4b2572ce758001ed6f3484834acefe13"
+    },
+    {
+      "path": "public/api/admin/agents.php",
+      "bytes": 2864,
+      "sha256": "4a23a165411ca8e64cbf9b156be7fce31fd6552ba2ba14909f8ba9aa9be0b564"
+    },
+    {
+      "path": "public/api/admin/branches.php",
+      "bytes": 2027,
+      "sha256": "e61f4c598c31aa74ec7d7d61a688bad1f4ca40b46af3f9775ee4e835f4aa4e4a"
+    },
+    {
+      "path": "public/api/admin/career-applications.php",
+      "bytes": 1191,
+      "sha256": "ce3bb949e74b8b01c94e9d49ed23c7bf38b19cfcd29455423bc797702691dfae"
+    },
+    {
+      "path": "public/api/admin/career-file.php",
+      "bytes": 2039,
+      "sha256": "32446b17b97b391fedf7541ea16b2ad95c28ffd834564f3915b7fc771da0fa0b"
+    },
+    {
+      "path": "public/api/admin/careers.php",
+      "bytes": 5930,
+      "sha256": "e83e48c1d8a86270dd836a6469963fa13533c75b322962135bdd829a04333122"
+    },
+    {
+      "path": "public/api/admin/csrf.php",
+      "bytes": 219,
+      "sha256": "59cd7015aa193ea65a94f3348bc758d97f7b972b29e6591cee4be5097a259835"
+    },
+    {
+      "path": "public/api/admin/leads.php",
+      "bytes": 4126,
+      "sha256": "c8b7ffe92b7a5e7cb0b1415d71296b9a6735e2abb0d60a4194ba703038d15c81"
+    },
+    {
+      "path": "public/api/admin/project-units.php",
+      "bytes": 10790,
+      "sha256": "388d8fadf3c48d583631674ad6b9519935090195672b4cdccf069f9b81b743b2"
+    },
+    {
+      "path": "public/api/admin/projects.php",
+      "bytes": 5884,
+      "sha256": "052a0248c73ed942907ea30d7f8a5aeed5922ad73e26189c61b9c09afad7ca32"
+    },
+    {
+      "path": "public/api/admin/properties.php",
+      "bytes": 9617,
+      "sha256": "6888f5d7facd8e063635808011d601eb4ed7ba84872d1d20bcf110a0baf666b6"
+    },
+    {
+      "path": "public/api/admin/seo-keywords.php",
+      "bytes": 8682,
+      "sha256": "3fbfc4bfa931c94124e81b0b413063726301b7c573eca5e5fa681e779f1e3986"
+    },
+    {
+      "path": "public/api/admin/seo-settings.php",
+      "bytes": 6373,
+      "sha256": "1be18f15524bae8cc0149f2fb2c6340afc3dd0be683e6b2df77ae92f16c1c809"
+    },
+    {
+      "path": "public/api/admin/sitemap.php",
+      "bytes": 605,
+      "sha256": "2795eb43afdd1377ee766442931d42fc0403d42c79e833333ac01ad587e90d5e"
+    },
+    {
+      "path": "public/api/admin/submissions.php",
+      "bytes": 9429,
+      "sha256": "5f4f3df7ada5edc97dfe33fe3d28463b6fef37e62f938d5111d8f8279deaa192"
+    },
+    {
+      "path": "public/api/admin/upload.php",
+      "bytes": 6136,
+      "sha256": "25abe4f18bed42a239cd63dab45681bccc78a3fdc3aff0324c65e8b690a77de4"
+    },
+    {
+      "path": "public/api/admin/visit-requests.php",
+      "bytes": 2619,
+      "sha256": "64ff143769df9dd5939a20fbd843e7f7987acfda58c4f85d4d424a098def6f89"
+    },
+    {
+      "path": "public/api/bootstrap.php",
+      "bytes": 22288,
+      "sha256": "fedac23ea22f8d8e0dec210014663222217f2b8f829e92ea046451bbe34e3de6"
+    },
+    {
+      "path": "public/api/ctc-webhook.php",
+      "bytes": 1849,
+      "sha256": "b42c29c9e1af0eedfbe71d8b21925ff191ca53d7b408bef2ba780f22a33d9a4e"
+    },
+    {
+      "path": "public/api/ctc/callback.php",
+      "bytes": 2898,
+      "sha256": "0f3262b911742a3b767a6032f69536eeae5e4dae64b31c8c0ef6a867d9046afa"
+    },
+    {
+      "path": "public/api/ctc/ctc_auth.php",
+      "bytes": 4113,
+      "sha256": "cfc93207d66e978ad3c29f2003a3337b813cebc68c5c0fa45c6da9ad5301115f"
+    },
+    {
+      "path": "public/api/db.example.php",
+      "bytes": 6694,
+      "sha256": "d9da254e623e1e42f57c8402d8fa2f6dba8b88d8a01d87908a6ccba06b5e8637"
+    },
+    {
+      "path": "public/api/get-agent.php",
+      "bytes": 725,
+      "sha256": "c95c9d774da40c4bfa391bcd24d46f6feb68e0088c64ce3c14e461828a143af2"
+    },
+    {
+      "path": "public/api/get-agents.php",
+      "bytes": 541,
+      "sha256": "c6b9237cedb0fd17199acf4be60d1c69cd126878d52b41fca821326a63230991"
+    },
+    {
+      "path": "public/api/get-branches.php",
+      "bytes": 432,
+      "sha256": "45ec57b7fc66df158682318e435d0d260d4c1bf374116448f4dd21a2ed997b51"
+    },
+    {
+      "path": "public/api/get-career.php",
+      "bytes": 1283,
+      "sha256": "1da603e935c6549ac416b51756001f46693ad52675042dee7f18004f35762c28"
+    },
+    {
+      "path": "public/api/get-careers.php",
+      "bytes": 1644,
+      "sha256": "4781048a3cc173693492b58994ee7000f7871549043a9fcb1ebe35f4a5364dbf"
+    },
+    {
+      "path": "public/api/get-project-units.php",
+      "bytes": 5393,
+      "sha256": "5ad42ef757868fc2c07b51254fe5ce28336be4853106304190c17b80441cdb66"
+    },
+    {
+      "path": "public/api/get-project.php",
+      "bytes": 1570,
+      "sha256": "e65aa40e21b7c5b8acaa43001d47b9f096b91dd91003b2ffe4fdc9d99b9a1f92"
+    },
+    {
+      "path": "public/api/get-projects.php",
+      "bytes": 1715,
+      "sha256": "4f7ee451e91313892a1a4956ead5e13154cb055750f5ed21fa3d6fab72ee9d29"
+    },
+    {
+      "path": "public/api/get-properties.php",
+      "bytes": 2245,
+      "sha256": "6f15591ea80249ad4a151504f7552b40a34be0b813c28621a64ec444ed240972"
+    },
+    {
+      "path": "public/api/get-property.php",
+      "bytes": 1353,
+      "sha256": "c05780e35bf501725149e171fa6911320d5d060eeab73734a7e7231e56af556e"
+    },
+    {
+      "path": "public/api/get-seo-settings.php",
+      "bytes": 1981,
+      "sha256": "866c6edad469436a1716a36f986ff10ea9e85f14fcb2098507ddb3228b18aa63"
+    },
+    {
+      "path": "public/api/initiate-call.php",
+      "bytes": 8743,
+      "sha256": "7988514036e38ffbcb2042391f412ab7babc3176477f4e485b1cd9aa0d6fe3b6"
+    },
+    {
+      "path": "public/api/inquiry-service.php",
+      "bytes": 4355,
+      "sha256": "c5a758936d99bd18dc3dbf22358b7599d075d3b18a0258ca3b82b112779f6b0d"
+    },
+    {
+      "path": "public/api/migrate-agents-branches.sql",
+      "bytes": 1215,
+      "sha256": "c10114545b9efb872c5ca86563e48d79c2db4a37d26f79e115c7e380d6082509"
+    },
+    {
+      "path": "public/api/migrate-gallery.php",
+      "bytes": 1262,
+      "sha256": "a938fdac186682347852b81b374774a8b1a761700647d80ca1c6d91503bc37d3"
+    },
+    {
+      "path": "public/api/migrate-visits.php",
+      "bytes": 3194,
+      "sha256": "ca4844ededbf17f3ef2422610707e7d32ad3766d0017311f304c5534fc20cdba"
+    },
+    {
+      "path": "public/api/migrations/011_digital_vault.sql",
+      "bytes": 1275,
+      "sha256": "0b0b7431be0a680f9b94bc7c1ed682bb7e96161427356eabee0f8e77c9a6a39d"
+    },
+    {
+      "path": "public/api/migrations/012_project_units_technical_plan.sql",
+      "bytes": 364,
+      "sha256": "296d6e5a19722911024cf739b7b24c25921164233d622275874106e43c20b995"
+    },
+    {
+      "path": "public/api/migrations/2026-11-13-inquiry-receipts.sql",
+      "bytes": 1533,
+      "sha256": "ff229fe92167c14d1bc745a91bd205f6c805864d426db4662ca6ed17fe817b81"
+    },
+    {
+      "path": "public/api/migrations/20261103_property_enquiries.sql",
+      "bytes": 3788,
+      "sha256": "8c1f5c52264b927f8395b74cc448640234e1c3099e7c81fc17b54aafffff93f4"
+    },
+    {
+      "path": "public/api/migrations/20261104_careers.sql",
+      "bytes": 1915,
+      "sha256": "1c891befab7bca509bf17696390c466081a78397a70d7cf062a5b0c0ffcc9226"
+    },
+    {
+      "path": "public/api/migrations/20261104_property_blueprints.sql",
+      "bytes": 295,
+      "sha256": "184c4d7fd1be881f16ebf073df7f968952e55eb664f1474ef707a299889a3778"
+    },
+    {
+      "path": "public/api/schema.sql",
+      "bytes": 23594,
+      "sha256": "5cb1940617258d26eb96abccbd05a286abf6274f646a79bf224783913eee00ed"
+    },
+    {
+      "path": "public/api/sitemap-helper.php",
+      "bytes": 14845,
+      "sha256": "14490b576b59f10083f6b112e566ba389a671d3bd56b880257949b8d2707f5e1"
+    },
+    {
+      "path": "public/api/submission-photo.php",
+      "bytes": 1509,
+      "sha256": "8a24ab1c975500a809ec8b6d91570b3f0f7ca7d5ba2017911c5aeb9e5c6a0c82"
+    },
+    {
+      "path": "public/api/submit-career-application.php",
+      "bytes": 6998,
+      "sha256": "34954bfc93e6e584d39d0390e2c356a7ba1e24bd470e6ae3f4564afed425d12b"
+    },
+    {
+      "path": "public/api/submit-lead.php",
+      "bytes": 476,
+      "sha256": "8eb4e7f9eacdfbae8439e1a67d1e24256e315670155698cbd200466935bce271"
+    },
+    {
+      "path": "public/api/submit-visit-request.php",
+      "bytes": 6011,
+      "sha256": "9d4764a9d76f3784ad901fc3a7872bc8e8678e32436775217ceab9a2b25a8cd7"
+    },
+    {
+      "path": "public/api/vault.php",
+      "bytes": 20691,
+      "sha256": "561b2a1a409a2a68b228900d482d9934551473ed8e0db0d53df766b9804075e2"
+    },
+    {
+      "path": "public/staff-api/index.php",
+      "bytes": 1305,
+      "sha256": "65a712b1377c9ad740709b4abfcb84d60150b8626e18ef93556c4ad1936eb30a"
+    },
+    {
+      "path": "public/staff-api/paths.example.php",
+      "bytes": 311,
+      "sha256": "b9ded19587f2c3da9da6dbb60dafa36737c0932a222b4709b348d95e088cfc29"
+    },
+    {
+      "path": "sales-android/app/build.gradle",
+      "bytes": 2991,
+      "sha256": "5a605a8947ad7ccb2d7ae90b1411ed0f204b1ab5a39bea6894ab209e6f8c67d2"
+    },
+    {
+      "path": "sales-desktop/package.json",
+      "bytes": 668,
+      "sha256": "8a3e10110e1e39c3cc24750e6214d54841dc2bc433ce5a1c6d2d3f5da367f691"
+    },
+    {
+      "path": "sales-ios/capacitor.config.json",
+      "bytes": 570,
+      "sha256": "909ef519040e39c124c7f75770d14128b7bbf1652cd266a620d80740bafeb769"
+    },
+    {
+      "path": "sales-ios/package.json",
+      "bytes": 535,
+      "sha256": "ebbdfe138083c021ba0916761b61637bff4a2cfa8c05fc7cdd97c386e3e86a2d"
+    },
+    {
+      "path": "shared/DigitalVault.tsx",
+      "bytes": 38863,
+      "sha256": "3acd03757a06ffef5fa44faef149288cbc8212e43d91c64a42f700d2cf68ca8d"
+    },
+    {
+      "path": "shared/alabaster-dashboard.css",
+      "bytes": 9213,
+      "sha256": "af42a520e9b9dc663e5ae7af01356a7f9dff13f905a7432bb933a6891f63fb9e"
+    },
+    {
+      "path": "shared/googleCalendarSyncService.ts",
+      "bytes": 6164,
+      "sha256": "d399cead9be2cdbc27a8beff1b656526c77322163417687a03df0e4e915b840e"
+    },
+    {
+      "path": "shared/googleSheetsExportService.ts",
+      "bytes": 14434,
+      "sha256": "8de4b061bd9cfbf87b552c20eb261edfce448c5c53954b0bc45de50b28386e15"
+    },
+    {
+      "path": "shared/googleWorkspaceAuth.ts",
+      "bytes": 10050,
+      "sha256": "5659b8b7ea8518475ffb2f1707955e7a7aa8abd8999f9e8bd582436b949a2ae9"
+    },
+    {
+      "path": "shared/googleWorkspaceCore.ts",
+      "bytes": 26397,
+      "sha256": "ed499640d8f7f93c0de08616b408621eb6e549b84d8c57d21dfbde936900e706"
+    },
+    {
+      "path": "shared/visual-config.ts",
+      "bytes": 2493,
+      "sha256": "d449c830fac8883c28f2dec9e60707b627f72abccf2aa4d17b57bf0663105833"
+    },
+    {
+      "path": "src/App.tsx",
+      "bytes": 4656,
+      "sha256": "32749a0d74ce9d70ac5bc5b7782ca9a086b22547fceb70a3699205b631280fd3"
+    },
+    {
+      "path": "src/components/about/AgentsDirectoryContent.tsx",
+      "bytes": 14429,
+      "sha256": "bd79b1836b505860598d7c7a64dfef97fdde6242e1945f1e324dea9c56e4c775"
+    },
+    {
+      "path": "src/components/about/CareersDirectoryContent.tsx",
+      "bytes": 9226,
+      "sha256": "486055114552b05d3b9c0cffa616ae3f7bd7f5912a184b7da61658ffd779c4b0"
+    },
+    {
+      "path": "src/components/about/ContactSectionContent.tsx",
+      "bytes": 20271,
+      "sha256": "45c978af7cb1a711ff694e24d4c3be93440d4e1af5ef177a112840311e020727"
+    },
+    {
+      "path": "src/components/auth/FirebaseErrorBoundary.tsx",
+      "bytes": 2133,
+      "sha256": "ce01a6d49b68ce4baa3900a719005798e3f8bce34e03d4e26876671430434b8d"
+    },
+    {
+      "path": "src/components/auth/FirebaseProvider.tsx",
+      "bytes": 2131,
+      "sha256": "b21fdf46eca84510a0ad48888bbc76ecfd7ed990ff07804b738cfefb04a1d5a5"
+    },
+    {
+      "path": "src/components/chat/CustomerChatWidget.tsx",
+      "bytes": 15169,
+      "sha256": "56a5fd64a584bd740697795cc87bab9b0579222d55dcf940a06f5e44ebf3c17d"
+    },
+    {
+      "path": "src/components/forms/InquiryDeliveryStatus.tsx",
+      "bytes": 2708,
+      "sha256": "fac1753001b4f22c43f8bdc2d98c359e3b4ffd5aca8f51405e5af555075aa590"
+    },
+    {
+      "path": "src/components/forms/InquiryForm.tsx",
+      "bytes": 6105,
+      "sha256": "2e82c76baaa43503363474bbab7ee7d9717c14e06a66743303f963a787f14e6a"
+    },
+    {
+      "path": "src/components/forms/QuickContactModal.tsx",
+      "bytes": 17927,
+      "sha256": "62690319273314451e7183fc01aa76417ee255ce86e959607c25cb1740e1744f"
+    },
+    {
+      "path": "src/components/forms/SearchBar.tsx",
+      "bytes": 14022,
+      "sha256": "6f51a36ce9908bff1c7eb6c8b4978e55cc790cb1e335346f30928cdcc54b7546"
+    },
+    {
+      "path": "src/components/forms/VisitRequestDialog.tsx",
+      "bytes": 8958,
+      "sha256": "364132e2a9f558567e75e2703f7e5048da1b66483cb04fffb15b1893a0e62b77"
+    },
+    {
+      "path": "src/components/layout/Footer.tsx",
+      "bytes": 12388,
+      "sha256": "570028477bc61c302f5959b52376269e8f5c5d5fecf5f58cd5bf5e9bc4d7e231"
+    },
+    {
+      "path": "src/components/layout/Navbar.tsx",
+      "bytes": 19454,
+      "sha256": "4674a43e8ea1edc0efc2cb80ba1853b5d32d40daa977f437ea4093211e202be9"
+    },
+    {
+      "path": "src/components/map/AttaieGoogleMap.tsx",
+      "bytes": 48892,
+      "sha256": "19aee6a7d9d4ac1066ff93d146a65a3c25cdf5e4b97161cf504003889d57fdeb"
+    },
+    {
+      "path": "src/components/map/MapSkeleton.tsx",
+      "bytes": 1233,
+      "sha256": "e25fad31e09687f9bfcc9b5a1fe32cec4c370fe7db39870e824ff3bd9e80888e"
+    },
+    {
+      "path": "src/components/project/BlueprintViewer.tsx",
+      "bytes": 205,
+      "sha256": "7d98168869d02e6810e3a2ac32c68d8946e6b650d47ec38e487239818064edb1"
+    },
+    {
+      "path": "src/components/project/DualPaneElevationXRayView.tsx",
+      "bytes": 62203,
+      "sha256": "c34ac78b03d6fc59e8f4a83f4e19ca701adef7c6dcd7225adb2a6e3d51ee7638"
+    },
+    {
+      "path": "src/components/project/FloorPlanSelector.tsx",
+      "bytes": 10033,
+      "sha256": "f72381c1193201bc32f80581c840dc0abb78f27cfd51971401c3b4874b6fa28b"
+    },
+    {
+      "path": "src/components/project/PaymentPlanComparisonCard.tsx",
+      "bytes": 21402,
+      "sha256": "fb6d6c90ab79c0503adb030bedf18cb92d41146d4fc23457bbab4db7a1abef6c"
+    },
+    {
+      "path": "src/components/project/PhotoApartmentExplorer.tsx",
+      "bytes": 11160,
+      "sha256": "372e1563e08fbc0d7c1c4db6c10c07fcd79139539fc69205f4295997459c93bc"
+    },
+    {
+      "path": "src/components/project/PhotoFloorSelector.tsx",
+      "bytes": 10888,
+      "sha256": "463d37a0b2eeedc7d9a3d98dc5271293df5b4cc0933ace5e225e4f7f05dedcba"
+    },
+    {
+      "path": "src/components/project/PlanReveal.tsx",
+      "bytes": 10021,
+      "sha256": "d0080b2070c3991384ca68f5acedd0a5e6ca3e9cd22fd9747067cf571c0f4255"
+    },
+    {
+      "path": "src/components/project/PremiumProjectExplorer.tsx",
+      "bytes": 52632,
+      "sha256": "c0c909499836a2da461e0f2671f4d13e670168b80ba0eef4ef954cba78339915"
+    },
+    {
+      "path": "src/components/project/ProjectUnitsOccupancyChart.tsx",
+      "bytes": 9877,
+      "sha256": "7753ff91155de04b339ca0d8d1ae29e2bdb05de255f39b98e002d7f3eb5faa5e"
+    },
+    {
+      "path": "src/components/project/ProjectUnitsSection.tsx",
+      "bytes": 30247,
+      "sha256": "7e136c55ff94af4cbf8ec201e7dbd1950082fcf35e74237e83c6f51c8d9038c5"
+    },
+    {
+      "path": "src/components/project/useExplorerNavigation.ts",
+      "bytes": 1558,
+      "sha256": "274a274996c8233f6588ae1075aba426cf90b66c1833a84a9e5c9e1cd0fe3a6f"
+    },
+    {
+      "path": "src/components/property/BlueprintViewer.tsx",
+      "bytes": 25551,
+      "sha256": "d42291149609064b0443f9f6a1785376488a3371bf47825a52be588250326acf"
+    },
+    {
+      "path": "src/components/property/FilterSidebar.tsx",
+      "bytes": 5739,
+      "sha256": "7c4c112482847031b9a4e73bd50d3325665c85b6e23bb13bf0e32acf002026e8"
+    },
+    {
+      "path": "src/components/property/ImageGallery.tsx",
+      "bytes": 7742,
+      "sha256": "00058b76b7924e61f04609d56bb8e1f097ffb85649dd736819522b5f51367a5b"
+    },
+    {
+      "path": "src/components/property/MasterplanViewer.tsx",
+      "bytes": 3314,
+      "sha256": "6ebd0a3f8938b52f50464e79ddc97c6f8800d9930931c3ef7e8c348103168fdf"
+    },
+    {
+      "path": "src/components/property/VideoPlayer.tsx",
+      "bytes": 963,
+      "sha256": "f1f135b7bbc6a84196c18e13d8166634ca1a9edf1230f6b761a084f2bdefd5d5"
+    },
+    {
+      "path": "src/components/sections/ArchitecturalStorytellingSection.tsx",
+      "bytes": 10439,
+      "sha256": "be0f678a44a6c969cc73693177158c28745634c0e4477e89e0241f29c453b049"
+    },
+    {
+      "path": "src/components/sections/Hero3DSection.tsx",
+      "bytes": 10707,
+      "sha256": "5882c0410950ef3602aebe5c12dd6da191887f94f5ed9b42031cdb72f0093278"
+    },
+    {
+      "path": "src/components/sections/HeroSection.tsx",
+      "bytes": 6233,
+      "sha256": "987b11350ce680101f1c2b5f9b7d827224115457c34d1052a388b19ca47a6d9a"
+    },
+    {
+      "path": "src/components/sections/HotDealsSection.tsx",
+      "bytes": 988,
+      "sha256": "ad2e9912f8d19b8a4efc24cceaf32a695b457a62c1b15020a4736c8f011cc71d"
+    },
+    {
+      "path": "src/components/sections/LandingHeroBackground.tsx",
+      "bytes": 1776,
+      "sha256": "2e30e65bc705cd2afa8af38fc4b717a51054fd1d4f6e958260213cdfa79f35bc"
+    },
+    {
+      "path": "src/components/sections/LandingPageContent.tsx",
+      "bytes": 30624,
+      "sha256": "936ba99b6345794602c4b68b9b1810945dd1bc198635e7713d36865b6579ae97"
+    },
+    {
+      "path": "src/components/sections/NewsSection.tsx",
+      "bytes": 72,
+      "sha256": "9ebdadbd36fa13c37c4cb25bdb10f24f39a62ffd9034ed1939092b6e11dac905"
+    },
+    {
+      "path": "src/components/sections/NewsletterBanner.tsx",
+      "bytes": 4144,
+      "sha256": "8c1131ea789fe4fcf0e13ebf407475d5f6c8677337f505c832a026c18624479b"
+    },
+    {
+      "path": "src/components/sections/PopularLocationsSection.tsx",
+      "bytes": 5320,
+      "sha256": "005f6e6ce420dbbbd8ccd741af3886850eaa96b106af7f93950af873fb2bf1b8"
+    },
+    {
+      "path": "src/components/sections/PromoBanner.tsx",
+      "bytes": 9142,
+      "sha256": "38f20f575d8f1b02dcc5dd431ec75d2ee630ecceb8542a212526bb0f8e2ab676"
+    },
+    {
+      "path": "src/components/sections/PropertyTypesSection.tsx",
+      "bytes": 2376,
+      "sha256": "4f7a755898c06d43f0cc4093f58e2a848f6f990c3a9a6454bca1f1708d0db0b7"
+    },
+    {
+      "path": "src/components/sections/ServicesSection.tsx",
+      "bytes": 3924,
+      "sha256": "8d596bb1412ce55faacd95f59406e0b70bd0ff1879438412ff7374cb99227d7b"
+    },
+    {
+      "path": "src/components/sections/StatsTicker.tsx",
+      "bytes": 3504,
+      "sha256": "58011e40659465299113fef605d15bf4a742e936421ac5f30b8515252b59e438"
+    },
+    {
+      "path": "src/components/sections/TrustBadgesStrip.tsx",
+      "bytes": 1923,
+      "sha256": "e52a6129948c265ed7df4dcde3d6c062b6deffeb6678243b382e563b9955418f"
+    },
+    {
+      "path": "src/components/seo/SeoHead.tsx",
+      "bytes": 4369,
+      "sha256": "24318e6ed6cd89f5efeab8049023dbc88413341c4329dd93fa7445c5c39b92ac"
+    },
+    {
+      "path": "src/components/ui/Badge.tsx",
+      "bytes": 2065,
+      "sha256": "7042c27acaccc45d663510b10ff8884c197058ba219580d90e339e58d4fcd2fe"
+    },
+    {
+      "path": "src/components/ui/Breadcrumbs.tsx",
+      "bytes": 3712,
+      "sha256": "08c5dfdf3b9be7e8e811442d27437f4c775a1b8e65e02f528a029814598ef6d5"
+    },
+    {
+      "path": "src/components/ui/Button.tsx",
+      "bytes": 2166,
+      "sha256": "40af8239252e5d7015521d48e609bb6c89869ec987132671904301c591788381"
+    },
+    {
+      "path": "src/components/ui/ClickToCallButton.tsx",
+      "bytes": 9022,
+      "sha256": "86ed35ae7d11ea3266025a5125a45da9932ed0604a387a909bad6c66a1912d1d"
+    },
+    {
+      "path": "src/components/ui/CriticalImagePreloader.tsx",
+      "bytes": 4046,
+      "sha256": "94f55c24a05e0192b495ea388d7e0417845ef00ac5cad49105c81d018c41a993"
+    },
+    {
+      "path": "src/components/ui/HorizontalCarousel.tsx",
+      "bytes": 4315,
+      "sha256": "6a3fed23d1f3c175c6fdfee3cb4a1865f0799981ba4dc5965c4378939a3e9446"
+    },
+    {
+      "path": "src/components/ui/MotionCarousel.tsx",
+      "bytes": 5329,
+      "sha256": "b93c0a220ecd94e5961edd5f35b99c7390813722ebc8d9f94e8179cd5456d4d1"
+    },
+    {
+      "path": "src/components/ui/PageGridSkeletons.tsx",
+      "bytes": 8882,
+      "sha256": "d91df106fb7ab8ee4bd4522ca8bad25a2e8a8a85d23038897f5fdef80254cad7"
+    },
+    {
+      "path": "src/components/ui/ProjectCard.tsx",
+      "bytes": 7197,
+      "sha256": "066e8fc107ffcdf7a260a846d1aeffc9c91c4ac3199cd1abfd7476cb5629c364"
+    },
+    {
+      "path": "src/components/ui/ProjectCardSkeleton.tsx",
+      "bytes": 4582,
+      "sha256": "07925746b4c6e7c45e31e7d1c7394708bca9f65cdf28d3683d7c479f473c82d6"
+    },
+    {
+      "path": "src/components/ui/PropertyCard.tsx",
+      "bytes": 13135,
+      "sha256": "b7d95c9aa49045c4c63208d8ded12ed45ee04d1c9499fe7ac9c713a0008364be"
+    },
+    {
+      "path": "src/components/ui/PropertyCardSkeleton.tsx",
+      "bytes": 3295,
+      "sha256": "b209685a66d00f419f5bec93dad7ce21df9acbcf2d2431c819528bb299ff8d64"
+    },
+    {
+      "path": "src/components/ui/SectionHeader.tsx",
+      "bytes": 2404,
+      "sha256": "e2e49bfa2682a64ea3f147775e4ce2903e2f84b31114426df5aee2ec57e9cdc7"
+    },
+    {
+      "path": "src/components/ui/Skeleton.tsx",
+      "bytes": 286,
+      "sha256": "6027759d2d633587bc5dda56b2c6a95daf3b7f6a863f0699e3f412458169c0f8"
+    },
+    {
+      "path": "src/components/ui/WhatsAppButton.tsx",
+      "bytes": 1965,
+      "sha256": "f2ac84914a69c0ccf689b3f8120b33adf43cfce846faf24521b7fcaa3a5f8d24"
+    },
+    {
+      "path": "src/components/ui/circle-menu.tsx",
+      "bytes": 7238,
+      "sha256": "6a375dcc2d4771f8cae9668e4a4ea4c19de9bdfd2c1f0ec780fe129f34487207"
+    },
+    {
+      "path": "src/components/ui/dashboard-alabaster-split-rail.tsx",
+      "bytes": 26566,
+      "sha256": "01522d380f11edf3af94dd0254d0146daaf1945cab488bfd19be8763dcd50d14"
+    },
+    {
+      "path": "src/components/ui/dashboard-minimal-topbar-studio.tsx",
+      "bytes": 18976,
+      "sha256": "ee32005aa3b372d04fe7fd683df2833d7dd3b0ce5c573c940375d62ac96aae12"
+    },
+    {
+      "path": "src/components/ui/dashboard-with-collapsible-sidebar.tsx",
+      "bytes": 22523,
+      "sha256": "4a75bc7af807f6e03cee4ca418cf9ad52d4e86fa9bfd7a8ba2ff7ed8460298f2"
+    },
+    {
+      "path": "src/components/ui/date-range-picker.tsx",
+      "bytes": 13618,
+      "sha256": "2748fc76e64e666bc9621a3161c5860e69d0be4bc839a849a964d00dd672967e"
+    },
+    {
+      "path": "src/components/ui/demo.tsx",
+      "bytes": 2181,
+      "sha256": "85e70e0fd6607af54cc4f482342e7af9a9513dda0f379d18a87a12440ca3d5a3"
+    },
+    {
+      "path": "src/components/ui/expanding-cards.tsx",
+      "bytes": 10389,
+      "sha256": "99c1d556d507368b4e4d13f9224ffcd393352f75f1ee1ebac208e21a7f7848e3"
+    },
+    {
+      "path": "src/components/ui/loaders-liquid-progress.tsx",
+      "bytes": 4548,
+      "sha256": "51921469eae21e5072a8531312861351488ce65e0cbd8ea520d4d8a81ba1d5d9"
+    },
+    {
+      "path": "src/components/ui/table.tsx",
+      "bytes": 2883,
+      "sha256": "c3255fe8828d6277cad91d5a018b25ba9542f9cf1b42dc432d7722a04c492632"
+    },
+    {
+      "path": "src/components/ui/unified-dashboards/unifiedData.ts",
+      "bytes": 20727,
+      "sha256": "e0f32f042ed7168cb9ff972aaa064d7987695b7f07948646d02132929320d218"
+    },
+    {
+      "path": "src/components/video/ApartmentWalkthroughVideo.tsx",
+      "bytes": 14787,
+      "sha256": "5cc26daae35e001197d76c1846cbfde6f6c60a7d7f0d31c80cc3d264a8ed85a0"
+    },
+    {
+      "path": "src/i18n/index.ts",
+      "bytes": 842,
+      "sha256": "e3b249248e718337c4e84ee05421ff20abc96e30d466d711e4a96207e987eb54"
+    },
+    {
+      "path": "src/i18n/locales/en.json",
+      "bytes": 21870,
+      "sha256": "92ec365d44e9344ff5ebe75a128dcb951673882bd092aa62b9189b817f5c681d"
+    },
+    {
+      "path": "src/i18n/locales/fa.json",
+      "bytes": 30363,
+      "sha256": "50261f01fc97dbdb4246265ed568c5864f6c1e9a2608f280d7267670690f8436"
+    },
+    {
+      "path": "src/lib/aiChatEngine.ts",
+      "bytes": 33607,
+      "sha256": "3fa865701e8812c6aae0ac6988a9cbbc208eaa10b29010c095fbc5338fd67bef"
+    },
+    {
+      "path": "src/lib/chatService.ts",
+      "bytes": 9660,
+      "sha256": "4e2137725ce750c52fd5864a42d859a83f1ef42061ac583ba37f60b764439fcd"
+    },
+    {
+      "path": "src/lib/dbService.ts",
+      "bytes": 18022,
+      "sha256": "4411165414a2b4656c06893de240314ccd00f99dc677bc5dd3346fc5372ca02e"
+    },
+    {
+      "path": "src/lib/defaultVisualConfig.ts",
+      "bytes": 312,
+      "sha256": "73a085daf1c4eab6b4e707b636c287acf2e75141e5d590997c7ddc1eb5e8b772"
+    },
+    {
+      "path": "src/lib/explorerGeometry.ts",
+      "bytes": 4095,
+      "sha256": "2b5277b42d8c06b388b03c9baeca665a519f08c214ddde15a0099346c1f71ff1"
+    },
+    {
+      "path": "src/lib/firebase.ts",
+      "bytes": 497,
+      "sha256": "3443a2fc204fc2aeed792471dc323b1150020f30156dc5604a37e86eefbd9413"
+    },
+    {
+      "path": "src/lib/googleCalendarSyncService.ts",
+      "bytes": 57,
+      "sha256": "add8e7e6ec38f8b5f8778341844f232c2239ee1053c934bb0471a4c1e5fa0495"
+    },
+    {
+      "path": "src/lib/googleSheetsExportService.ts",
+      "bytes": 57,
+      "sha256": "f0b4748e2153d3f5a4a1693530d90ee25af7b608675c7987701298aeb3d73552"
+    },
+    {
+      "path": "src/lib/googleWorkspaceService.ts",
+      "bytes": 51,
+      "sha256": "f1885266149e2bdb6cd1c2c99bfa10d069460240eb35598f643bd4b0e16a27cb"
+    },
+    {
+      "path": "src/lib/homeMetadata.ts",
+      "bytes": 2275,
+      "sha256": "4ac3b82005ecc28f869b4b98c3c52505846e9a6003f7653a4f352f54782f9fe1"
+    },
+    {
+      "path": "src/lib/imagePreloader.ts",
+      "bytes": 5308,
+      "sha256": "e46f45a6486e49a0e808e9d933581730c671d46d60427af6076db87de0487e80"
+    },
+    {
+      "path": "src/lib/inquiryOutbox.ts",
+      "bytes": 6264,
+      "sha256": "1b305ad76cb6aff82c57ac4703a4193f5549f7f3328147ff55d820f26be8a639"
+    },
+    {
+      "path": "src/lib/inquiryReceipt.ts",
+      "bytes": 2584,
+      "sha256": "e9a1e8a28d5e01b9505f87a1ed8fc784dad18acb19cbd6ba81ba1eafe627756c"
+    },
+    {
+      "path": "src/lib/metaTagService.ts",
+      "bytes": 22054,
+      "sha256": "59a0f8ec8efae5167001dc245e15258f98abd513e9f63d30e452569a21bd84e2"
+    },
+    {
+      "path": "src/lib/projectExplorerUtils.ts",
+      "bytes": 10230,
+      "sha256": "431e6fc15d03307ca29e23d7a0e2231b5a271f9ca036229e59a4a9bcf3409479"
+    },
+    {
+      "path": "src/lib/seoConfig.ts",
+      "bytes": 29644,
+      "sha256": "b29f475acf87ce13a365fc45383aa5af45bb81d65a6d98d5d9f478122e2c812d"
+    },
+    {
+      "path": "src/lib/signatureProjects.ts",
+      "bytes": 382,
+      "sha256": "29d6190873fe939b404d6ead8e60d9ad82190d2d7235a9d9d8bb5420a8442aa4"
+    },
+    {
+      "path": "src/lib/utils.ts",
+      "bytes": 175,
+      "sha256": "4b705c7d7e5c7a2dd73d26ad35e9c0583d3d3655e2a5be1e67cea21458f29c01"
+    },
+    {
+      "path": "src/lib/visualConfigService.ts",
+      "bytes": 2069,
+      "sha256": "e03b58aa200d7fe064bbc8979fe1144662653844a2870bf1c89aa5c5758b1de2"
+    },
+    {
+      "path": "src/main.tsx",
+      "bytes": 811,
+      "sha256": "9b54574e86ddab92bb85fc422907eeeadacfe23063358ec78648e239fb91b9cb"
+    },
+    {
+      "path": "src/pages/AboutPage.tsx",
+      "bytes": 26868,
+      "sha256": "534e47df2cc692623ab7e9fc4b8443537da919abc5a3dba4743c13e07e8e9ae4"
+    },
+    {
+      "path": "src/pages/AgentDetailPage.tsx",
+      "bytes": 4427,
+      "sha256": "b0c567a770ed74223b5c3ddb8c529639cbc7635a45aff2445fe2bcd2b7acbd2d"
+    },
+    {
+      "path": "src/pages/AgentsPage.tsx",
+      "bytes": 2004,
+      "sha256": "f077b37d2dd89f0178ef7f661a3379cab3e5e246d4e14134d17003b24c99428b"
+    },
+    {
+      "path": "src/pages/CareerDetailPage.tsx",
+      "bytes": 20493,
+      "sha256": "129823c30a2bbd12ac63ace31b15d44a546c66e61dbecb93914b8c92108ced5c"
+    },
+    {
+      "path": "src/pages/CareersPage.tsx",
+      "bytes": 6685,
+      "sha256": "8587622a0b0416193e703088d30163ac1b9df6e1299a97ea30aa41581ca98d84"
+    },
+    {
+      "path": "src/pages/ContactPage.tsx",
+      "bytes": 2624,
+      "sha256": "539ca7e6a761be6866fe6c64d7eaf905940fd1c025eceed90ea143b4e9374ff1"
+    },
+    {
+      "path": "src/pages/GoogleWorkspacePage.tsx",
+      "bytes": 96132,
+      "sha256": "84d7a9528418a162a6a19a11ea0a2095cb352b58d38b55aa6934a4a705b53d69"
+    },
+    {
+      "path": "src/pages/HomePage.tsx",
+      "bytes": 2815,
+      "sha256": "b0396bbf5458a1f4bd1f20d8293f07ac463e96313499b47e6403cadca61a5a56"
+    },
+    {
+      "path": "src/pages/NotFoundPage.tsx",
+      "bytes": 999,
+      "sha256": "90afc16065535374f7f2357d9e06e431c0f8aeced79af4a2840eb385272b1581"
+    },
+    {
+      "path": "src/pages/ProjectDetailPage.tsx",
+      "bytes": 17135,
+      "sha256": "0a53b80849c314898b26cd22bdaf44d17f32790d7b831b5039e29ea51c24039c"
+    },
+    {
+      "path": "src/pages/ProjectsPage.tsx",
+      "bytes": 11672,
+      "sha256": "72c8895d86566801c46c47dd42381e3508749ba4ef39037b84e611fc946a6bfa"
+    },
+    {
+      "path": "src/pages/PropertiesPage.tsx",
+      "bytes": 37938,
+      "sha256": "b4cd2b3417695bad960954469145cfb63d62865f2e0c7ac84803dc181dbb0a0c"
+    },
+    {
+      "path": "src/pages/PropertyDetailPage.tsx",
+      "bytes": 28832,
+      "sha256": "7ff528d4dc607d042a27f7a12b3e0f3763aa82a83ab294cddcd3a92aafa3ce74"
+    },
+    {
+      "path": "src/pages/UnifiedDashboardSelectorPage.tsx",
+      "bytes": 9820,
+      "sha256": "4cf4c85e61ec0168afe41e9230926c0e857573d5b68c97bc9bb6a8e28f72ecc8"
+    },
+    {
+      "path": "src/styles/globals.css",
+      "bytes": 15337,
+      "sha256": "9d37fca92d63a435bd7ff13156addd1b04cc3497856afca2b19fc978fd79ca81"
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "bytes": 123,
+      "sha256": "441e8153421c6c2101f21ed2bb1d64bb07c540af98537658b5e08ace68354174"
+    },
+    {
+      "path": "staff-service/database/001-core.sql",
+      "bytes": 6494,
+      "sha256": "30fd25115d8a8213ab4a7e451287af1d833f42ec1607ff81516be48f236e29ab"
+    },
+    {
+      "path": "staff-service/database/010-callcenter.sql",
+      "bytes": 4741,
+      "sha256": "f70f786778fc4d132f91e801d5767501f7c45d911a6d2a01d7ab024c345e8ec1"
+    },
+    {
+      "path": "staff-service/database/020-inventory.sql",
+      "bytes": 4417,
+      "sha256": "43ef24b2c04bf4f94afea1642d77f4945e3dcd4df83505093cb931602e517c44"
+    },
+    {
+      "path": "staff-service/database/030-sales-crm.sql",
+      "bytes": 4212,
+      "sha256": "d16d4a28ea6cf5ea0fb6e81c5a3ddbb6816d01252c4d743a55959feac20c7122"
+    },
+    {
+      "path": "staff-service/database/04-seed-all-staff-users.sql",
+      "bytes": 4449,
+      "sha256": "c9a9ebb0a76a0387d75a3b9bf01b4b1b0b3845a2161197d8e2a9b36b283f88ad"
+    },
+    {
+      "path": "staff-service/database/040-hr-finance.sql",
+      "bytes": 4569,
+      "sha256": "8e7f0cc6687ded274bc70afb0d829083545626e175073c9aff0328b6bdc6d4e6"
+    },
+    {
+      "path": "staff-service/database/050-marketing-production.sql",
+      "bytes": 2609,
+      "sha256": "7841aae5166bbe97e8529b0c820a06baa489b8adc1c67ae2044dea5c88db83d4"
+    },
+    {
+      "path": "staff-service/database/055-submissions-db.sql",
+      "bytes": 2503,
+      "sha256": "0d58c929cc815489a88de2f5e071468608f3f305258240275a13a9b3403cd560"
+    },
+    {
+      "path": "staff-service/database/060-engineering.sql",
+      "bytes": 2646,
+      "sha256": "2a55da28c2ce4f1d672bd531a9ea359585612f44033a3dd908871faa13f1058b"
+    },
+    {
+      "path": "staff-service/database/090-role-migration.sql",
+      "bytes": 1782,
+      "sha256": "2c3b465218899fca44054403b8fd1372815b636b630e1c33df03dea7a019d9b1"
+    },
+    {
+      "path": "staff-service/database/095-retire-finance-assistant.sql",
+      "bytes": 1413,
+      "sha256": "a06390a9a0904303fed03dc0f7c946cd2efcf142573a2411fb47c8afe39f3f8c"
+    },
+    {
+      "path": "staff-service/database/100-dashboard-completion.sql",
+      "bytes": 3324,
+      "sha256": "d485206aa05855ff6d0e493da09e22fbea2336b68a01675652eaa24eec314fac"
+    },
+    {
+      "path": "staff-service/database/101-submission-assets.sql",
+      "bytes": 404,
+      "sha256": "b52b009363365692ed974c42f72fb336ddd23efb55d61b7b67ddf10bdb543c43"
+    },
+    {
+      "path": "staff-service/database/102-website-submission-map.sql",
+      "bytes": 419,
+      "sha256": "c8bc5af99f1fb1dd3c59ddc0d55e7de69e1b20f434931c76032978175be02e18"
+    },
+    {
+      "path": "staff-service/database/103-customer-property-leads.sql",
+      "bytes": 1303,
+      "sha256": "492971ad8d69eb0338d106963637aa2b9dbd6d3397255b8a8168c49a8eb15dbe"
+    },
+    {
+      "path": "staff-service/database/104-backfill-customer-property-leads.sql",
+      "bytes": 3769,
+      "sha256": "0aff2faab6900ef6dc179a9f0a36577e21e6c6a954a12d5afbe7405471744422"
+    },
+    {
+      "path": "staff-service/database/110-ceo-manager-branch-model.sql",
+      "bytes": 7010,
+      "sha256": "5ae9d9e232e75ff0d184d3cb89cb143fa51b3fe88dace935d48b5d86a66e6f33"
+    },
+    {
+      "path": "staff-service/src/App.php",
+      "bytes": 47584,
+      "sha256": "24d232c58c65d0820740567f72419bf37a573ff9a363416a25470e0e10c7f7d5"
+    },
+    {
+      "path": "staff-service/src/Completion.php",
+      "bytes": 66786,
+      "sha256": "c988f466046b5cde3d52ea642447ded558eac3e6921ed80e6c5903a27ca777a4"
+    },
+    {
+      "path": "staff-service/src/CompletionRules.php",
+      "bytes": 1648,
+      "sha256": "042f33fa64e05bd7e45bf4f4d5dc7e2e36ffe4209f941bb18240dbc75b0a351d"
+    },
+    {
+      "path": "staff-service/src/Domain.php",
+      "bytes": 3789,
+      "sha256": "5be1754338d43f3142f8a03c750515b0bcd53c641601af8138e02f818e5f6f94"
+    },
+    {
+      "path": "staff-service/src/FirebaseAuth.php",
+      "bytes": 4282,
+      "sha256": "116563428d66a3a4759e2ae70f00b2b448cdfc772fec1cb56f1460efdf55d13b"
+    },
+    {
+      "path": "staff-service/src/LeadPropertyClaims.php",
+      "bytes": 3933,
+      "sha256": "52dc1156fb78c5d8f30bda21c86094d443735b6c7ce45c00e4103d9731b917f2"
+    },
+    {
+      "path": "tests/staff/domain/conversion-rate-chart.test.mjs",
+      "bytes": 6120,
+      "sha256": "efc4d4f2042480b8d2bec997066c51c24d9c3f7563bcb5829ed9249647aef204"
+    },
+    {
+      "path": "tests/staff/domain/deployment-locator.test.mjs",
+      "bytes": 874,
+      "sha256": "f4b9d720f2e5b6c578947d9373512452aa4a4e043f0f9e4526a1ebe851543f65"
+    },
+    {
+      "path": "tests/staff/domain/finance-tracker.test.mjs",
+      "bytes": 1933,
+      "sha256": "86f158fa2194099d61c039ab310470434734d3b8e81d8d6d05ae3665a58bfb1b"
+    },
+    {
+      "path": "tests/staff/domain/firebase-client.test.mjs",
+      "bytes": 1542,
+      "sha256": "aa62c606608affec252c7f81b2c36656225b04299fda095935924b69322de02d"
+    },
+    {
+      "path": "tests/staff/domain/inventory-wizard.test.mjs",
+      "bytes": 2461,
+      "sha256": "59f8bda8b15686a6485f1739f3d976bd1962f0ec79bdb1a57f18885532665aeb"
+    },
+    {
+      "path": "tests/staff/domain/lead-conversion-funnel.test.mjs",
+      "bytes": 5858,
+      "sha256": "c8242a902660cd2fa20ab72d43c610cba4fd44fba52b81593808ee014ce192d8"
+    },
+    {
+      "path": "tests/staff/domain/lead-notifications.test.mjs",
+      "bytes": 6586,
+      "sha256": "d89077c2aec5bf8a20db5fe2a7067e5a9db65d1648049ad4f6b02b032e297f34"
+    },
+    {
+      "path": "tests/staff/domain/login-styles.test.mjs",
+      "bytes": 2121,
+      "sha256": "55fbc6aa929e5edc3ef140da8837af460962afe912eecf0cc79b32ae980f0f24"
+    },
+    {
+      "path": "tests/staff/domain/logo-playback.test.mjs",
+      "bytes": 2180,
+      "sha256": "e93189a22266782800350a087eee7079edbf2ae774a4e4963934abc87308e074"
+    },
+    {
+      "path": "tests/staff/domain/master-workflow.test.mjs",
+      "bytes": 19990,
+      "sha256": "4d9318540376e3ff2b0ee9615db6ed57ba63a18a5a39c1de96cdf17bc81dd434"
+    },
+    {
+      "path": "tests/staff/domain/offline-cache.test.mjs",
+      "bytes": 11592,
+      "sha256": "a4be66952efdb73d8c256adedc158a90ed69f30cc3397147eaa19641505a55b6"
+    },
+    {
+      "path": "tests/staff/domain/preview-client.test.mjs",
+      "bytes": 2189,
+      "sha256": "f6f1bc0a8b154b8a16241b6e93821edd41d8361be335e5b04ec9e1c40b1cd0ec"
+    },
+    {
+      "path": "tests/staff/domain/role-branch-model.test.mjs",
+      "bytes": 3677,
+      "sha256": "53b654401d20b0ef2ad0d4e6a7858c000f15d8cbf70d179abdb1203744c9e05e"
+    },
+    {
+      "path": "tests/staff/domain/role-preference.test.mjs",
+      "bytes": 11179,
+      "sha256": "391cb597788be8d10d0515d46b669190a13fa2dd2ba7b6d1fd885e0c06a436eb"
+    },
+    {
+      "path": "tests/staff/domain/schema.test.mjs",
+      "bytes": 4870,
+      "sha256": "3612194de0ace413cce77dd1c8f60fff9dd43c77048de6a8145f9ddd6d90620d"
+    },
+    {
+      "path": "tests/staff/domain/workflow.test.mjs",
+      "bytes": 2611,
+      "sha256": "27efd8274f784d46d3e57e1951a261a39502471328a656816d3fe40ee1a68ff3"
+    },
+    {
+      "path": "tsconfig.json",
+      "bytes": 540,
+      "sha256": "b1225970f16d537dedb6acf321d8ddd6603237c1e43289d9d3a8f1b5a3df44f3"
+    }
+  ]
+}

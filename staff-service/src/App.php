@@ -157,16 +157,17 @@ final class App {
         $this->execute('INSERT INTO core_login_limits(bucket,attempts,window_start) VALUES (?,1,?) ON DUPLICATE KEY UPDATE attempts=IF(window_start < ?,1,attempts+1),window_start=IF(window_start < ?,VALUES(window_start),window_start)',[$bucket,$this->now,$cutoff,$cutoff]);
         if ($this->one('SELECT attempts FROM core_login_limits WHERE bucket=?',[$bucket])['attempts']>20) { header('Retry-After: 900'); throw new HttpError(429,'Too many sign-in attempts. Try again later.'); }
 
-        $username = strtolower(trim((string)($body['username'] ?? '')));
-        $password = (string)($body['password'] ?? '');
-        if ($username === '' || $password === '') throw new HttpError(401, 'Email and password are required.');
-        $row = $this->one('SELECT * FROM core_users WHERE LOWER(username)=? LIMIT 1', [$username]);
-        $hash = is_array($row) ? (string)($row['password_hash'] ?? '') : '';
-        if (!$row || $hash === '' || !password_verify($password, $hash)) {
-            throw new HttpError(401, 'Invalid email or password.');
+        $token=$body['idToken']??null;
+        if (!is_string($token) || $token==='') throw new HttpError(401,'Sign-in could not be verified. Please try again.');
+        try {
+            $identity=(new FirebaseAuth($this->config['firebase_project_id']??'', $this->config['firebase_api_key']??''))->verify($token);
+        } catch (FirebaseAuthException $e) {
+            throw new HttpError(401,$e->getMessage());
         }
-
-        if (!$row['active'] || $row['role'] === 'finance_assistant') throw new HttpError(403,'This account has no active workspace access. Contact your administrator.');
+        // A verified email alone never grants access: the exact Firebase UID must be provisioned.
+        $row=$this->one('SELECT * FROM core_users WHERE firebase_uid=? LIMIT 1',[$identity['uid']]);
+        if (!$row || !$row['active'] || $row['role'] === 'finance_assistant') throw new HttpError(403,'This account has no active workspace access. Contact your administrator.');
+        if ($row['role']!=='ceo' && (empty($row['branch_id']) || !$this->one('SELECT id FROM core_branches WHERE id=? AND active=1',[$row['branch_id']]))) throw new HttpError(403,'This account has no active branch access. Contact your administrator.');
         session_regenerate_id(true);
         $_SESSION=['user_id'=>$row['id'],'auth_version'=>$row['auth_version'],'created'=>time(),'last_seen'=>time(),'csrf'=>bin2hex(random_bytes(32))];
         $this->execute('DELETE FROM core_login_limits WHERE bucket=?',[$bucket]);
@@ -370,18 +371,20 @@ final class App {
         $name=Domain::text($body['name']??null,120);
         $username=strtolower(Domain::text($body['username']??null,254));
         if (!filter_var($username,FILTER_VALIDATE_EMAIL)) throw new InvalidArgumentException('Enter a valid staff email.');
-        $password=(string)($body['password']??'');
-        if (strlen($password)<6 || strlen($password)>200) throw new InvalidArgumentException('Enter a password (at least 6 characters).');
-        $passwordHash=password_hash($password,PASSWORD_DEFAULT);
-        $uid='local_'.bin2hex(random_bytes(16));
+        $uid=$body['firebaseUid']??null;
+        if (!is_string($uid) || !preg_match('/^[\x21-\x7e]{1,128}$/D',$uid)) throw new InvalidArgumentException('Enter the exact Firebase UID.');
+        if (array_key_exists('password',$body)) throw new InvalidArgumentException('Create the account in Firebase first. Staff passwords are not accepted here.');
         $allowedRoles=['manager','callcenter','sales','sales_leader','marketing_manager','editor','videographer','finance_manager','architect','graphic_designer','visual_designer_3d'];
         if (!in_array($body['role']??'',$allowedRoles,true)) throw new InvalidArgumentException('Select an internal operational staff role.');
-        $existing=$this->one('SELECT id, role, branch_id FROM core_users WHERE username=?',[$username]);
+        $existing=$this->one('SELECT id, role, branch_id, firebase_uid, username FROM core_users WHERE username=? OR firebase_uid=? FOR UPDATE',[$username,$uid]);
+        if ($existing && ($existing['firebase_uid']!==$uid || $existing['username']!==$username)) throw new HttpError(409,'That Firebase UID or email is already mapped to another staff identity.');
+        if ($existing && in_array($existing['role'],['ceo','admin'],true)) throw new HttpError(403,'Privileged staff changes require private administration.');
         if ($existing && empty($body['reassign']) && empty($body['update'])) throw new HttpError(409,'That email is already provisioned.');
         $department=$body['departmentCode']??$this->one('SELECT department_code FROM core_roles WHERE code=?',[$body['role']])['department_code'];
         if (!$this->one('SELECT code FROM core_departments WHERE code=? AND code<>?',[$department,'customers'])) throw new InvalidArgumentException('Choose internal department.');
         $branchId=!empty($body['branchId']) ? (int)$body['branchId'] : ((int)($this->user['branch_id'] ?? 0) ?: (int)($this->one('SELECT id FROM core_branches WHERE active=1 ORDER BY id LIMIT 1')['id'] ?? 0));
         if (!$branchId || !$this->one('SELECT id FROM core_branches WHERE id=? AND active=1',[$branchId])) throw new InvalidArgumentException('Select an active branch.');
+        if (!$this->isGlobalRole() && ($branchId!==$this->requireUserBranchId() || ($existing && (int)$existing['branch_id']!==$branchId))) throw new HttpError(403,'Staff must belong to your branch.');
         $leader=empty($body['teamLeaderId'])?null:(int)$body['teamLeaderId'];
         if ($leader) {
             $leaderRow=$this->activeUser($leader);
@@ -390,10 +393,10 @@ final class App {
         }
         if ($existing) {
             $id=(int)$existing['id'];
-            $this->execute('UPDATE core_users SET name=?, password_hash=?, role=?, department_code=?, team_leader_id=?, branch_id=?, active=1, auth_version=auth_version+1 WHERE id=?',[$name,$passwordHash,$body['role'],$department,$leader,$branchId,$id]);
+            $this->execute('UPDATE core_users SET name=?, role=?, department_code=?, team_leader_id=?, branch_id=?, active=1, auth_version=auth_version+1 WHERE id=?',[$name,$body['role'],$department,$leader,$branchId,$id]);
             $this->audit('staff.updated',$id);
         } else {
-            $this->execute('INSERT INTO core_users(name,username,firebase_uid,password_hash,role,department_code,team_leader_id,branch_id) VALUES (?,?,?,?,?,?,?,?)',[$name,$username,$uid,$passwordHash,$body['role'],$department,$leader,$branchId]);
+            $this->execute('INSERT INTO core_users(name,username,firebase_uid,role,department_code,team_leader_id,branch_id) VALUES (?,?,?,?,?,?,?)',[$name,$username,$uid,$body['role'],$department,$leader,$branchId]);
             $id=(int)$this->db->lastInsertId();
             $this->audit('staff.created',$id);
         }

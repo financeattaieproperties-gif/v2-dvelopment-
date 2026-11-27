@@ -1,93 +1,48 @@
-import { build } from "vite";
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import { build } from 'vite';
+import react from '@vitejs/plugin-react';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const androidRoot = path.join(root, "sales-android");
-const wwwDir = path.join(androidRoot, "www");
-const androidAssetsWwwDir = path.join(
-  androidRoot,
-  "app",
-  "src",
-  "main",
-  "assets",
-  "www",
-);
-
-const backendBaseUrl =
-  process.env.VITE_STAFF_API_BASE_URL ||
-  "https://attaieproperties.com/staff-api/v1";
-
-process.env.STAFF_ROLE = "sales";
-process.env.STAFF_MOBILE_APP = "1";
-process.env.STAFF_ALLOW_PREVIEW = process.env.STAFF_ALLOW_PREVIEW || "0";
-process.env.VITE_STAFF_API_BASE_URL = backendBaseUrl;
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const androidRoot = path.join(root, 'sales-android');
+const wwwDir = path.join(androidRoot, 'www');
+const androidAssetsWwwDir = path.join(androidRoot, 'app/src/main/assets/www');
+const backendBaseUrl = 'https://website.attaieproperties.com/staff-api/v1';
+const firebase = JSON.parse(fs.readFileSync(path.join(root, 'firebase-applet-config.json'), 'utf8'));
+const firebaseApiKey = process.env.VITE_STAFF_FIREBASE_API_KEY || firebase.apiKey;
+if (!firebaseApiKey) throw new Error('Set VITE_STAFF_FIREBASE_API_KEY before building.');
 
 await build({
-  configFile: path.join(root, "apps/staff/vite.config.mjs"),
-  logLevel: "warn",
-  build: {
-    outDir: wwwDir,
-    emptyOutDir: true,
+  configFile: false,
+  envDir: false,
+  publicDir: false,
+  root: path.join(root, 'apps/staff'),
+  plugins: [react()],
+  base: './',
+  define: {
+    __STAFF_ROLE__: JSON.stringify('sales'),
+    __STAFF_PREVIEW_ALLOWED__: 'false',
+    'import.meta.env.VITE_STAFF_FIREBASE_API_KEY': JSON.stringify(firebaseApiKey),
+    'import.meta.env.VITE_STAFF_API_BASE_URL': JSON.stringify(backendBaseUrl),
   },
+  logLevel: 'warn',
+  build: { outDir: wwwDir, emptyOutDir: true, rollupOptions: { input: path.join(root, 'apps/staff/sales/index.html') } },
 });
-
-const nestedHtml = path.join(wwwDir, "dashboard", "index.html");
-const rootHtml = path.join(wwwDir, "index.html");
-if (fs.existsSync(nestedHtml)) {
-  fs.copyFileSync(nestedHtml, rootHtml);
-  fs.rmSync(path.join(wwwDir, "dashboard"), { recursive: true, force: true });
-}
-
-if (fs.existsSync(rootHtml)) {
-  let html = fs.readFileSync(rootHtml, "utf8");
-  html = html
-    .replaceAll("../assets/", "./assets/")
-    .replaceAll("crossorigin", "")
-    .replace(
-      /<title>.*?<\/title>/,
-      "<title>Sales Agent Workspace · Attaie Properties</title>",
-    )
-    .replace(
-      /<meta name="viewport"[^>]*>/,
-      '<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />',
-    )
-    .replace(
-      "<head>",
-      `<head>\n  <script>window.__ATTAIE_ANDROID_APP__ = true; window.__ATTAIE_STAFF_API_BASE_URL__ = window.__ATTAIE_STAFF_API_BASE_URL__ || ${JSON.stringify(backendBaseUrl)};</script>`,
-    );
-  if (!html.includes("apple-touch-icon")) {
-    html = html.replace(
-      "</head>",
-      '<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png"/>\n  </head>',
-    );
-  }
-  fs.writeFileSync(rootHtml, html, "utf8");
-}
-
-// Copy self-hosted logos so offline/bundled WebView assets resolve cleanly
-const logoSrc = path.join(root, "public", "logo.png");
-if (fs.existsSync(logoSrc)) {
-  fs.copyFileSync(logoSrc, path.join(wwwDir, "logo.png"));
-}
-const loginLogoSrc = path.join(root, "public", "login-logo.png");
-if (fs.existsSync(loginLogoSrc)) {
-  fs.copyFileSync(loginLogoSrc, path.join(wwwDir, "login-logo.png"));
-} else if (fs.existsSync(logoSrc)) {
-  fs.copyFileSync(logoSrc, path.join(wwwDir, "login-logo.png"));
-}
-
-const swNotifSrc = path.join(root, "apps", "staff", "pwa-assets", "sw-notifications.js");
-if (fs.existsSync(swNotifSrc)) {
-  fs.copyFileSync(swNotifSrc, path.join(wwwDir, "sw-notifications.js"));
-}
-
-// Mirror www/ into app/src/main/assets/www/ for direct Android Studio Gradle builds
+const nestedHtml = path.join(wwwDir, 'sales/index.html');
+const rootHtml = path.join(wwwDir, 'index.html');
+let html = fs.readFileSync(nestedHtml, 'utf8').replaceAll('../assets/', './assets/').replaceAll('crossorigin', '');
+html = html.replace('<head>', `<head>\n<script>window.__ATTAIE_STAFF_API_BASE_URL__ = ${JSON.stringify(backendBaseUrl)};</script>`);
+fs.writeFileSync(rootHtml, html);
+fs.unlinkSync(nestedHtml);
+fs.rmdirSync(path.dirname(nestedHtml));
+// Copy self-hosted logos so offline/bundled WebView assets resolve cleanly.
+for (const name of ['logo.png', 'login-logo.png']) fs.copyFileSync(path.join(root, 'public', name), path.join(wwwDir, name));
+for (const name of ['apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-maskable-512x512.png']) fs.copyFileSync(path.join(root, 'apps/staff/pwa-assets', name), path.join(wwwDir, name));
+fs.writeFileSync(path.join(wwwDir, 'BUILD-STATUS.json'), JSON.stringify({ builtAt: new Date().toISOString(), backendBaseUrl, previewAllowed: false, role: 'sales' }, null, 2));
+// Mirror www/ into app/src/main/assets/www/ for direct Android Studio Gradle builds.
+if (!androidAssetsWwwDir.startsWith(androidRoot + path.sep)) throw new Error('Invalid Android assets path.');
 fs.rmSync(androidAssetsWwwDir, { recursive: true, force: true });
 fs.mkdirSync(path.dirname(androidAssetsWwwDir), { recursive: true });
 fs.cpSync(wwwDir, androidAssetsWwwDir, { recursive: true });
-
-console.log(
-  `[build-sales-android] Built Sales Agent Android bundle into ${wwwDir} and ${androidAssetsWwwDir} (Backend: ${backendBaseUrl})`,
-);
+console.log(`[build-sales-android] Fresh Android/iOS Sales assets; backend ${backendBaseUrl}; preview disabled.`);

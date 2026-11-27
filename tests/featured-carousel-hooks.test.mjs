@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { SIGNATURE_PROJECTS, resolveSignatureProjects } from '../src/lib/signatureProjects.ts';
 
 test('landing page replaces category and master-planned cards with ExpandingCards signature projects', () => {
   const landingSource = fs.readFileSync(
@@ -18,21 +19,12 @@ test('landing page replaces category and master-planned cards with ExpandingCard
   assert.equal(landingSource.includes('mapProjectsToExpandingCards'), true);
 });
 
-test('signatureProjects defines all 5 canonical V2 developments with valid assets', () => {
-  const sigSource = fs.readFileSync(
-    new URL('../src/lib/signatureProjects.ts', import.meta.url),
-    'utf8'
-  );
-
-  for (const name of [
-    'Kabul Plaza Saljuqi',
-    'Moon Residency',
-    'Kabul Plaza Burj',
-    'Kabul Plaza 12',
-    'Kabul Plaza 09 (ABC)',
-  ]) {
-    assert.equal(sigSource.includes(name), true, `Expected ${name} in signatureProjects.ts`);
-  }
+test('new V2 catalogs start empty and API projects preserve their identity', () => {
+  assert.deepEqual(SIGNATURE_PROJECTS, []);
+  assert.deepEqual(resolveSignatureProjects(null), []);
+  assert.deepEqual(resolveSignatureProjects([]), []);
+  const records = [{id:123,name:'Fictional API project'}];
+  assert.equal(resolveSignatureProjects(records), records);
 });
 
 test('ExpandingCards resolves dynamic project detail links and keeps all cards in full color without grayscale', () => {

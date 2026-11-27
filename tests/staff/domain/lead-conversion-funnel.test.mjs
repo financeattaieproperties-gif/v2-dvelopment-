@@ -96,8 +96,15 @@ test("LeadConversionFunnelChart renders a Recharts stacked BarChart with Active,
   assert.ok(chartCode.includes("lead-conversion-funnel-chart"));
 
   const mainCode = fs.readFileSync(mainPath, "utf8");
-  assert.ok(mainCode.includes("LeadConversionFunnelChart"), "main.tsx must import and render LeadConversionFunnelChart");
-  assert.ok(mainCode.includes("sales-leader-charts-grid"), "main.tsx must wrap Sales Leader charts in grid");
+  for (const workspace of ["OverviewWorkspace", "CrmRecordsWorkspace"]) {
+    assert.ok(mainCode.includes(`<${workspace}`), `main.tsx must render ${workspace}`);
+    const workspaceCode = fs.readFileSync(path.resolve(`apps/staff/src/components/${workspace}.tsx`), "utf8");
+    assert.ok(workspaceCode.includes("import { LeadConversionFunnelChart }"), `${workspace} must import funnel`);
+    assert.ok(workspaceCode.includes("<LeadConversionFunnelChart"), `${workspace} must render funnel`);
+    assert.ok(workspaceCode.includes("sales-leader-charts-grid"), `${workspace} must place charts in grid`);
+    assert.ok(workspaceCode.includes('activeRole === "sales_leader"'), `${workspace} must guard charts for sales_leader`);
+    assert.ok(workspaceCode.includes("leaderId={userId}"), `${workspace} must scope funnel to active leader`);
+  }
 
   const cssCode = fs.readFileSync(cssPath, "utf8");
   assert.ok(cssCode.includes(".funnel-card"), "styles.css must style .funnel-card");

@@ -1,0 +1,25 @@
+{
+  "appId": "af.attaieproperties.sales",
+  "appName": "Attaie Sales CRM",
+  "webDir": "../sales-android/www",
+  "bundledWebRuntime": false,
+  "ios": {
+    "scheme": "AttaieSales",
+    "contentInset": "automatic",
+    "limitsNavigationsToAppBoundDomains": false
+  },
+  "server": {
+    "iosScheme": "capacitor",
+    "allowNavigation": [
+      "website.attaieproperties.com",
+      "*.firebaseapp.com",
+      "accounts.google.com"
+    ]
+  },
+  "plugins": {
+    "StatusBar": {
+      "style": "LIGHT",
+      "backgroundColor": "#FFFFFF"
+    }
+  }
+}

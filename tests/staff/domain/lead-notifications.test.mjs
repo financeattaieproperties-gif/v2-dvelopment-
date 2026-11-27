@@ -110,7 +110,7 @@ test("Lead Deduplication & Sync Logic: handles cold start and detects newly assi
   assert.ok(notifiedIds.has("4"), "Lead 4 should now be recorded");
 });
 
-test("UI Integration: apps/staff/src/main.tsx renders notification controls and banner", () => {
+test("UI Integration: staff shell and workspaces render notification controls and banner", () => {
   const mainPath = path.resolve("apps/staff/src/main.tsx");
   assert.ok(fs.existsSync(mainPath), "apps/staff/src/main.tsx must exist");
 
@@ -119,8 +119,12 @@ test("UI Integration: apps/staff/src/main.tsx renders notification controls and 
   assert.ok(mainContent.includes("useLeadNotifications"), "main.tsx must call useLeadNotifications");
   assert.ok(mainContent.includes("header-notification-btn"), "main.tsx must render header-notification-btn in topbar");
   assert.ok(mainContent.includes("notification-popover"), "main.tsx must render notification-popover");
-  assert.ok(mainContent.includes("lead-notifications-banner"), "main.tsx must render lead-notifications-banner on leads view");
-  assert.ok(mainContent.includes("profile-notification-card"), "main.tsx must render profile-notification-card on profile view");
+  assert.ok(mainContent.includes("<CrmRecordsWorkspace"), "main.tsx must render records workspace");
+  assert.ok(mainContent.includes("<ProfileWorkspace"), "main.tsx must render profile workspace");
+  const recordsContent = fs.readFileSync(path.resolve("apps/staff/src/components/CrmRecordsWorkspace.tsx"), "utf8");
+  const profileContent = fs.readFileSync(path.resolve("apps/staff/src/components/ProfileWorkspace.tsx"), "utf8");
+  assert.ok(recordsContent.includes("lead-notifications-banner"), "Records workspace must render lead notification banner");
+  assert.ok(profileContent.includes("profile-notification-card"), "Profile workspace must render notification card");
 });
 
 test("CSS Tokens & Styling: apps/staff/src/styles.css contains notification classes", () => {

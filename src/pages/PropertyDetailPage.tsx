@@ -30,9 +30,6 @@ import { buildPropertySeo } from '../lib/seoConfig';
 import { Breadcrumbs } from '../components/ui/Breadcrumbs';
 import { MapSkeleton } from '../components/map/MapSkeleton';
 import { PaymentPlanComparisonCard } from '../components/project/PaymentPlanComparisonCard';
-import stitchInteriorImg from '../assets/images/stitch_apartment_interior.jpg';
-import stitchHeroImg from '../assets/images/stitch_hero_kabul_panorama.jpg';
-import stitchVillaImg from '../assets/images/stitch_villa_exterior.jpg';
 
 const ImageGallery = lazy(() =>
   import('../components/property/ImageGallery').then((m) => ({ default: m.ImageGallery }))
@@ -48,61 +45,54 @@ const AttaieGoogleMap = lazy(() =>
 
 // Detail panels use motion/react entrance animations
 
-const FALLBACK_DETAIL_PROPERTY: Property = {
-  id: 101,
-  serial_number: 'ATP-101',
-  title: 'Wazir Akbar Khan Luxury Residence',
-  price: 185000,
-  location: 'Street 10, Wazir Akbar Khan, Kabul',
-  beds: 4,
-  baths: 3,
-  area: 220,
-  floor: 5,
-  status: 'available',
-  type: 'Apartment',
-  listing_type: 'sale',
-  image_url: stitchInteriorImg,
-  gallery_images: [stitchInteriorImg, stitchHeroImg, stitchVillaImg],
-  video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-  floor_plan_url: null,
-  three_d_plan_url: null,
-  description:
-    'Sunlit luxury 4-bedroom residence in Street 10, Wazir Akbar Khan featuring panoramic Hindu Kush mountain views, imported Turkish marble flooring, formal Mehmankhana guest suite, central heating, and 24/7 solar-hybrid backup power.',
-  created_at: '2026-02-01T08:00:00Z',
-};
-
 type DetailTab = 'overview' | 'specs' | 'payment';
 
 export default function PropertyDetailPage() {
   const { t, i18n } = useTranslation();
   const { id } = useParams<{ id: string }>();
-  const propertyId = Number(id) || 101;
+  const propertyId = Number(id);
+  const validPropertyId = /^\d+$/.test(id || '') && Number.isSafeInteger(propertyId) && propertyId > 0;
   const isRtl = i18n.language === 'fa';
 
   const [property, setProperty] = useState<Property | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [reload, setReload] = useState(0);
   const [visitOpen, setVisitOpen] = useState(false);
   const [activeDetailTab, setActiveDetailTab] = useState<DetailTab>('overview');
 
   const detailPanelsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let active = true;
     setLoading(true);
+    setProperty(null);
+    setVisitOpen(false);
     setError(null);
+    setNotFound(false);
+    if (!validPropertyId) {
+      setNotFound(true);
+      setLoading(false);
+      return;
+    }
     getProperty(propertyId)
       .then((data) => {
-        if (data && typeof data === 'object' && 'title' in data) {
+        if (!active) return;
+        if (data && typeof data === 'object' && typeof data.title === 'string' && Number(data.id) === propertyId) {
           setProperty(data);
         } else {
-          setProperty(FALLBACK_DETAIL_PROPERTY);
+          setNotFound(true);
         }
       })
-      .catch(() => {
-        setProperty(FALLBACK_DETAIL_PROPERTY);
+      .catch((failure: unknown) => {
+        if (!active) return;
+        if (failure instanceof Error && /not found/i.test(failure.message)) setNotFound(true);
+        else setError('inventoryState.loadError');
       })
-      .finally(() => setLoading(false));
-  }, [propertyId]);
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [propertyId, validPropertyId, reload]);
 
   // Detail panels reveal handled via motion/react
 
@@ -111,7 +101,7 @@ export default function PropertyDetailPage() {
       ? property.gallery_images
       : property.image_url
       ? [property.image_url]
-      : [stitchInteriorImg, stitchHeroImg]
+      : []
     : [];
 
   const seo = buildPropertySeo(property, id);
@@ -126,7 +116,7 @@ export default function PropertyDetailPage() {
 
   return (
     <main className="min-h-screen bg-brand-cream flex flex-col">
-      <SeoHead seo={property ? seo : undefined} context={{ property }} />
+      <SeoHead seo={property ? seo : { ...seo, NoIndex: true }} context={{ property }} />
       <Navbar />
 
       {/* Top hierarchy bar */}
@@ -161,11 +151,11 @@ export default function PropertyDetailPage() {
               </Link>
             </div>
           </div>
-        ) : (
+        ) : property ? (
           <div className="w-full h-[58vh] min-h-[420px] bg-brand-navy flex items-center justify-center">
-            <span className="text-white/30 text-sm">No images available</span>
+            <span className="text-white/70 text-sm">{t('inventoryState.noImages')}</span>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Motion.dev Gallery-to-Detail Transition Container */}
@@ -179,7 +169,17 @@ export default function PropertyDetailPage() {
         <Breadcrumbs items={breadcrumbItems} className="mb-6" />
 
         {error && (
-          <div className="p-6 bg-red-50 border border-red-200 rounded-lg text-red-700">{error}</div>
+          <div role="alert" className="p-6 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            <p>{t(error)}</p>
+            <button type="button" onClick={() => setReload(value => value + 1)} className="mt-3 font-semibold underline">{t('inventoryState.retry')}</button>
+          </div>
+        )}
+        {notFound && !loading && (
+          <section className="rounded-2xl border border-neutral-200 bg-white p-10 text-center">
+            <h1 className="text-2xl font-bold text-brand-navy">{t('inventoryState.propertyNotFound')}</h1>
+            <p className="mt-3 text-neutral-600">{t('inventoryState.propertyNotFoundHint')}</p>
+            <Link to="/properties" className="mt-5 inline-block font-semibold text-brand-gold underline">{t('nav.properties')}</Link>
+          </section>
         )}
 
         {loading && (

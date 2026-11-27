@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { createRoot } from "react-dom/client";
+import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import {
   LayoutDashboard,
   CalendarClock,
@@ -1903,20 +1904,28 @@ function App() {
             </span>
           </footer>
         </main>
-        {(activeRole === "sales" || activeRole === "callcenter") &&
-          !modal &&
-          ["leads", "followups", "customers"].includes(page) && (
-            <button
-              type="button"
-              className="mobile-fab"
-              data-testid="mobile-fab-new-entry"
-              onClick={() => setModal({ kind: "entry" })}
-              aria-label={t("New entry")}
-            >
-              <Plus size={18} />
-              <span>{t("New entry")}</span>
-            </button>
-          )}
+        <AnimatePresence>
+          {(activeRole === "sales" || activeRole === "callcenter") &&
+            !modal &&
+            ["leads", "followups", "customers"].includes(page) && (
+              <motion.button
+                key="mobile-fab"
+                type="button"
+                className="mobile-fab"
+                data-testid="mobile-fab-new-entry"
+                onClick={() => setModal({ kind: "entry" })}
+                aria-label={t("New entry")}
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", bounce: 0.15, visualDuration: 0.22 }}
+              >
+                <Plus size={18} />
+                <span>{t("New entry")}</span>
+              </motion.button>
+            )}
+        </AnimatePresence>
         <nav
           className="mobile-bottom-nav"
           aria-label={t("Workspace")}
@@ -1935,6 +1944,14 @@ function App() {
                 className={`mobile-bottom-nav-btn ${isActive ? "active" : ""}`}
                 onClick={() => navigate(item.id as Page)}
               >
+                {isActive && (
+                  <motion.span
+                    layoutId="mobile-nav-pill"
+                    className="mobile-nav-pill"
+                    transition={{ type: "spring", bounce: 0.15, visualDuration: 0.25 }}
+                    aria-hidden="true"
+                  />
+                )}
                 <span className="mobile-bottom-nav-icon">
                   <Icon size={18} />
                   {overdueCount > 0 && (
@@ -2066,4 +2083,8 @@ function App() {
 
 
 
-createRoot(document.getElementById("root")!).render(<App />);
+createRoot(document.getElementById("root")!).render(
+  <MotionConfig reducedMotion="user">
+    <App />
+  </MotionConfig>,
+);

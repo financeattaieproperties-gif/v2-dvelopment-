@@ -104,14 +104,13 @@ export function StaffForm({
           maxLength={254}
         />
       </Field>
-      <Field label={t("Password")}>
+      <p>{t("Create the account in Firebase first, then enter its exact UID and email here.")}</p>
+      <Field label={t("Firebase UID")}>
         <input
-          name="password"
-          type="password"
-          autoComplete="new-password"
+          name="firebaseUid"
+          autoComplete="off"
           required
-          minLength={6}
-          maxLength={200}
+          maxLength={128}
         />
       </Field>
       <div className="form-grid">

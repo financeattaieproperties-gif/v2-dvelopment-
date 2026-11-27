@@ -177,8 +177,8 @@ export function canAccessDatabase(role, database) {
   }
   if (database === "submissions") {
     if (role === "admin") return "review_and_publish";
-    if (role === "marketing_manager" || role === "videographer" || role === "editor") return "submit_and_read";
-    if (role === "ceo" || role === "manager" || role === "sales_leader" || role === "sales" || role === "callcenter" || role === "finance_manager") return "read_only";
+    if (role === "editor") return "submit_and_read";
+    if (role === "ceo") return "read_only";
     return false;
   }
   return false;

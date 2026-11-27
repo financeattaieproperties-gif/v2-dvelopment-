@@ -136,14 +136,16 @@ describe('All Panels & All Roles — Dedicated Panel Specs & Role Contracts', ()
     }
 
     // Submissions DB rules
-    for (const mktRole of ['marketing_manager', 'videographer', 'editor']) {
-      expect(canAccessDatabase(mktRole, 'submissions')).toBe('submit_and_read');
+    expect(canAccessDatabase('editor', 'submissions')).toBe('submit_and_read');
+    for (const mktRole of ['marketing_manager', 'videographer']) {
+      expect(canAccessDatabase(mktRole, 'submissions')).toBe(false);
     }
     for (const engRole of ['architect', 'graphic_designer', 'visual_designer_3d']) {
       expect(canAccessDatabase(engRole, 'submissions')).toBe(false);
     }
-    for (const salesRole of ['ceo', 'manager', 'sales_leader', 'sales', 'callcenter', 'finance_manager']) {
-      expect(canAccessDatabase(salesRole, 'submissions')).toBe('read_only');
+    expect(canAccessDatabase('ceo', 'submissions')).toBe('read_only');
+    for (const salesRole of ['manager', 'sales_leader', 'sales', 'callcenter', 'finance_manager']) {
+      expect(canAccessDatabase(salesRole, 'submissions')).toBe(false);
     }
 
     // Default/requested page resolution never navigates to a disallowed module

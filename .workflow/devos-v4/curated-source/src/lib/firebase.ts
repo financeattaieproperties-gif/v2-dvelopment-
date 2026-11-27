@@ -1,0 +1,22 @@
+export {
+  SCOPES,
+  app,
+  auth,
+  db,
+  firebaseConfig,
+  OperationType,
+  handleFirestoreError,
+  testConnection,
+  syncUserProfileToFirestore,
+  subscribeFirebaseAuthState,
+  signInWithGoogleAuth,
+  signInWithEmailAuth,
+  sendFirebasePasswordReset,
+  getFirebaseIdToken,
+  initAuth,
+  googleSignIn,
+  getAccessToken,
+  getWorkspaceUserEmail,
+  logout,
+} from '../../shared/googleWorkspaceAuth';
+export type { FirestoreErrorInfo } from '../../shared/googleWorkspaceAuth';

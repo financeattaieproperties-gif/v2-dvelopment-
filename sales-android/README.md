@@ -1,3 +1,5 @@
+> Current V2 rebuild instructions: [REBUILD-V2.md](./REBUILD-V2.md). Earlier commands below are historical; use the current guide.
+
 # Attaie Sales CRM — Dedicated Android Application (`sales-android/`)
 
 This folder contains the complete Android Studio & Capacitor project structure for the **Attaie Properties Sales Agent Android App** (`af.attaieproperties.sales`).

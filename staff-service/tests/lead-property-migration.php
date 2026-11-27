@@ -17,7 +17,7 @@ try {
     $db->exec(file_get_contents($migration));
     require_once __DIR__.'/../tools/preflight-lead-properties.php';
     $check(lead_property_preflight($db)['ready']===true,'Empty fixture must be ready');
-    $db->exec("INSERT INTO core_branches(id,code,name) VALUES (1,'FIXTURE','Fictional Branch')");
+    $db->exec("UPDATE core_branches SET code='FIXTURE',name='Fictional Branch' WHERE id=1");
     $db->exec("INSERT INTO core_users(id,firebase_uid,name,username,role,branch_id) VALUES (1,'fixture-sales','Fictional Sales','fixture@example.test','sales',1)");
     $db->exec("INSERT INTO cc_customers(id,branch_id,name,phone,created_at) VALUES (1,1,'Fictional Customer','93700000000',UTC_TIMESTAMP())");
     $db->exec("INSERT INTO crm_phone_registry(phone,customer_id) VALUES ('+93700000000',1)");

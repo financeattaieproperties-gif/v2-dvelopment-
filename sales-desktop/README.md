@@ -1,3 +1,5 @@
+> Current V2 rebuild instructions: [REBUILD-V2.md](./REBUILD-V2.md). Earlier commands below are historical; use the current guide.
+
 # Attaie Sales Agent — Windows Desktop App (`.exe`)
 
 Installable Windows PC application for **Sales Agents** (`Attaie Sales Agent`).

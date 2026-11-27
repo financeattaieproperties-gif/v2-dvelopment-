@@ -18,13 +18,32 @@ $authActor = $user;
 // 1. Optional Firebase Authentication ID-token sign-in (Google / Firebase Auth)
 if ($idToken !== '') {
     $verifierPath = dirname(__DIR__, 2) . '/staff-service/src/FirebaseAuth.php';
+    $privateConfig = null;
+    $staffPathsFile = dirname(__DIR__) . '/staff-api/paths.php';
+    if (!is_file($verifierPath) && is_file($staffPathsFile)) {
+        $staffPaths = require $staffPathsFile;
+        if (is_array($staffPaths)) {
+            if (!empty($staffPaths['app_directory']) && is_string($staffPaths['app_directory'])) {
+                $candidateVerifier = rtrim($staffPaths['app_directory'], '/\\') . '/src/FirebaseAuth.php';
+                if (is_file($candidateVerifier)) {
+                    $verifierPath = $candidateVerifier;
+                }
+            }
+            if (!empty($staffPaths['config_file']) && is_string($staffPaths['config_file']) && is_file($staffPaths['config_file'])) {
+                $loadedCfg = require $staffPaths['config_file'];
+                if (is_array($loadedCfg)) {
+                    $privateConfig = $loadedCfg;
+                }
+            }
+        }
+    }
     if (!is_file($verifierPath)) {
         json_out(['error' => 'Firebase verification module not found on server'], 503);
     }
     require_once $verifierPath;
 
-    $projectId = ctc_env('FIREBASE_PROJECT_ID', 'attaiepropertieswebsite');
-    $apiKey    = ctc_env('FIREBASE_API_KEY', ctc_env('VITE_STAFF_FIREBASE_API_KEY', ''));
+    $projectId = ctc_env('FIREBASE_PROJECT_ID', (string) ($privateConfig['firebase_project_id'] ?? 'attaiepropertieswebsite'));
+    $apiKey    = ctc_env('FIREBASE_API_KEY', ctc_env('VITE_STAFF_FIREBASE_API_KEY', (string) ($privateConfig['firebase_api_key'] ?? '')));
 
     // Fallback to root firebase-applet-config.json when server env vars are not set
     if ($apiKey === '') {

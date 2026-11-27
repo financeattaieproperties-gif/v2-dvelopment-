@@ -127,7 +127,7 @@ export const KabulHeaderWidgets: React.FC<{ className?: string }> = ({ className
   return (
     <div
       className={cn(
-        'flex items-center gap-2.5 text-xs text-white/85 font-medium tabular-nums whitespace-nowrap',
+        'flex items-center gap-2.5 text-xs text-brand-navy/85 font-medium tabular-nums whitespace-nowrap',
         className
       )}
     >
@@ -135,14 +135,14 @@ export const KabulHeaderWidgets: React.FC<{ className?: string }> = ({ className
         <Calendar size={14} strokeWidth={2.2} className="text-brand-gold shrink-0" />
         <span>{formattedDate}</span>
       </div>
-      <span className="text-white/25" aria-hidden="true">
+      <span className="text-brand-navy/25" aria-hidden="true">
         ·
       </span>
       <div className="inline-flex items-center gap-1.5">
         <Clock size={14} strokeWidth={2.2} className="text-brand-gold shrink-0" />
         <span className="font-mono">{formattedTime}</span>
       </div>
-      <span className="text-white/25" aria-hidden="true">
+      <span className="text-brand-navy/25" aria-hidden="true">
         ·
       </span>
       <div className="inline-flex items-center gap-1.5">
@@ -226,8 +226,8 @@ const Navbar = () => {
       className={cn(
         'fixed top-0 w-full z-50 transition-all duration-500',
         isScrolled
-          ? 'bg-brand-navy/95 backdrop-blur-xl shadow-[0_4px_24px_rgba(0,0,0,0.25)] py-3'
-          : 'bg-transparent py-5',
+          ? 'bg-white/95 backdrop-blur-xl border-b border-brand-navy/10 py-3'
+          : 'bg-white/95 backdrop-blur-xl border-b border-brand-navy/10 py-5',
       )}
     >
       <div className="container-custom flex justify-between items-center gap-3">
@@ -241,7 +241,7 @@ const Navbar = () => {
               decoding="async"
             />
           </Link>
-          <KabulHeaderWidgets className="hidden md:flex ps-3.5 border-s border-white/15" />
+          <KabulHeaderWidgets className="hidden md:flex ps-3.5 border-s border-brand-navy/15" />
         </div>
 
         {/* Desktop nav links */}
@@ -264,7 +264,7 @@ const Navbar = () => {
                         'relative inline-flex items-center gap-1 font-medium text-sm tracking-wide transition-colors duration-200 py-1 px-2.5 xl:px-3 rounded-full whitespace-nowrap',
                         active
                           ? 'text-brand-gold'
-                          : 'text-white/75 hover:text-white hover:bg-white/8',
+                          : 'text-brand-navy/75 hover:text-brand-gold hover:bg-brand-navy/5',
                       )}
                     >
                       <span>{link.name}</span>
@@ -291,7 +291,7 @@ const Navbar = () => {
                       }}
                       className={cn(
                         'p-1 rounded-full transition-colors cursor-pointer -ms-1.5',
-                        active ? 'text-brand-gold' : 'text-white/70 hover:text-white',
+                        active ? 'text-brand-gold' : 'text-brand-navy/70 hover:text-brand-gold',
                       )}
                     >
                       <ChevronDown
@@ -309,7 +309,7 @@ const Navbar = () => {
                         exit={{ opacity: 0, y: 8 }}
                         transition={{ duration: 0.16 }}
                         data-testid="nav-about-dropdown"
-                        className="absolute top-full end-0 mt-2 w-52 rounded-xl bg-brand-navy/98 backdrop-blur-xl border border-white/15 shadow-2xl p-1.5 z-50"
+                        className="absolute top-full end-0 mt-2 w-52 rounded-xl bg-white backdrop-blur-xl border border-brand-navy/15 shadow-2xl p-1.5 z-50"
                       >
                         {link.subLinks.map((sub) => {
                           const SubIcon = sub.icon;
@@ -321,7 +321,7 @@ const Navbar = () => {
                                 setAboutPinnedOpen(false);
                                 setAboutHoverOpen(false);
                               }}
-                              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-white/85 hover:text-white hover:bg-white/10 transition-colors"
+                              className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-brand-navy/85 hover:text-brand-gold hover:bg-brand-navy/5 transition-colors"
                             >
                               <SubIcon size={15} className="text-brand-gold shrink-0" />
                               <span>{sub.name}</span>
@@ -343,7 +343,7 @@ const Navbar = () => {
                   'relative font-medium text-sm tracking-wide transition-colors duration-200 py-1 px-2.5 xl:px-3 rounded-full whitespace-nowrap',
                   active
                     ? 'text-brand-gold'
-                    : 'text-white/75 hover:text-white hover:bg-white/8',
+                    : 'text-brand-navy/75 hover:text-brand-gold hover:bg-brand-navy/5',
                 )}
               >
                 {link.name}
@@ -361,14 +361,14 @@ const Navbar = () => {
 
         {/* Desktop actions */}
         <div className="hidden lg:flex items-center gap-3 xl:gap-4 shrink-0">
-          <div className="hidden xl:flex items-center gap-2 text-white whitespace-nowrap">
+          <div className="hidden xl:flex items-center gap-2 text-brand-navy whitespace-nowrap">
             <Phone size={16} strokeWidth={2.2} className="text-brand-gold" />
             <span className="font-bold text-sm tabular-nums" dir="ltr">+93 782 222 279</span>
           </div>
-          <div className="hidden xl:block h-4 w-[1px] bg-white/20" />
+          <div className="hidden xl:block h-4 w-[1px] bg-brand-navy/20" />
           <button
             onClick={toggleLanguage}
-            className="flex items-center gap-1.5 p-2 text-sm font-medium text-white/70 transition-colors hover:text-brand-gold whitespace-nowrap"
+            className="flex items-center gap-1.5 p-2 text-sm font-medium text-brand-navy/70 transition-colors hover:text-brand-gold whitespace-nowrap"
             aria-label={t('nav.switchLanguage')}
           >
             <Globe size={17} strokeWidth={2.2} />
@@ -385,7 +385,7 @@ const Navbar = () => {
 
         {/* Mobile hamburger */}
         <button
-          className="lg:hidden p-2 text-white"
+          className="lg:hidden p-2 text-brand-navy"
           onClick={() => setIsOpen(!isOpen)}
           aria-label={isOpen ? t('nav.closeMenu') : t('nav.openMenu')}
         >

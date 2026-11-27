@@ -20,24 +20,34 @@ export default function ProjectsPage() {
   const { t } = useTranslation();
   const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [reload, setReload] = useState(0);
   const [filter, setFilter] = useState<(typeof FILTER_STATUSES)[number]>('All');
 
   const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    let active = true;
+    setLoading(true);
+    setLoadError(false);
     getProjects()
       .then((list) => {
+        if (!active) return;
         if (Array.isArray(list)) {
           setProjects(list);
         } else {
           setProjects([]);
+          setLoadError(true);
         }
       })
       .catch(() => {
+        if (!active) return;
         setProjects([]);
+        setLoadError(true);
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [reload]);
 
   // Project cards animate via motion/react AnimatePresence & whileInView
 
@@ -208,6 +218,11 @@ export default function ProjectsPage() {
           >
             {loading ? (
               Array.from({ length: 6 }).map((_, idx) => <ProjectCardSkeleton key={idx} />)
+            ) : loadError ? (
+              <div role="alert" className="col-span-full rounded-2xl border border-neutral-200 bg-white p-12 text-center">
+                <p className="text-brand-navy font-semibold">{t('inventoryState.loadError')}</p>
+                <button type="button" onClick={() => setReload(value => value + 1)} className="mt-4 font-semibold text-brand-gold underline">{t('inventoryState.retry')}</button>
+              </div>
             ) : visible.length ? (
               visible.map((project) => (
                 <div key={project.id} data-project-card>

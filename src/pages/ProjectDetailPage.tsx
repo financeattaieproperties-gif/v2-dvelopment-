@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { getProject, type Project, type ProjectUnit } from '@/lib/dbService';
 import { SIGNATURE_PROJECTS } from '@/lib/signatureProjects';
+import { SEO_CONFIG } from '@/lib/seoConfig';
 import { Navbar } from '@/components/layout/Navbar';
 import { Footer } from '@/components/layout/Footer';
 import { Button } from '@/components/ui/Button';
@@ -141,7 +142,7 @@ export function ProjectDetailPage() {
       <Helmet>
         <title>{name} | Attaie Properties</title>
         <meta name="description" content={description?.slice(0, 155) ?? `${name} – ${location}`} />
-        <link rel="canonical" href={`https://attaieproperties.af/projects/${project.id}`} />
+        <link rel="canonical" href={`${SEO_CONFIG.siteUrl}/projects/${project.id}`} />
         <meta property="og:title" content={`${name} | Attaie Properties`} />
         <meta property="og:description" content={description?.slice(0, 155) ?? ''} />
         {project.image_url && <meta property="og:image" content={project.image_url} />}

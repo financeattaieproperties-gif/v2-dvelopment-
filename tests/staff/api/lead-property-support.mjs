@@ -6,7 +6,7 @@ import net from 'node:net';
 import assert from 'node:assert/strict';
 
 export async function startLeadFixture() {
-  const php=path.resolve('releases/validation/php/php.exe'),args=['-d',`extension_dir=${path.resolve('releases/validation/php/ext')}`,'-d','extension=pdo_mysql','-d','extension=fileinfo'];
+  const php=process.env.STAFF_TEST_PHP || path.resolve('releases/validation/php/php.exe'),args=['-d',`extension_dir=${path.join(path.dirname(php),'ext')}`,'-d','extension=pdo_mysql','-d','extension=fileinfo'];
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'attaie-lead-fixture-'));
   const database=`attaie_v2_test_${crypto.randomUUID().replaceAll('-','').slice(0,20)}`;
   const listener=net.createServer();await new Promise(resolve=>listener.listen(0,'127.0.0.1',resolve));const port=listener.address().port;await new Promise(resolve=>listener.close(resolve));

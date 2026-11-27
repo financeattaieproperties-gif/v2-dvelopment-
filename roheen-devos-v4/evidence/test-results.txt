@@ -1,0 +1,18 @@
+test_candidate_changes (test_runtime.RuntimeTests.test_candidate_changes) ... ok
+test_concurrent_claim (test_runtime.RuntimeTests.test_concurrent_claim) ... ok
+test_fake_codex_contract (test_runtime.RuntimeTests.test_fake_codex_contract) ... ok
+test_fixture_lifecycle (test_runtime.RuntimeTests.test_fixture_lifecycle) ... ok
+test_fullstack_profile (test_runtime.RuntimeTests.test_fullstack_profile) ... ok
+test_isolation_and_persistence (test_runtime.RuntimeTests.test_isolation_and_persistence) ... ok
+test_missing_cli_blocks (test_runtime.RuntimeTests.test_missing_cli_blocks) ... ok
+test_no_approval_out_of_order (test_runtime.RuntimeTests.test_no_approval_out_of_order) ... ok
+test_reject_invalid_mode (test_runtime.RuntimeTests.test_reject_invalid_mode) ... ok
+test_repair_invalidates_candidate (test_runtime.RuntimeTests.test_repair_invalidates_candidate) ... ok
+test_source_copy (test_runtime.RuntimeTests.test_source_copy) ... ok
+test_verifier_failure (test_runtime.RuntimeTests.test_verifier_failure) ... ok
+test_security_and_lifecycle (test_studio.StudioTests.test_security_and_lifecycle) ... ok
+
+----------------------------------------------------------------------
+Ran 13 tests in 9.748s
+
+OK

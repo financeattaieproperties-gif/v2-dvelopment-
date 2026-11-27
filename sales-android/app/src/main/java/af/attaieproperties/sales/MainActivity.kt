@@ -44,7 +44,7 @@ import java.io.File
  */
 class ServerConfigBridge(private val activity: AppCompatActivity) {
     companion object {
-        private const val PREFS_NAME = "attaie_sales_server_prefs"
+        private const val PREFS_NAME = "attaie_sales_v2_testing_server_prefs"
         private const val KEY_API_BASE_URL = "staff_api_base_url"
     }
 
@@ -183,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(swipeRefresh)
 
         val assetLoader = WebViewAssetLoader.Builder()
-            .setDomain("attaieproperties.com")
+            .setDomain("website.attaieproperties.com")
             .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
             .build()
 
@@ -216,10 +216,10 @@ class MainActivity : AppCompatActivity() {
                 var response = assetLoader.shouldInterceptRequest(reqUrl)
                 if (
                     response == null &&
-                    reqUrl.host == "attaieproperties.com" &&
+                    reqUrl.host == "website.attaieproperties.com" &&
                     (reqUrl.path == "/login-logo.png" || reqUrl.path == "/logo.png")
                 ) {
-                    val mappedUri = Uri.parse("https://attaieproperties.com/assets/www/logo.png")
+                    val mappedUri = Uri.parse("https://website.attaieproperties.com/assets/www/logo.png")
                     response = assetLoader.shouldInterceptRequest(mappedUri)
                 }
                 if (response == null) return null
@@ -329,7 +329,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Load the bundled Sales Agent Workspace over virtual HTTPS origin
-        webView.loadUrl("https://attaieproperties.com/assets/www/index.html")
+        webView.loadUrl("https://website.attaieproperties.com/assets/www/index.html")
     }
 
     override fun onResume() {

@@ -122,11 +122,14 @@ test("AgentConversionChart uses Recharts BarChart and is wired into Sales Leader
   assert.ok(chartCode.includes("conversion-date-end"));
 
   const mainCode = fs.readFileSync(mainPath, "utf8");
-  assert.ok(mainCode.includes("AgentConversionChart"), "main.tsx must import and render AgentConversionChart");
-  assert.ok(
-    mainCode.includes('activeRole === "sales_leader"'),
-    "main.tsx must guard AgentConversionChart for sales_leader role"
-  );
+  for (const workspace of ["OverviewWorkspace", "CrmRecordsWorkspace"]) {
+    assert.ok(mainCode.includes(`<${workspace}`), `main.tsx must render ${workspace}`);
+    const workspaceCode = fs.readFileSync(path.resolve(`apps/staff/src/components/${workspace}.tsx`), "utf8");
+    assert.ok(workspaceCode.includes("import { AgentConversionChart }"), `${workspace} must import chart`);
+    assert.ok(workspaceCode.includes("<AgentConversionChart"), `${workspace} must render chart`);
+    assert.ok(workspaceCode.includes('activeRole === "sales_leader"'), `${workspace} must guard chart for sales_leader`);
+    assert.ok(workspaceCode.includes("leaderId={userId}"), `${workspace} must scope chart to active leader`);
+  }
 
   const cssCode = fs.readFileSync(cssPath, "utf8");
   assert.ok(cssCode.includes(".conversion-card"), "styles.css must style .conversion-card");

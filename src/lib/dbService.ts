@@ -117,7 +117,8 @@ export async function getProperties(filters?: {
 
 export async function getProperty(id: number): Promise<Property> {
   const res = await fetch(`${API}/get-property.php?id=${id}`);
-  if (!res.ok) throw new Error('Property not found');
+  if (res.status === 404) throw new Error('Property not found');
+  if (!res.ok) throw new Error('Property service unavailable');
   return res.json();
 }
 

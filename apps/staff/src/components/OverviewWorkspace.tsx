@@ -18,7 +18,7 @@ import { followupState } from "../../../../packages/staff-contracts/workflow.mjs
 import type { ModalState, Page, Translate } from "../staffConfig";
 import { AgentConversionChart } from "./AgentConversionChart";
 import { LeadConversionFunnelChart } from "./LeadConversionFunnelChart";
-import { KpiSparkline, OverviewAnalyticsStrip } from "./OverviewAnalyticsStrip";
+import { OverviewAnalyticsStrip } from "./OverviewAnalyticsStrip";
 import { Empty } from "./StaffUiPrimitives";
 
 export function OverviewWorkspace({
@@ -98,16 +98,6 @@ export function OverviewWorkspace({
             target: "tasks" as Page,
           },
         ].map(({ label, value, note, icon: Icon, color, target }) => {
-          const sparkColor =
-            color === "gold" ? "#0072BC" : color === "red" ? "#818285" : "#14A850";
-          const sparkPts = [
-            Math.max(1, value - 2),
-            Math.max(1, value - 1),
-            Math.max(1, value),
-            Math.max(1, value - 1),
-            Math.max(1, value + 1),
-            Math.max(1, value),
-          ];
           return (
             <button
               className="stat-card"
@@ -137,7 +127,6 @@ export function OverviewWorkspace({
                 >
                   {value}
                 </strong>
-                <KpiSparkline points={sparkPts} color={sparkColor} />
               </div>
               <span className="stat-note">
                 <span
@@ -162,6 +151,7 @@ export function OverviewWorkspace({
         })}
       </div>
       <OverviewAnalyticsStrip
+        language={language}
         activeRole={activeRole}
         leads={data?.leads || []}
         followups={data?.followups || []}

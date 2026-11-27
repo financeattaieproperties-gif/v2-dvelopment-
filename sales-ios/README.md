@@ -1,3 +1,5 @@
+> Current V2 rebuild instructions: [REBUILD-V2.md](./REBUILD-V2.md). Earlier commands below are historical; use the current guide.
+
 # Attaie Sales CRM — iOS Application (`sales-ios/`)
 
 The Sales Agent workspace (`af.attaieproperties.sales`) supports **two iPhone/iPad installation methods** backed by the exact same `/staff-api/v1/*` backend and Firebase Authentication:

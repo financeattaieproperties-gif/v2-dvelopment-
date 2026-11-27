@@ -40,10 +40,13 @@ export function getRuntimeSeoSettings(): SiteSeoSettings | null {
 }
 
 function getBaseSiteUrl(): string {
+  const configuredUrl = (import.meta.env?.VITE_SITE_URL as string | undefined)?.replace(/\/+$/, '');
+  if (configuredUrl) return configuredUrl;
+  if (typeof window !== 'undefined' && window.location?.hostname === 'website.attaieproperties.com') return window.location.origin;
   const overrides = getInitialOverrides();
   if (overrides?.canonical_base_url?.trim()) {
     const cleaned = overrides.canonical_base_url.trim().replace(/\/+$/, '');
-    if (cleaned === 'https://attaieproperties.af' || cleaned === 'https://website.attaieproperties.com') {
+    if (cleaned === 'https://attaieproperties.af') {
       return 'https://attaieproperties.com';
     }
     return cleaned;
@@ -121,6 +124,7 @@ export const SEO_CONFIG = {
     return getInitialOverrides()?.twitter_site?.trim() || null;
   },
   get robotsIndex(): boolean {
+    if (getBaseSiteUrl() === 'https://website.attaieproperties.com') return false;
     const overrides = getInitialOverrides();
     return overrides?.robots_index !== undefined ? Boolean(overrides.robots_index) : true;
   },

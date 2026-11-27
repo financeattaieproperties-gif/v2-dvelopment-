@@ -20,7 +20,8 @@ if (!is_file($indexPath)) {
 }
 
 $html = file_get_contents($indexPath);
-$siteUrl = 'https://attaieproperties.com';
+$siteUrl = (($_SERVER['SERVER_NAME'] ?? '') === 'website.attaieproperties.com')
+    ? 'https://website.attaieproperties.com' : 'https://attaieproperties.com';
 $defaultImage = $siteUrl . '/logo.png';
 
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?: '/';

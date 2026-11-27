@@ -15,11 +15,13 @@ test("Admin Login page preserves required auth selectors and uses UI Variant 1 p
 });
 
 test("Staff Login screen preserves required auth selectors and uses UI Variant 1 palette without purple styling", () => {
-  const mainPath = path.resolve("apps/staff/src/main.tsx");
+  const mainPath = path.resolve("apps/staff/src/components/StaffLoginView.tsx");
   const cssPath = path.resolve("apps/staff/src/styles.css");
 
   const mainCode = fs.readFileSync(mainPath, "utf8");
   const cssCode = fs.readFileSync(cssPath, "utf8");
+  const shellCode = fs.readFileSync(path.resolve("apps/staff/src/main.tsx"), "utf8");
+  assert.ok(shellCode.includes('from "./components/StaffLoginView"') && shellCode.includes("<Login"), "Staff shell must compose extracted login view");
 
   assert.ok(mainCode.includes('id="staff-login-username"'), "Must preserve #staff-login-username");
   assert.ok(mainCode.includes('className="remember-label"'), "Must include Remember me control");

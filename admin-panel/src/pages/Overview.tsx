@@ -34,6 +34,7 @@ function getSmoothSplinePath(points: { x: number; y: number }[]): string {
  * High-character smooth sparkline with gradient wash
  */
 function ElegantSparkline({ points, color, height = 34, width = 110, id }: { points: number[]; color: string; height?: number; width?: number; id: string }) {
+  if (points.length < 2) return null;
   const safe = points.length >= 2 ? points : [2, 3, 2, 4, 3, 5];
   const max = Math.max(...safe, 1);
   const min = Math.min(...safe, 0);
@@ -372,7 +373,7 @@ export default function Overview() {
       toneBg: V1.greenSoft,
       toneBorder: '#BDE8CE',
       accentBorder: V1.green,
-      points: [4, 6, 5, 8, 9, Math.max(properties.length, 1)],
+      points: [] as number[],
       to: '/properties',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -397,7 +398,7 @@ export default function Overview() {
       toneBg: V1.blueSoft,
       toneBorder: '#B8DCF2',
       accentBorder: V1.blue,
-      points: [2, 2, 3, 3, 4, Math.max(activeProjects, 1)],
+      points: [] as number[],
       to: '/projects',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -417,7 +418,7 @@ export default function Overview() {
       toneBg: V1.blueSoft,
       toneBorder: '#B8DCF2',
       accentBorder: V1.blue,
-      points: monthlySeries.map((m) => m.leads || 1),
+      points: monthlySeries.map((m) => m.leads),
       to: '/leads',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -438,7 +439,7 @@ export default function Overview() {
       toneBg: V1.greenSoft,
       toneBorder: '#BDE8CE',
       accentBorder: V1.green,
-      points: monthlySeries.map((m) => m.activity || 1),
+      points: monthlySeries.map((m) => m.activity),
       to: '/visits',
       icon: (
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -908,9 +909,11 @@ export default function Overview() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {projects.slice(0, 3).map((p) => {
-                const totalUnits = Number(p.total_units || 40);
-                const soldUnits = Math.min(Math.round(totalUnits * 0.72), totalUnits);
-                const pct = Math.round((soldUnits / totalUnits) * 100);
+                const totalUnits = Number(p.total_units);
+                const availableUnits = Number(p.available_units);
+                const pct = totalUnits > 0 && p.available_units != null && Number.isFinite(availableUnits)
+                  ? Math.min(100, Math.max(0, Math.round(availableUnits / totalUnits * 100)))
+                  : null;
 
                 return (
                   <div
@@ -932,16 +935,16 @@ export default function Overview() {
                         </span>
                       </div>
                       <span style={{ fontSize: '0.74rem', fontWeight: 700, color: V1.blue, fontVariantNumeric: 'tabular-nums' }}>
-                        {pct}% Contracted
+                        {pct === null ? 'Availability unavailable' : `${pct}% Available`}
                       </span>
                     </div>
 
                     <div style={{ width: '100%', height: 6, background: V1.border, borderRadius: 999, overflow: 'hidden' }}>
                       <div
                         style={{
-                          width: `${pct}%`,
+                          width: `${pct ?? 0}%`,
                           height: '100%',
-                          background: pct > 80 ? V1.green : V1.blue,
+                          background: (pct ?? 0) > 80 ? V1.green : V1.blue,
                           borderRadius: 999,
                         }}
                       />

@@ -1,3 +1,5 @@
+> Current V2 rebuild instructions: [REBUILD-V2.md](./REBUILD-V2.md). Earlier commands below are historical; use the current guide.
+
 # Attaie Call Center — Windows Desktop App (`.exe`)
 
 Installable Windows PC application for **Call Center Agents** (`Attaie Call Center`).

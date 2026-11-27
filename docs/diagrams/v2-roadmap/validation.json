@@ -1,0 +1,218 @@
+[
+  {
+    "file": "01.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\01.html\n"
+  },
+  {
+    "file": "01.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "02.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\02.html\n"
+  },
+  {
+    "file": "02.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "03.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\03.html\n"
+  },
+  {
+    "file": "03.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "04.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\04.html\n"
+  },
+  {
+    "file": "04.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "05.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\05.html\n"
+  },
+  {
+    "file": "05.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "06.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\06.html\n"
+  },
+  {
+    "file": "06.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "07.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\07.html\n"
+  },
+  {
+    "file": "07.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "08.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\08.html\n"
+  },
+  {
+    "file": "08.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "09.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\09.html\n"
+  },
+  {
+    "file": "09.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "10.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\10.html\n"
+  },
+  {
+    "file": "10.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "11.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\11.html\n"
+  },
+  {
+    "file": "11.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "12.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\12.html\n"
+  },
+  {
+    "file": "12.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "13.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\13.html\n"
+  },
+  {
+    "file": "13.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "14.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\14.html\n"
+  },
+  {
+    "file": "14.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "15.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\15.html\n"
+  },
+  {
+    "file": "15.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "16.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\16.html\n"
+  },
+  {
+    "file": "16.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "17.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\17.html\n"
+  },
+  {
+    "file": "17.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  },
+  {
+    "file": "18.html",
+    "tool": "self_check.py",
+    "code": 0,
+    "output": "OK docs\\diagrams\\v2-roadmap\\18.html\n"
+  },
+  {
+    "file": "18.html",
+    "tool": "verify_geometry.py",
+    "code": 0,
+    "output": "Summary: 1 file(s) checked, 0 finding(s).\n"
+  }
+]

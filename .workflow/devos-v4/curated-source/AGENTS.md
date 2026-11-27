@@ -1,0 +1,4 @@
+# Sanitized V2 analysis workspace
+This copy is for the DevOS Product analysis stage only. Do not change product source, install dependencies, run builds, use external connectors, publish, deploy, push, or access production/V1.
+Only write the Product handoff and applicable .workflow planning records. Scope: refine the existing Variant 1 design across the public site, separate Website Admin, eight staff panels, Android/iOS Sales and Call Center desktop. Preserve all business rules and product EN/FA/RTL behavior. All planning and diagrams are English.
+Owner approved the roadmap direction; do not represent that as approval of new generated scope/design documents. Stop at the runtime approval gate. Do not copy missing credentials, uploads, generated bundles, dependencies, or personal/customer records into this workspace. This snapshot intentionally cannot establish build/deployment readiness.

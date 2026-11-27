@@ -1,0 +1,20 @@
+{
+  "name": "attaie-sales-ios",
+  "version": "2.0.1",
+  "description": "Attaie Properties Sales Agent iOS Capacitor Wrapper",
+  "private": true,
+  "scripts": {
+    "build:web": "node ../scripts/build-sales-android.mjs",
+    "add:ios": "cap add ios",
+    "presync:ios": "npm run build:web",
+    "sync:ios": "npx cap sync ios",
+    "open:ios": "npx cap open ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/ios": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.0"
+  }
+}

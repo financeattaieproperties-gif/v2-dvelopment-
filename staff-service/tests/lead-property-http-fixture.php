@@ -33,8 +33,9 @@ if($action==='worker') {
 }
 if($action==='close-first'){$db->exec("UPDATE cc_leads SET status='lost' WHERE id=(SELECT id FROM (SELECT MIN(id) id FROM cc_leads) x)");exit;}
 if($action==='closed-first'){$db->exec("UPDATE cc_leads SET status='closed' WHERE id=(SELECT id FROM (SELECT MIN(id) id FROM cc_leads) x)");exit;}
-foreach(['001-core.sql','010-callcenter.sql','020-inventory.sql','030-sales-crm.sql','040-hr-finance.sql','050-marketing-production.sql','060-engineering.sql','090-role-migration.sql','095-retire-finance-assistant.sql','100-dashboard-completion.sql','103-customer-property-leads.sql'] as $file)$db->exec(file_get_contents(__DIR__.'/../database/'.$file));
-$db->exec("INSERT INTO core_branches(id,code,name) VALUES (1,'FIX-1','Fictional branch'),(2,'FIX-2','Foreign fictional branch')");
+foreach(['001-core.sql','010-callcenter.sql','020-inventory.sql','030-sales-crm.sql','040-hr-finance.sql','050-marketing-production.sql','060-engineering.sql','090-role-migration.sql','095-retire-finance-assistant.sql','100-dashboard-completion.sql','103-customer-property-leads.sql','110-ceo-manager-branch-model.sql'] as $file)$db->exec(file_get_contents(__DIR__.'/../database/'.$file));
+$db->exec("UPDATE core_branches SET code='FIX-1',name='Fictional branch' WHERE id=1");
+$db->exec("INSERT INTO core_branches(id,code,name) VALUES (2,'FIX-2','Foreign fictional branch')");
 $roles=['sales','sales','callcenter','sales','sales','manager'];
 foreach($roles as $index=>$role){$id=$index+1;$q=$db->prepare('INSERT INTO core_users(id,firebase_uid,name,username,role,branch_id) VALUES (?,?,?,?,?,?)');$q->execute([$id,'fictional-'.$id,'Fictional '.$role.' '.$id,'fixture'.$id.'@example.test',$role,$id===5?2:1]);}
 foreach([1,2,3] as $id){$q=$db->prepare('INSERT INTO inv_projects(id,branch_id,code,name,location,description,created_by) VALUES (?,?,?,?,?,?,6)');$q->execute([$id,$id===3?2:1,'FX-'.$id,'Fictional property '.$id,'Fixture','Fixture']);}

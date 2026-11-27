@@ -1,0 +1,845 @@
+import { useEffect, useState, type FormEvent } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Camera } from 'lucide-react';
+import { api, type ProjectInput, type ProjectUnit, type ProjectUnitInput } from '../api';
+import ImageUpload from '../components/ImageUpload';
+import { ApartmentGalleryReorder } from '../components/ApartmentGalleryReorder';
+import ExplorerEditor from '../components/visual/ExplorerEditor';
+import { V1 } from '../components/variant1';
+
+const S = {
+  page:     { maxWidth: 840 } as const,
+  topBar:   { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' } as const,
+  title:    { fontSize: '1.5rem', fontWeight: 700, margin: 0, color: V1.ink } as const,
+  card:     { background: V1.surface, borderRadius: 8, border: `1px solid ${V1.border}`, overflow: 'hidden', marginBottom: '1.25rem' } as const,
+  section:  { padding: '1.5rem 1.75rem' } as const,
+  divider:  { borderTop: `1px solid ${V1.slateSoft}` } as const,
+  secTitle: { fontSize: '0.72rem', fontWeight: 700, color: V1.slate, textTransform: 'uppercase' as const, letterSpacing: 0.8, marginBottom: '1rem' } as const,
+  grid:     { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' } as const,
+  full:     { gridColumn: '1 / -1' } as const,
+  label:    { display: 'block', fontSize: '0.8rem', fontWeight: 600, color: V1.ink, marginBottom: '0.3rem' } as const,
+  input:    { width: '100%', padding: '0.58rem 0.8rem', border: `1px solid ${V1.border}`, borderRadius: 6, fontSize: '0.88rem', outline: 'none', boxSizing: 'border-box' as const, color: V1.ink } as const,
+  select:   { width: '100%', padding: '0.58rem 0.8rem', border: `1px solid ${V1.border}`, borderRadius: 6, fontSize: '0.88rem', outline: 'none', background: V1.surface, boxSizing: 'border-box' as const, color: V1.ink } as const,
+  textarea: { width: '100%', padding: '0.58rem 0.8rem', border: `1px solid ${V1.border}`, borderRadius: 6, fontSize: '0.88rem', minHeight: 120, resize: 'vertical' as const, outline: 'none', boxSizing: 'border-box' as const, color: V1.ink } as const,
+  footer:   { padding: '1.25rem 1.75rem', borderTop: `1px solid ${V1.slateSoft}`, display: 'flex', gap: '0.75rem', alignItems: 'center' } as const,
+  save:     { padding: '0.62rem 1.5rem', background: V1.blue, color: '#FFFFFF', border: 'none', borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: '0.88rem' } as const,
+  cancel:   { padding: '0.62rem 1.2rem', background: V1.surface, color: V1.ink, border: `1px solid ${V1.border}`, borderRadius: 6, fontWeight: 600, cursor: 'pointer', fontSize: '0.88rem' } as const,
+  toast:    (ok: boolean): React.CSSProperties => ({
+    padding: '0.65rem 1rem', borderRadius: 8, fontSize: '0.85rem', fontWeight: 600,
+    background: ok ? V1.greenSoft : V1.dangerSoft,
+    color:      ok ? '#0F7A3A' : V1.danger,
+  }),
+};
+
+const blank: ProjectInput = {
+  name: '', location: '', delivery_date: null,
+  status: 'Coming Soon', available_units: 0,
+  total_units: 0, image_url: null, gallery_images: [], video_url: null, masterplan_image: null, description: null,
+};
+
+const blankUnit = (projectId: number): ProjectUnitInput => ({
+  project_id: projectId,
+  unit_number: '',
+  title: null,
+  beds: null,
+  baths: null,
+  area: null,
+  floor: null,
+  price: null,
+  currency: 'USD',
+  status: 'available',
+  image_url: null,
+  gallery_images: [],
+  video_url: null,
+  technical_plan_url: null,
+  description: null,
+});
+
+type StagedUnit = ProjectUnitInput & { _tempId: string };
+
+export default function ProjectForm() {
+  const { id }   = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const isEdit   = Boolean(id);
+  const projectId = Number(id || 0);
+
+  const [form, setForm]       = useState<ProjectInput>(blank);
+  const [busy, setBusy]       = useState(false);
+  const [loading, setLoading] = useState(isEdit);
+  const [toast, setToast]     = useState<{ ok: boolean; msg: string } | null>(null);
+
+  // Project apartments / units state
+  const [units, setUnits]             = useState<ProjectUnit[]>([]);
+  const [stagedUnits, setStagedUnits] = useState<StagedUnit[]>([]);
+  const [unitsError, setUnitsError]   = useState<string | null>(null);
+  const [unitForm, setUnitForm]       = useState<ProjectUnitInput>(blankUnit(projectId));
+  const [editingUnitId, setEditingUnitId] = useState<number | string | null>(null);
+  const [unitBusy, setUnitBusy]       = useState(false);
+  const [unitToast, setUnitToast]     = useState<{ ok: boolean; msg: string } | null>(null);
+
+  const loadUnits = async (pid: number) => {
+    setUnitsError(null);
+    try {
+      const unitList = await api.getProjectUnits(pid);
+      setUnits(unitList);
+    } catch (err) {
+      setUnitsError((err as Error).message || 'Could not load project apartments.');
+    }
+  };
+
+  useEffect(() => {
+    if (!isEdit) return;
+    setUnitsError(null);
+    Promise.all([
+      api.getProjects(),
+      api.getProjectUnits(projectId).catch((err: Error) => {
+        setUnitsError(err.message || 'Could not load project apartments.');
+        return [] as ProjectUnit[];
+      }),
+    ]).then(([list, unitList]) => {
+      const found = list.find(p => Number(p.id) === projectId);
+      if (found) {
+        const { id: _id, created_at: _ca, ...rest } = found;
+        setForm({ ...rest, gallery_images: Array.isArray(rest.gallery_images) ? rest.gallery_images : [] });
+      }
+      setUnits(unitList);
+      setUnitForm(blankUnit(projectId));
+    }).finally(() => setLoading(false));
+  }, [id, isEdit, projectId]);
+
+  const set = (k: keyof ProjectInput, v: unknown) =>
+    setForm(prev => ({ ...prev, [k]: v }));
+
+  const showToast = (ok: boolean, msg: string) => {
+    setToast({ ok, msg });
+    setTimeout(() => setToast(null), 3000);
+  };
+
+  const showUnitToast = (ok: boolean, msg: string) => {
+    setUnitToast({ ok, msg });
+    setTimeout(() => setUnitToast(null), 3000);
+  };
+
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    try {
+      if (isEdit) {
+        await api.updateProject({ ...form, id: projectId });
+        showToast(true, 'Project updated successfully.');
+      } else {
+        const res = await api.createProject(form);
+        const newPid = Number(res.id);
+        
+        // If the admin staged any apartments during creation, save them now
+        if (stagedUnits.length > 0) {
+          showToast(true, `Project created! Saving ${stagedUnits.length} staged apartment(s)…`);
+          for (const u of stagedUnits) {
+            const { _tempId: _discard, ...unitData } = u;
+            await api.createProjectUnit({ ...unitData, project_id: newPid });
+          }
+        }
+        showToast(true, 'Project and apartments created successfully!');
+        setTimeout(() => navigate(`/projects/${newPid}/edit`), 900);
+      }
+    } catch (err) {
+      showToast(false, (err as Error).message || 'Save failed.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const saveUnit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!unitForm.unit_number.trim()) {
+      showUnitToast(false, 'Unit number is required.');
+      return;
+    }
+
+    if (!isEdit) {
+      // Staging mode for a brand new project before it is saved
+      if (editingUnitId && typeof editingUnitId === 'string') {
+        setStagedUnits(prev => prev.map(u => u._tempId === editingUnitId ? { ...unitForm, _tempId: editingUnitId } : u));
+        showUnitToast(true, 'Staged apartment updated.');
+      } else {
+        const newStaged: StagedUnit = {
+          ...unitForm,
+          _tempId: `staged_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
+        };
+        setStagedUnits(prev => [...prev, newStaged]);
+        showUnitToast(true, 'Apartment staged. It will be saved when you click "+ Create Project".');
+      }
+      setEditingUnitId(null);
+      setUnitForm(blankUnit(0));
+      return;
+    }
+
+    // Live mode for an existing project
+    setUnitBusy(true);
+    try {
+      if (editingUnitId && typeof editingUnitId === 'number') {
+        await api.updateProjectUnit({ ...unitForm, project_id: projectId, id: editingUnitId });
+        showUnitToast(true, 'Apartment updated.');
+      } else {
+        await api.createProjectUnit({ ...unitForm, project_id: projectId });
+        showUnitToast(true, 'Apartment added.');
+      }
+      const refreshed = await api.getProjectUnits(projectId);
+      setUnits(refreshed);
+      setEditingUnitId(null);
+      setUnitForm(blankUnit(projectId));
+    } catch (err) {
+      showUnitToast(false, (err as Error).message || 'Failed to save apartment.');
+    } finally {
+      setUnitBusy(false);
+    }
+  };
+
+  const startEditUnit = (u: ProjectUnit) => {
+    const { id: uId, ...rest } = u;
+    setEditingUnitId(uId);
+    setUnitForm({
+      ...rest,
+      gallery_images: Array.isArray(rest.gallery_images) ? rest.gallery_images : [],
+      video_url: rest.video_url || null,
+    });
+  };
+
+  const startEditStagedUnit = (su: StagedUnit) => {
+    setEditingUnitId(su._tempId);
+    const { _tempId: _discard, ...rest } = su;
+    setUnitForm({
+      ...rest,
+      gallery_images: Array.isArray(rest.gallery_images) ? rest.gallery_images : [],
+      video_url: rest.video_url || null,
+    });
+  };
+
+  const removeUnit = async (u: ProjectUnit) => {
+    if (!confirm(`Delete apartment "${u.unit_number}"?`)) return;
+    await api.deleteProjectUnit(u.id);
+    setUnits(prev => prev.filter(x => x.id !== u.id));
+  };
+
+  const removeStagedUnit = (tempId: string) => {
+    setStagedUnits(prev => prev.filter(x => x._tempId !== tempId));
+  };
+
+  const totalApartmentsCount = isEdit ? units.length : stagedUnits.length;
+
+  if (loading) return <p style={{ padding: '2rem' }}>Loading…</p>;
+
+  return (
+    <div style={S.page}>
+      <div style={S.topBar}>
+        <h1 style={S.title}>{isEdit ? 'Edit Project' : 'New Project'}</h1>
+        <button type="button" style={{ ...S.cancel, padding: '0.5rem 1rem' }} onClick={() => navigate('/projects')}>
+          ← Back to list
+        </button>
+      </div>
+
+      <form onSubmit={submit}>
+        <div style={S.card}>
+
+          {/* Building Exterior Elevation Image — used by Interactive Explorer & Cover */}
+          <div style={S.section}>
+            <p style={S.secTitle}>Building Exterior Elevation Image (Interactive Explorer & Cover)</p>
+            <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: 0, marginBottom: '0.85rem' }}>
+              Upload the building's front elevation photo or architectural 3D render. In the public project explorer, visitors can hover and select floors directly on this image.
+            </p>
+            <ImageUpload
+              value={form.image_url}
+              onChange={url => set('image_url', url)}
+            />
+          </div>
+
+          {/* Core details */}
+          <div style={{ ...S.section, ...S.divider }}>
+            <p style={S.secTitle}>Core Details</p>
+            <div style={S.grid}>
+              <div style={S.full}>
+                <label style={S.label}>Project Name *</label>
+                <input style={S.input} value={form.name} onChange={e => set('name', e.target.value)} required placeholder="e.g. Aria Residences" />
+              </div>
+              <div style={S.full}>
+                <label style={S.label}>Location *</label>
+                <input style={S.input} value={form.location} onChange={e => set('location', e.target.value)} required placeholder="e.g. Macroyan, Kabul" />
+              </div>
+              <div>
+                <label style={S.label}>Status</label>
+                <select style={S.select} value={form.status} onChange={e => set('status', e.target.value as ProjectInput['status'])}>
+                  <option>Coming Soon</option>
+                  <option>In Progress</option>
+                  <option>Under Construction</option>
+                  <option>Ready</option>
+                  <option>Sold Out</option>
+                </select>
+              </div>
+              <div>
+                <label style={S.label}>Delivery Date</label>
+                <input style={S.input} value={form.delivery_date ?? ''} onChange={e => set('delivery_date', e.target.value || null)} placeholder="e.g. Q2 2027" />
+              </div>
+            </div>
+          </div>
+
+          {/* Units */}
+          <div style={{ ...S.section, ...S.divider }}>
+            <p style={S.secTitle}>Unit Count Summary</p>
+            <div style={S.grid}>
+              <div>
+                <label style={S.label}>Available Units</label>
+                <input style={S.input} type="number" min={0} value={form.available_units} onChange={e => set('available_units', Number(e.target.value))} />
+              </div>
+              <div>
+                <label style={S.label}>Total Units</label>
+                <input style={S.input} type="number" min={0} value={form.total_units} onChange={e => set('total_units', Number(e.target.value))} />
+              </div>
+            </div>
+          </div>
+
+          {/* Masterplan / Building Floor Plan Image */}
+          <div style={{ ...S.section, ...S.divider }}>
+            <p style={S.secTitle}>Building Floor Plan / Masterplan (Typical Floor Layout)</p>
+            <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: 0, marginBottom: '0.85rem' }}>
+              Upload the general floor plate or architectural masterplan. Displayed in the Dual-Pane Blueprint Viewer when inspecting floor levels.
+            </p>
+            <ImageUpload
+              value={form.masterplan_image}
+              onChange={url => set('masterplan_image', url)}
+              purpose="blueprint"
+            />
+          </div>
+
+          {/* Gallery Images */}
+          <div style={{ ...S.section, ...S.divider }}>
+            <p style={S.secTitle}>Project Photo Gallery (up to 8 images)</p>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+              {[...(form.gallery_images ?? []), null].slice(0, 8).map((url, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <div style={{ flex: 1 }}>
+                    <ImageUpload
+                      value={url ?? null}
+                      onChange={newUrl => {
+                        const imgs = [...(form.gallery_images ?? [])];
+                        if (newUrl) imgs[i] = newUrl;
+                        else imgs.splice(i, 1);
+                        set('gallery_images', imgs.filter(Boolean));
+                      }}
+                      purpose="gallery"
+                    />
+                  </div>
+                  {url && (
+                    <button
+                      type="button"
+                      style={{ ...S.cancel, padding: '0.4rem 0.8rem', marginTop: '0.5rem', fontSize: '0.8rem' }}
+                      onClick={() => {
+                        const imgs = [...(form.gallery_images ?? [])];
+                        imgs.splice(i, 1);
+                        set('gallery_images', imgs);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Video URL */}
+          <div style={{ ...S.section, ...S.divider }}>
+            <p style={S.secTitle}>Project Video URL</p>
+            <input
+              style={S.input}
+              value={form.video_url ?? ''}
+              onChange={e => set('video_url', e.target.value || null)}
+              placeholder="YouTube, Vimeo, or direct MP4 URL"
+            />
+          </div>
+
+          {/* Description */}
+          <div style={{ ...S.section, ...S.divider }}>
+            <p style={S.secTitle}>Description</p>
+            <textarea
+              style={S.textarea}
+              value={form.description ?? ''}
+              onChange={e => set('description', e.target.value || null)}
+              placeholder="Describe the project, highlights, amenities, location advantages…"
+            />
+          </div>
+
+          {/* Footer */}
+          <div style={S.footer}>
+            <button type="submit" style={S.save} disabled={busy}>
+              {busy ? 'Saving…' : isEdit ? '✓ Save Changes' : `+ Create Project ${stagedUnits.length > 0 ? `(with ${stagedUnits.length} apartments)` : ''}`}
+            </button>
+            <button type="button" style={S.cancel} onClick={() => navigate('/projects')}>
+              Cancel
+            </button>
+            {toast && <span style={S.toast(toast.ok)}>{toast.msg}</span>}
+          </div>
+
+        </div>
+      </form>
+
+      {/* Project Apartments / Units Management (Available on both new and existing projects) */}
+      <div style={S.card}>
+        <div style={S.section}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+            <p style={{ ...S.secTitle, margin: 0 }}>
+              Project Apartments / Units ({totalApartmentsCount})
+            </p>
+            {!isEdit && stagedUnits.length > 0 && (
+              <span style={{ fontSize: '0.78rem', padding: '0.2rem 0.6rem', borderRadius: 6, background: '#fef3c7', color: '#92400e', fontWeight: 600 }}>
+                {stagedUnits.length} staged to save with project
+              </span>
+            )}
+          </div>
+          <p style={{ fontSize: '0.82rem', color: '#64748b', marginTop: 0, marginBottom: '1.25rem' }}>
+            Add individual apartments for each floor. For each unit, you can attach both a <strong>2D Furnished Floor Plan</strong> (with furniture and dimensions) and a <strong>2D Technical Blueprint</strong> (architectural/CAD layout) for the public Interactive Explorer.
+          </p>
+
+          {unitsError && (
+            <div style={{
+              padding: '0.75rem 1rem',
+              marginBottom: '1.25rem',
+              borderRadius: 8,
+              background: '#fee2e2',
+              border: '1px solid #fca5a5',
+              color: '#dc2626',
+              fontSize: '0.85rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: '0.75rem',
+            }}>
+              <span>Failed to load apartments: {unitsError}</span>
+              <button
+                type="button"
+                onClick={() => loadUnits(projectId)}
+                style={{
+                  padding: '0.35rem 0.75rem',
+                  background: '#dc2626',
+                  color: '#fff',
+                  border: 'none',
+                  borderRadius: 6,
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  fontSize: '0.78rem',
+                }}
+              >
+                Retry
+              </button>
+            </div>
+          )}
+
+          {/* Table of units (live or staged) */}
+          {(isEdit ? units.length > 0 : stagedUnits.length > 0) && (
+            <div style={{ overflowX: 'auto', marginBottom: '1.5rem' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+                <thead>
+                  <tr style={{ background: '#f8fafc', textAlign: 'left', color: '#64748b' }}>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Unit #</th>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Title</th>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Specs</th>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Media &amp; Plans</th>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Price</th>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Status</th>
+                    <th style={{ padding: '0.6rem 0.75rem', borderBottom: '1px solid #e2e8f0' }}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {isEdit ? units.map(u => (
+                    <tr key={u.id} style={{ borderBottom: '1px solid #f1f5f9', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '0.6rem 0.75rem', fontWeight: 600, color: '#1E293B', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}>{u.unit_number}</td>
+                      <td style={{ padding: '0.6rem 0.75rem' }}>{u.title || '—'}</td>
+                      <td style={{ padding: '0.6rem 0.75rem', color: '#475569' }}>
+                        {[
+                          u.floor !== null ? `Fl ${u.floor}` : null,
+                          u.beds !== null ? `${u.beds} bd` : null,
+                          u.baths !== null ? `${u.baths} ba` : null,
+                          u.area !== null ? `${u.area} m²` : null,
+                        ].filter(Boolean).join(' · ') || '—'}
+                      </td>
+                      <td style={{ padding: '0.6rem 0.75rem' }}>
+                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                          {u.image_url ? (
+                            <img
+                              src={u.image_url}
+                              alt="Cover"
+                              style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'cover', border: '1px solid #cbd5e1' }}
+                            />
+                          ) : (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#f1f5f9', color: '#94a3b8', fontWeight: 600,
+                            }}>
+                              No Cover
+                            </span>
+                          )}
+                          {Array.isArray(u.gallery_images) && u.gallery_images.length > 0 && (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#fef3c7', color: '#92400e', fontWeight: 600,
+                              display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                            }}>
+                              <Camera size={11} aria-hidden="true" /> {u.gallery_images.length}
+                            </span>
+                          )}
+                          {u.video_url && (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#ede9fe', color: '#5b21b6', fontWeight: 600,
+                            }}>
+                              ▶ Video
+                            </span>
+                          )}
+                          {u.technical_plan_url && (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#dbeafe', color: '#1e40af', fontWeight: 600,
+                            }}>
+                              CAD
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={{ padding: '0.6rem 0.75rem', fontWeight: 600 }}>
+                        {u.price !== null ? `${u.currency} ${Number(u.price).toLocaleString()}` : 'On request'}
+                      </td>
+                      <td style={{ padding: '0.6rem 0.75rem', textTransform: 'capitalize', fontWeight: 600 }}>{u.status}</td>
+                      <td style={{ padding: '0.6rem 0.75rem' }}>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          <button
+                            type="button"
+                            style={{ padding: '0.25rem 0.65rem', background: '#0072BC', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}
+                            onClick={() => startEditUnit(u)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            style={{ padding: '0.25rem 0.65rem', background: 'transparent', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}
+                            onClick={() => removeUnit(u)}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  )) : stagedUnits.map(su => (
+                    <tr key={su._tempId} style={{ borderBottom: '1px solid #f1f5f9', fontVariantNumeric: 'tabular-nums' }}>
+                      <td style={{ padding: '0.6rem 0.75rem', fontWeight: 600, color: '#1E293B', fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace' }}>{su.unit_number}</td>
+                      <td style={{ padding: '0.6rem 0.75rem' }}>{su.title || '—'}</td>
+                      <td style={{ padding: '0.6rem 0.75rem', color: '#475569' }}>
+                        {[
+                          su.floor !== null ? `Fl ${su.floor}` : null,
+                          su.beds !== null ? `${su.beds} bd` : null,
+                          su.baths !== null ? `${su.baths} ba` : null,
+                          su.area !== null ? `${su.area} m²` : null,
+                        ].filter(Boolean).join(' · ') || '—'}
+                      </td>
+                      <td style={{ padding: '0.6rem 0.75rem' }}>
+                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                          {su.image_url ? (
+                            <img
+                              src={su.image_url}
+                              alt="Cover"
+                              style={{ width: 28, height: 28, borderRadius: 4, objectFit: 'cover', border: '1px solid #cbd5e1' }}
+                            />
+                          ) : (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#f1f5f9', color: '#94a3b8', fontWeight: 600,
+                            }}>
+                              No Cover
+                            </span>
+                          )}
+                          {Array.isArray(su.gallery_images) && su.gallery_images.length > 0 && (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#fef3c7', color: '#92400e', fontWeight: 600,
+                              display: 'inline-flex', alignItems: 'center', gap: '0.25rem',
+                            }}>
+                              <Camera size={11} aria-hidden="true" /> {su.gallery_images.length}
+                            </span>
+                          )}
+                          {su.video_url && (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#ede9fe', color: '#5b21b6', fontWeight: 600,
+                            }}>
+                              ▶ Video
+                            </span>
+                          )}
+                          {su.technical_plan_url && (
+                            <span style={{
+                              fontSize: '0.7rem', padding: '0.15rem 0.45rem', borderRadius: 4,
+                              background: '#dbeafe', color: '#1e40af', fontWeight: 600,
+                            }}>
+                              CAD
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      <td style={{ padding: '0.6rem 0.75rem', fontWeight: 600 }}>
+                        {su.price !== null ? `${su.currency} ${Number(su.price).toLocaleString()}` : 'On request'}
+                      </td>
+                      <td style={{ padding: '0.6rem 0.75rem', textTransform: 'capitalize', fontWeight: 600 }}>{su.status}</td>
+                      <td style={{ padding: '0.6rem 0.75rem' }}>
+                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                          <button
+                            type="button"
+                            style={{ padding: '0.25rem 0.65rem', background: '#0072BC', color: '#fff', border: 'none', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}
+                            onClick={() => startEditStagedUnit(su)}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            style={{ padding: '0.25rem 0.65rem', background: 'transparent', color: '#dc2626', border: '1px solid #fca5a5', borderRadius: 6, cursor: 'pointer', fontSize: '0.78rem' }}
+                            onClick={() => removeStagedUnit(su._tempId)}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {/* Unit Form */}
+          <form onSubmit={saveUnit} style={{ background: '#f8fafc', padding: '1.25rem', borderRadius: 10, border: '1px solid #e2e8f0' }}>
+            <p style={{ ...S.secTitle, marginBottom: '0.85rem', color: '#334155' }}>
+              {editingUnitId ? 'Edit Apartment / Unit' : '+ Add Apartment / Unit'}
+            </p>
+            <div style={S.grid}>
+              <div>
+                <label style={S.label}>Unit Number *</label>
+                <input
+                  style={S.input}
+                  value={unitForm.unit_number}
+                  onChange={e => setUnitForm(prev => ({ ...prev, unit_number: e.target.value }))}
+                  required
+                  placeholder="e.g. A-302"
+                />
+              </div>
+              <div>
+                <label style={S.label}>Title / Layout Name</label>
+                <input
+                  style={S.input}
+                  value={unitForm.title ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, title: e.target.value || null }))}
+                  placeholder="e.g. 3-Bedroom Corner Suite"
+                />
+              </div>
+              <div>
+                <label style={S.label}>Status</label>
+                <select
+                  style={S.select}
+                  value={unitForm.status}
+                  onChange={e => setUnitForm(prev => ({ ...prev, status: e.target.value as ProjectUnit['status'] }))}
+                >
+                  <option value="available">Available</option>
+                  <option value="reserved">Reserved</option>
+                  <option value="sold">Sold</option>
+                  <option value="rented">Rented</option>
+                </select>
+              </div>
+              <div>
+                <label style={S.label}>Price (USD)</label>
+                <input
+                  style={S.input}
+                  type="number"
+                  min={0}
+                  value={unitForm.price ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, price: e.target.value ? Number(e.target.value) : null }))}
+                  placeholder="Leave blank for 'Price on request'"
+                />
+              </div>
+              <div>
+                <label style={S.label}>Floor Number</label>
+                <input
+                  style={S.input}
+                  type="number"
+                  value={unitForm.floor ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, floor: e.target.value ? Number(e.target.value) : null }))}
+                  placeholder="e.g. 3"
+                />
+              </div>
+              <div>
+                <label style={S.label}>Area (m²)</label>
+                <input
+                  style={S.input}
+                  type="number"
+                  min={0}
+                  value={unitForm.area ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, area: e.target.value ? Number(e.target.value) : null }))}
+                  placeholder="e.g. 145"
+                />
+              </div>
+              <div>
+                <label style={S.label}>Bedrooms</label>
+                <input
+                  style={S.input}
+                  type="number"
+                  min={0}
+                  value={unitForm.beds ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, beds: e.target.value ? Number(e.target.value) : null }))}
+                  placeholder="e.g. 3"
+                />
+              </div>
+              <div>
+                <label style={S.label}>Bathrooms</label>
+                <input
+                  style={S.input}
+                  type="number"
+                  min={0}
+                  value={unitForm.baths ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, baths: e.target.value ? Number(e.target.value) : null }))}
+                  placeholder="e.g. 2"
+                />
+              </div>
+
+              {/* Apartment Cover Photo & Photo Gallery (with Drag-and-Drop Reordering) */}
+              <div style={S.full}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem', marginBottom: '0.25rem' }}>
+                  <label style={S.label}>
+                    Apartment Cover Photo &amp; Photo Gallery (Up to 8 Gallery Images)
+                  </label>
+                  <span style={{ fontSize: '0.72rem', background: '#FEF3C7', color: '#92400E', padding: '0.15rem 0.45rem', borderRadius: 4, fontWeight: 700 }}>
+                    ⇄ Drag &amp; Drop Reordering
+                  </span>
+                </div>
+                <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 0, marginBottom: '0.5rem' }}>
+                  Upload the primary Apartment Cover Photo and up to 8 apartment gallery photos. Drag and drop any card to rearrange display order—Slot 1 is always the primary cover photo.
+                </p>
+                <ApartmentGalleryReorder
+                  coverUrl={unitForm.image_url}
+                  galleryUrls={unitForm.gallery_images ?? []}
+                  onChange={(newCover, newGallery) => {
+                    setUnitForm(prev => ({
+                      ...prev,
+                      image_url: newCover,
+                      gallery_images: newGallery,
+                    }));
+                  }}
+                  maxPhotos={9}
+                />
+              </div>
+
+              {/* Apartment Interior Video Walkthrough */}
+              <div style={S.full}>
+                <label style={S.label}>Apartment Interior Video Walkthrough (Video URL or Direct Link)</label>
+                <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 0, marginBottom: '0.4rem' }}>
+                  Paste a YouTube, Vimeo, or direct MP4 link showing an interior walkthrough tour of this apartment.
+                </p>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                  <input
+                    style={{ ...S.input, flex: 1 }}
+                    type="url"
+                    value={unitForm.video_url ?? ''}
+                    onChange={e => setUnitForm(prev => ({ ...prev, video_url: e.target.value || null }))}
+                    placeholder="https://www.youtube.com/watch?v=… or https://…/apartment_tour.mp4"
+                  />
+                  {unitForm.video_url && (
+                    <button
+                      type="button"
+                      style={{ ...S.cancel, padding: '0.5rem 0.8rem', fontSize: '0.8rem' }}
+                      onClick={() => setUnitForm(prev => ({ ...prev, video_url: null }))}
+                    >
+                      Clear Video
+                    </button>
+                  )}
+                </div>
+                {unitForm.video_url && (
+                  <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#F8FAFC', border: '1px solid #E2E8F0', borderRadius: 8, color: '#1E293B' }}>
+                    <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.75rem', color: '#0072BC', fontWeight: 600 }}>
+                      Interior Video Preview:
+                    </p>
+                    {unitForm.video_url.includes('youtube.com') || unitForm.video_url.includes('youtu.be') ? (
+                      <iframe
+                        src={unitForm.video_url.replace('watch?v=', 'embed/').replace('youtu.be/', 'www.youtube.com/embed/')}
+                        style={{ width: '100%', height: 200, border: 'none', borderRadius: 6 }}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title="Apartment Walkthrough Video"
+                      />
+                    ) : unitForm.video_url.includes('vimeo.com') ? (
+                      <iframe
+                        src={unitForm.video_url.replace('vimeo.com/', 'player.vimeo.com/video/')}
+                        style={{ width: '100%', height: 200, border: 'none', borderRadius: 6 }}
+                        allow="autoplay; fullscreen; picture-in-picture"
+                        allowFullScreen
+                        title="Apartment Walkthrough Video"
+                      />
+                    ) : (
+                      <video
+                        src={unitForm.video_url}
+                        controls
+                        style={{ width: '100%', maxHeight: 220, borderRadius: 6, background: '#000' }}
+                      />
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* 2D Technical Architectural Blueprint */}
+              <div style={S.full}>
+                <label style={S.label}>
+                  2D Technical Blueprint (Optional Architectural CAD / Engineering Layout)
+                </label>
+                <p style={{ fontSize: '0.75rem', color: '#64748b', marginTop: 0, marginBottom: '0.4rem' }}>
+                  Architectural line blueprint, CAD, wall dimensions & MEP technical layout.
+                </p>
+                <ImageUpload
+                  value={unitForm.technical_plan_url ?? null}
+                  onChange={url => setUnitForm(prev => ({ ...prev, technical_plan_url: url }))}
+                  purpose="blueprint"
+                />
+              </div>
+
+              <div style={S.full}>
+                <label style={S.label}>Unit Description & Notes</label>
+                <textarea
+                  style={{ ...S.textarea, minHeight: 70 }}
+                  value={unitForm.description ?? ''}
+                  onChange={e => setUnitForm(prev => ({ ...prev, description: e.target.value || null }))}
+                  placeholder="Optional details: balcony view, sunrise/sunset orientation, included finishes…"
+                />
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', marginTop: '1rem' }}>
+              <button type="submit" style={S.save} disabled={unitBusy}>
+                {unitBusy ? 'Saving…' : editingUnitId ? 'Update Apartment' : '+ Add Apartment'}
+              </button>
+              {editingUnitId && (
+                <button
+                  type="button"
+                  style={S.cancel}
+                  onClick={() => { setEditingUnitId(null); setUnitForm(blankUnit(isEdit ? projectId : 0)); }}
+                >
+                  Cancel Edit
+                </button>
+              )}
+              {unitToast && <span style={S.toast(unitToast.ok)}>{unitToast.msg}</span>}
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {/* Visual Explorer Calibration (Floors, Lighting & Apartment Polygons) */}
+      {isEdit && (
+        <ExplorerEditor
+          projectId={projectId}
+          projectName={form.name}
+          exteriorImageUrl={form.image_url}
+        />
+      )}
+    </div>
+  );
+}
+

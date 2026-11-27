@@ -14,13 +14,11 @@ const path = require('path');
 
 const ROLE_SLUG = 'callcenter';
 const APP_TITLE = 'Attaie Call Center Workspace';
-const DEFAULT_BACKEND_ORIGIN = 'https://attaieproperties.com';
-const FALLBACK_BACKEND_ORIGINS = [
-  'https://attaieproperties.com',
-  'https://website.attaieproperties.com',
-  'https://www.attaieproperties.com',
-];
+const DEFAULT_BACKEND_ORIGIN = 'https://website.attaieproperties.com';
 
+
+// Isolate V2 testing settings and cookies from an existing production installation.
+app.setPath('userData', app.getPath('userData') + '-v2-testing');
 const userDataDir = app.getPath('userData');
 const stateFile = path.join(userDataDir, 'window-state.json');
 const configFile = path.join(userDataDir, 'config.json');
@@ -253,24 +251,7 @@ async function handleProxiedRequest(req, res) {
   let { backendOrigin } = loadConfig();
   let result = await forwardToBackend(backendOrigin, req, res, bodyBuffer);
 
-  // If the primary domain returns 404 on /staff-api/v1/* (e.g. V2 API is hosted on website.attaieproperties.com),
-  // automatically probe fallback origins so the agent connects without manual configuration.
-  if (
-    result.ok &&
-    result.statusCode === 404 &&
-    String(req.url || '').startsWith('/staff-api/v1/')
-  ) {
-    for (const candidate of FALLBACK_BACKEND_ORIGINS) {
-      if (candidate === backendOrigin) continue;
-      const fallbackRes = await forwardToBackend(candidate, req, res, bodyBuffer);
-      if (fallbackRes.ok && fallbackRes.statusCode !== 404) {
-        backendOrigin = candidate;
-        saveConfig({ backendOrigin: candidate });
-        result = fallbackRes;
-        break;
-      }
-    }
-  }
+  // Never replay credentials or writes against a different deployment.
 
   if (!result.ok) {
     lastLoadError = `${result.error?.message || 'Unable to reach backend server'} (${backendOrigin})`;

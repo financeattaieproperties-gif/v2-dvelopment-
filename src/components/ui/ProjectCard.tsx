@@ -40,7 +40,7 @@ export const ProjectCard = ({
 
   const availabilityPct =
     availableUnits !== undefined && totalUnits && totalUnits > 0
-      ? Math.min(100, Math.max(8, Math.round((availableUnits / totalUnits) * 100)))
+      ? Math.min(100, Math.max(0, Math.round((availableUnits / totalUnits) * 100)))
       : null;
 
   return (

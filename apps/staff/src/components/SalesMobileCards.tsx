@@ -1,6 +1,8 @@
 import React from "react";
+import { motion } from "motion/react";
 import {
   ArrowUpRight,
+  Building2,
   CalendarClock,
   Clock3,
   MessageCircle,
@@ -88,11 +90,13 @@ export function MobileLeadCardList({
         const isDraft = lead.status === "draft";
         const isClosed = lead.status === "closed";
         return (
-          <article
+          <motion.article
             key={lead.id}
             className="crm-mobile-card"
             style={CARD_SURFACE_STYLE}
             data-testid={`mobile-lead-card-${lead.id}`}
+            whileTap={{ scale: 0.985 }}
+            transition={{ duration: 0.12 }}
           >
             <div className="crm-mobile-card-head">
               <div className="crm-mobile-card-identity">
@@ -129,8 +133,11 @@ export function MobileLeadCardList({
 
             {lead.projectName && (
               <div className="crm-mobile-card-project" style={{ color: "#1E293B" }}>
-                {t("Project")}: <strong>{lead.projectName}</strong>{" "}
-                {lead.apartmentNumber || ""}
+                <Building2 size={13} aria-hidden="true" style={{ color: "#0072BC", flexShrink: 0 }} />
+                <span>
+                  <strong>{lead.projectName}</strong>
+                  {lead.apartmentNumber ? ` · ${lead.apartmentNumber}` : ""}
+                </span>
               </div>
             )}
 
@@ -193,7 +200,7 @@ export function MobileLeadCardList({
                 <ArrowUpRight size={15} />
               </button>
             </div>
-          </article>
+          </motion.article>
         );
       })}
     </div>
@@ -227,11 +234,13 @@ export function MobileFollowupCardList({
         const isDone = Boolean(item.completedAt);
         const isClosedState = (state as string) === "closed" || state === "completed" || state === "completed_late";
         return (
-          <article
+          <motion.article
             key={item.id}
             className="crm-mobile-card"
             style={CARD_SURFACE_STYLE}
             data-testid={`mobile-followup-card-${item.id}`}
+            whileTap={{ scale: 0.985 }}
+            transition={{ duration: 0.12 }}
           >
             <div className="crm-mobile-card-head">
               <div className="crm-mobile-card-identity">
@@ -313,7 +322,7 @@ export function MobileFollowupCardList({
                 <ArrowUpRight size={15} />
               </button>
             </div>
-          </article>
+          </motion.article>
         );
       })}
     </div>

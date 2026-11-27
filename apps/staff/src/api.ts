@@ -19,6 +19,7 @@ import type {
 } from "../../../packages/staff-contracts/types";
 
 import { resolveStaffApiEndpoint } from "../../../packages/staff-contracts/role-preference.mjs";
+import { signIn, resetPassword } from "./auth/firebase.mjs";
 
 const envApiBaseUrl = import.meta.env.VITE_STAFF_API_BASE_URL || "";
 let csrf = "";
@@ -89,10 +90,10 @@ export const api = {
     return data;
   },
   async login(username: string, password: string) {
+    const idToken = await signIn(import.meta.env.VITE_STAFF_FIREBASE_API_KEY || "", username, password);
     await this.session();
     const data = await request<Session>("auth/login", "POST", {
-      username,
-      password,
+      idToken,
     });
     csrf = data.csrfToken;
     return data;
@@ -192,7 +193,7 @@ export const api = {
     ),
   updateProfilePhoto: (photoUrl: string) =>
     request<{ user: StaffUser }>("profile/photo", "POST", { photoUrl }),
-  resetPassword: async (_email: string) => {
-    throw new Error("Contact your administrator to reset your password.");
+  resetPassword: async (email: string) => {
+    await resetPassword(import.meta.env.VITE_STAFF_FIREBASE_API_KEY || "", email);
   },
 };

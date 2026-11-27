@@ -1,0 +1,169 @@
+waiting
+Approved. Run again to continue.
+waiting
+Approved. Run again to continue.
+complete
+{
+  "project": {
+    "id": "f286d7f3a692",
+    "name": "Attaie Properties fixture",
+    "brief": "# Attaie Properties — pilot landing page\nBuild an isolated premium real estate landing page for Kabul customers, with navy, green and white; responsive English/Dari RTL layout; four signature projects (Burj Kabul Plaza, Kabul Plaza #12, Kabul Plaza ABC, Kabul Plaza Saljuqi); accessible project selection and consultation CTA. Do not invent inventory, prices, construction status, testimonials or metrics. No live CRM, hosting, or production writes. Use placeholder architectural imagery only if clearly labeled. Require keyboard navigation, no horizontal overflow at mobile widths, reduced motion, and accessible contrast. Use local tests and document exact commands, limitations and candidate. No deployment.\n",
+    "mode": "professional",
+    "profile": "landing",
+    "adapter": "fixture",
+    "verify": "[]",
+    "state": "complete",
+    "verdict": "SIMULATION_ONLY",
+    "candidate": "1754dc297f06ca63d9a38304217f165dc7991c769e977053ac40932409c129e4",
+    "created": "2026-11-25T19:16:05+00:00",
+    "updated": "2026-11-25T19:16:08+00:00"
+  },
+  "tasks": [
+    {
+      "project": "f286d7f3a692",
+      "seq": 0,
+      "role": "product",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:06+00:00",
+      "ended": "2026-11-25T19:16:06+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 1,
+      "role": "scope-approval",
+      "state": "done",
+      "attempt": 0,
+      "summary": "Owner approved",
+      "started": null,
+      "ended": "2026-11-25T19:16:06+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 2,
+      "role": "research",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:07+00:00",
+      "ended": "2026-11-25T19:16:07+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 3,
+      "role": "architect",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:07+00:00",
+      "ended": "2026-11-25T19:16:07+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 4,
+      "role": "design",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:07+00:00",
+      "ended": "2026-11-25T19:16:07+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 5,
+      "role": "design-approval",
+      "state": "done",
+      "attempt": 0,
+      "summary": "Owner approved",
+      "started": null,
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 6,
+      "role": "frontend",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 7,
+      "role": "motion",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 8,
+      "role": "integration",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 9,
+      "role": "verify",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Fixture artifact exists; simulation only, not product QA.",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 10,
+      "role": "security",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 11,
+      "role": "qa",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 12,
+      "role": "release-docs",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Simulated role completed (no AI call)",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    },
+    {
+      "project": "f286d7f3a692",
+      "seq": 13,
+      "role": "handoff",
+      "state": "done",
+      "attempt": 1,
+      "summary": "Handoff prepared. No production deployment performed.",
+      "started": "2026-11-25T19:16:08+00:00",
+      "ended": "2026-11-25T19:16:08+00:00"
+    }
+  ],
+  "usage": {
+    "input_tokens": 0,
+    "cached_input_tokens": 0,
+    "output_tokens": 0,
+    "reported_turns": 0
+  }
+}
