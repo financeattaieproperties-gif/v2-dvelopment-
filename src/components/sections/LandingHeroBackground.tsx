@@ -1,49 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { getPublishedVisualConfig } from '../../lib/visualConfigService';
-import stitchHeroImg from '../../assets/images/stitch_hero_kabul_panorama.jpg';
 import type { LandingHeroConfig } from '../../../shared/visual-config';
 
-export const LandingHeroBackground: React.FC = () => {
+export const LandingHeroBackground: React.FC<{ projectImage?: string | null; projectName?: string }> = ({ projectImage, projectName }) => {
   const [heroConfig, setHeroConfig] = useState<LandingHeroConfig | null>(null);
-
   useEffect(() => {
-    getPublishedVisualConfig().then((cfg) => {
-      if (cfg && cfg.landingHero) {
-        setHeroConfig(cfg.landingHero);
-      }
-    });
+    let mounted = true;
+    getPublishedVisualConfig().then(cfg => {
+      if (mounted && cfg?.landingHero) setHeroConfig(cfg.landingHero);
+    }).catch(() => { /* Leave the real project image or neutral canvas in place. */ });
+    return () => { mounted = false; };
   }, []);
-
-  const activeImageUrl = heroConfig?.imageUrl || stitchHeroImg;
-  const focalX = heroConfig?.focalPoint?.x ?? 0.85; // default object-right-top
-  const focalY = heroConfig?.focalPoint?.y ?? 0.15;
-
+  const activeImageUrl = heroConfig?.imageUrl || projectImage;
+  const focalX = heroConfig?.focalPoint?.x ?? 0.5;
+  const focalY = heroConfig?.focalPoint?.y ?? 0.4;
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden">
-      <img
-        src={activeImageUrl}
-        alt="Attaie Properties — Modern Real Estate in Kabul, Afghanistan"
-        style={{
-          objectPosition: `${(focalX * 100).toFixed(1)}% ${(focalY * 100).toFixed(1)}%`,
-        }}
-        className="w-full h-full object-cover transition-opacity duration-700"
-      />
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background:
-            'linear-gradient(90deg, rgba(245,247,251,0.96) 0%, rgba(245,247,251,0.88) 38%, rgba(245,247,251,0.28) 68%, rgba(245,247,251,0.05) 100%)',
-        }}
-      />
-      <div
-        className="absolute inset-x-0 bottom-0 h-32"
-        style={{
-          background:
-            'linear-gradient(to top, var(--color-brand-cream) 10%, rgba(245,247,251,0) 100%)',
-        }}
-      />
+    <div className="relative min-h-[260px] overflow-hidden rounded-[24px] bg-[#E4E8EE] lg:min-h-[510px]">
+      {activeImageUrl && <img src={activeImageUrl} alt={heroConfig?.imageUrl ? 'Attaie Properties' : projectName || 'Attaie Properties'} style={{ objectPosition: `${focalX * 100}% ${focalY * 100}%` }} className="absolute inset-0 h-full w-full object-cover" fetchPriority="high" />}
+      {!activeImageUrl && <div className="absolute inset-0 flex items-center justify-center"><img src="/logo.png" alt="" className="w-40 max-w-[45%] object-contain opacity-70" /></div>}
     </div>
   );
 };
-
 export default LandingHeroBackground;
