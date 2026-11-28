@@ -29,10 +29,9 @@ import { MotionCarousel } from '../ui/MotionCarousel';
 import { PropertyCardSkeleton } from '../ui/PropertyCardSkeleton';
 import { SectionHeader } from '../ui/SectionHeader';
 import { ClickToCallButton } from '../ui/ClickToCallButton';
-import { ExpandingCards } from '../ui/expanding-cards';
-import { mapProjectsToExpandingCards } from '../ui/demo';
 import { getProperties, getProjects, type Property, type Project } from '../../lib/dbService';
 import { LandingHeroBackground } from './LandingHeroBackground';
+import { SignatureProjectGallery } from './SignatureProjectGallery';
 
 const WHATSAPP_NUMBER = '93782222279';
 
@@ -296,10 +295,6 @@ export const LandingPageContent = () => {
   };
 
   const featuredProperties = properties.map(toPropertyCardProps);
-  const expandingProjectItems = React.useMemo(
-    () => mapProjectsToExpandingCards(projects),
-    [projects]
-  );
 
   const filteredProperties = featuredProperties.filter((p) => {
     if (activeFilter === 'All') return true;
@@ -477,33 +472,8 @@ export const LandingPageContent = () => {
         </div>
       </section>
 
-      {/* ── 2. SIGNATURE PROJECTS EXPANDING CARDS SECTION ── */}
-      <section
-        className="py-12 md:py-16 bg-brand-cream"
-        data-testid="signature-projects-expanding-section"
-      >
-        <div className="container-custom">
-          <SectionHeader
-            eyebrow={t('landing.projectsEyebrow')}
-            title={t('landing.projectsTitle')}
-            subtitle={t('landing.projectsSubtitle')}
-            cta={{ label: t('landing.viewAllProjects'), href: '/projects' }}
-          />
-          {expandingProjectItems.length > 0 ? (
-            <ExpandingCards items={expandingProjectItems} defaultActiveIndex={0} />
-          ) : (
-            <div className="rounded-2xl border border-neutral-200 bg-white p-12 text-center">
-              <Building2 size={32} className="mx-auto text-brand-gold/60 mb-3" />
-              <p className="text-brand-navy font-semibold text-base mb-1">
-                {t('landing.projectsEmptyTitle')}
-              </p>
-              <p className="text-neutral-500 text-sm">
-                {t('landing.projectsEmptySubtitle')}
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
+      {/* Desktop-first signature gallery: real published project photos and official logo. */}
+      <SignatureProjectGallery projects={projects} />
 
       {/* ── 3. LATEST PROPERTIES SECTION ─────────────────────────────────── */}
       <section className="py-12 md:py-16 bg-brand-cream">
