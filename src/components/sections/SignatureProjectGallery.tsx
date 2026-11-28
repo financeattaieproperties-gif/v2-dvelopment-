@@ -36,6 +36,8 @@ export function SignatureProjectGallery({ projects, loading = false }: { project
   const section = useRef<HTMLElement>(null);
   const video = useRef<HTMLVideoElement>(null);
   const advanced = useRef(false);
+  const touchStart = useRef<{ x: number; y: number } | null>(null);
+  const suppressClick = useRef(false);
   const featured = projects.filter(project => Boolean(project.image_url || project.gallery_images?.[0]));
   const count = featured.length;
   const activeIndex = count ? ((position % count) + count) % count : 0;
@@ -44,7 +46,7 @@ export function SignatureProjectGallery({ projects, loading = false }: { project
   const filmAvailable = Boolean(film) && failedPosition !== position;
   const auto = !reduced && !paused && visible && documentVisible;
   const advance = useCallback((step: number) => {
-    if (count < 2) return;
+    if (count < 2 || step === 0) return;
     setDirection(step);
     setPosition(value => value + step);
   }, [count]);
@@ -80,6 +82,7 @@ export function SignatureProjectGallery({ projects, loading = false }: { project
       el.muted = true;
       el.play().catch(() => setFailedPosition(position));
     } else el.pause();
+    return () => el.pause();
   }, [auto, filmAvailable, position, film]);
   useEffect(() => {
     if (!auto || count < 2 || filmAvailable) return;
@@ -124,7 +127,19 @@ export function SignatureProjectGallery({ projects, loading = false }: { project
           }}>
             {/* Keep the physical travel direction right-to-left in both languages;
                 text inside each card inherits the selected language direction. */}
-            <div dir="ltr" className="relative flex gap-4 overflow-hidden rounded-2xl lg:gap-5">
+            <div dir="ltr" className="relative flex touch-pan-y gap-4 overflow-hidden rounded-2xl lg:gap-5"
+              onTouchStart={e => { const point = e.touches[0]; if (point) touchStart.current = { x: point.clientX, y: point.clientY }; suppressClick.current = false; }}
+              onTouchCancel={() => { touchStart.current = null; }}
+              onTouchEnd={e => {
+                const start = touchStart.current;
+                touchStart.current = null;
+                const end = e.changedTouches[0];
+                if (!start || !end) return;
+                const dx = end.clientX - start.x;
+                const dy = end.clientY - start.y;
+                if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.25) { suppressClick.current = true; advance(dx < 0 ? 1 : -1); }
+              }}
+              onClickCapture={e => { if (suppressClick.current) { e.preventDefault(); e.stopPropagation(); suppressClick.current = false; } }}>
               <AnimatePresence initial={false} mode="popLayout">
                 {cards.map(({ absolute, project, offset }) => {
                   const isActive = offset === 0;
