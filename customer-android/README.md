@@ -1,14 +1,15 @@
-# Attaie Properties — Customer Android App
+# Attaie Properties V2 — Customer Android app
 
-This directory is reserved for the **customer-facing Attaie Properties V2 Android application** (24-screen Kotlin / Jetpack Compose project).
+Independent native Kotlin + Jetpack Compose Android Studio project, alongside but **not merged into** `sales-android/`.
 
-## Project isolation
+## Open
+Open the `customer-android/` folder as a project in Android Studio. Use JDK 17 and Android SDK 35. Sync Gradle, then run `assembleDebug` from Android Studio or a locally installed Gradle. The Gradle wrapper files have not yet been added.
 
-- This is a **separate Android Studio project**, independent of the existing sibling `sales-android/` project.
-- Do not copy, merge, or overwrite Sales Agent application source, Gradle files, package identifiers, or assets.
-- The customer app will use its own `settings.gradle.kts`, `build.gradle.kts`, `app/`, manifest, resources, and application ID.
-- Backend integration must be reviewed and tested independently. Do not assume the Sales Agent API or authentication roles are interchangeable.
+## Current status
+- All 24 original screen functions and navigation are preserved in `app/src/main/java/com/attaieproperties/v2/MainActivity.kt`.
+- Build and functional tests **have not been run**; fixes may be required.
+- Backend remains unconfigured and deliberately does not authenticate real users.
+- Official logo asset is not yet present; the app passes a null logo resource ID.
+- No files in `sales-android/` were changed.
 
-## Status
-
-Folder initialized. The customer app's Kotlin source has **not yet been split, installed, compiled, or tested** in this repository. Do not treat this README as a complete Android Studio project.
+Read `AGENTS.md` before continuing development.
