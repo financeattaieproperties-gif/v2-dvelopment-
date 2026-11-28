@@ -73,18 +73,33 @@
 }
 
 @theme {
-  /* ── Core brand (UI Variant 1 — Logo Tri-Color) ── */
-  --color-brand-gold:        #0072BC;
-  --color-brand-gold-dark:   #005E9B;
-  --color-brand-gold-lt:     #E6F2FA;
-  --color-brand-navy:        #1E293B;
-  --color-brand-navy-light:  #334155;
-  --color-brand-navy-deep:   #0F172A;
-  --color-brand-ivory:       #F1F5F9;
-  --color-brand-cream:       #F8FAFC;
+  /* Shared customer Android V2 palette — exact BrandPalette counterparts */
+  --color-attaie-blue: #298FCE;
+  --color-attaie-blue-accessible: #186A9C;
+  --color-attaie-blue-soft: #EAF4FB;
+  --color-attaie-green: #19A64F;
+  --color-attaie-green-accessible: #117838;
+  --color-attaie-green-soft: #E8F7EE;
+  --color-attaie-gray: #545454;
+  --color-attaie-ink: #171A1F;
+  --color-attaie-canvas: #F6F8FA;
+  --color-attaie-surface: #FFFFFF;
+  --color-attaie-border: #E4E8EE;
+  --color-attaie-danger: #B71C1C;
+  --color-attaie-danger-soft: #FDECEC;
+
+  /* ── Compatibility aliases for existing components (blue, not gold) ── */
+  --color-brand-gold:        #186A9C;
+  --color-brand-gold-dark:   #14577F;
+  --color-brand-gold-lt:     #EAF4FB;
+  --color-brand-navy:        #171A1F;
+  --color-brand-navy-light:  #545454;
+  --color-brand-navy-deep:   #0E1217;
+  --color-brand-ivory:       #EAF4FB;
+  --color-brand-cream:       #F6F8FA;
 
   /* ── Status ── */
-  --color-status-available: #14A850;
+  --color-status-available: #117838;
   --color-status-pending:   #F59E0B;
   --color-status-sold:      #EF4444;
   --color-status-rented:    #3B82F6;
@@ -113,12 +128,12 @@
 /* ── Semantic CSS custom properties (not Tailwind — used in JS/CSS directly) ── */
 :root {
   --background: var(--color-brand-cream);
-  --foreground: var(--color-neutral-900);
+  --foreground: var(--color-attaie-ink);
 
   /* Blue glow helpers */
-  --gold-glow-sm: 0 4px 14px rgba(0,114,188,0.28);
-  --gold-glow-md: 0 8px 28px rgba(0,114,188,0.32);
-  --gold-glow-lg: 0 16px 48px rgba(0,114,188,0.28);
+  --gold-glow-sm: 0 4px 14px rgba(41,143,206,0.28);
+  --gold-glow-md: 0 8px 28px rgba(41,143,206,0.32);
+  --gold-glow-lg: 0 16px 48px rgba(41,143,206,0.28);
 
   /* Elevation system */
   --shadow-sm:  0 1px 3px rgba(30,41,59,0.08), 0 1px 2px rgba(30,41,59,0.04);
@@ -139,8 +154,8 @@
   --dur-enter: 600ms;
 
   /* Swiper brand integration */
-  --swiper-theme-color: #0072BC;
-  --swiper-pagination-color: #0072BC;
+  --swiper-theme-color: #298FCE;
+  --swiper-pagination-color: #298FCE;
   --swiper-pagination-bullet-inactive-color: #1E293B;
   --swiper-pagination-bullet-inactive-opacity: 0.25;
   --swiper-navigation-size: 18px;
@@ -166,14 +181,14 @@
   img { max-width: 100%; }
   /* Accessible focus ring for keyboard nav */
   :focus-visible {
-    outline: 2px solid #0145F2;
+    outline: 2px solid #186A9C;
     outline-offset: 3px;
     border-radius: 4px;
   }
   /* Brand-aligned custom scrollbars & scrollable box ergonomics */
   * {
     scrollbar-width: thin;
-    scrollbar-color: #0145F2 rgba(2, 14, 58, 0.08);
+    scrollbar-color: #186A9C rgba(2, 14, 58, 0.08);
   }
   *::-webkit-scrollbar {
     width: 10px;
@@ -184,20 +199,20 @@
     border-radius: 9999px;
   }
   *::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #0145F2 0%, #0136C5 100%);
+    background: linear-gradient(180deg, #186A9C 0%, #14577F 100%);
     border-radius: 9999px;
     border: 2px solid transparent;
     background-clip: padding-box;
     box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2);
   }
   *::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #0136C5 0%, #020E3A 100%);
+    background: linear-gradient(180deg, #14577F 0%, #020E3A 100%);
     border: 2px solid transparent;
     background-clip: padding-box;
     box-shadow: 0 0 8px rgba(1, 69, 242, 0.45);
   }
   *::-webkit-scrollbar-thumb:active {
-    background: #0145F2;
+    background: #186A9C;
     border: 1.5px solid transparent;
     background-clip: padding-box;
   }
@@ -205,7 +220,7 @@
   /* Custom scrollbar utility for scrollable boxes, dropdowns, and drawers */
   .custom-scrollbar {
     scrollbar-width: thin;
-    scrollbar-color: #0145F2 rgba(2, 14, 58, 0.06);
+    scrollbar-color: #186A9C rgba(2, 14, 58, 0.06);
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
   }
@@ -218,20 +233,20 @@
     border-radius: 9999px;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #0145F2 0%, #0A1F5C 100%);
+    background: linear-gradient(180deg, #186A9C 0%, #0A1F5C 100%);
     border-radius: 9999px;
     border: 1px solid transparent;
     background-clip: padding-box;
   }
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #0145F2;
+    background: #186A9C;
     box-shadow: 0 0 6px rgba(1, 69, 242, 0.5);
   }
 
   /* Dark scrollable container styling */
   .custom-scrollbar-dark {
     scrollbar-width: thin;
-    scrollbar-color: #0145F2 rgba(255, 255, 255, 0.08);
+    scrollbar-color: #186A9C rgba(255, 255, 255, 0.08);
   }
   .custom-scrollbar-dark::-webkit-scrollbar {
     width: 6px;
@@ -242,11 +257,11 @@
     border-radius: 9999px;
   }
   .custom-scrollbar-dark::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #0145F2 0%, #0A1F5C 100%);
+    background: linear-gradient(180deg, #186A9C 0%, #0A1F5C 100%);
     border-radius: 9999px;
   }
   .custom-scrollbar-dark::-webkit-scrollbar-thumb:hover {
-    background: #0136C5;
+    background: #14577F;
   }
 
   /* Swiper Carousel arrow and pagination enhancements on landing page */
@@ -405,7 +420,7 @@
     left: 0;
     width: 0;
     height: 1px;
-    background: #0145F2;
+    background: #186A9C;
     transition: width var(--dur-slow) var(--ease-out-expo);
   }
   .link-underline:hover::after {
@@ -446,7 +461,7 @@
   /* ── Gold stat flash (used by StatsTicker on count complete) ── */
   @keyframes gold-flash {
     0%   { color: inherit; }
-    30%  { color: #0145F2; text-shadow: 0 0 20px rgba(1,69,242,0.6); }
+    30%  { color: #186A9C; text-shadow: 0 0 20px rgba(1,69,242,0.6); }
     100% { color: inherit; }
   }
   .flash-gold {

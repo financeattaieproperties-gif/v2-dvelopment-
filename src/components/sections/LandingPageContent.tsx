@@ -11,8 +11,6 @@ import {
   Bed,
   CircleDollarSign,
   Search,
-  ShieldCheck,
-  Users,
   ArrowRight,
   ChevronDown,
   MessageCircle,
@@ -27,12 +25,10 @@ import { HotDealsSection } from './HotDealsSection';
 import { PropertyCard } from '../ui/PropertyCard';
 import { MotionCarousel } from '../ui/MotionCarousel';
 import { PropertyCardSkeleton } from '../ui/PropertyCardSkeleton';
-import { SectionHeader } from '../ui/SectionHeader';
 import { ClickToCallButton } from '../ui/ClickToCallButton';
-import { ExpandingCards } from '../ui/expanding-cards';
-import { mapProjectsToExpandingCards } from '../ui/demo';
 import { getProperties, getProjects, type Property, type Project } from '../../lib/dbService';
 import { LandingHeroBackground } from './LandingHeroBackground';
+import { SignatureProjectGallery } from './SignatureProjectGallery';
 
 const WHATSAPP_NUMBER = '93782222279';
 
@@ -296,10 +292,6 @@ export const LandingPageContent = () => {
   };
 
   const featuredProperties = properties.map(toPropertyCardProps);
-  const expandingProjectItems = React.useMemo(
-    () => mapProjectsToExpandingCards(projects),
-    [projects]
-  );
 
   const filteredProperties = featuredProperties.filter((p) => {
     if (activeFilter === 'All') return true;
@@ -311,56 +303,25 @@ export const LandingPageContent = () => {
 
   return (
     <>
-      {/* ── 1. STITCH ARCHITECTURAL HERO SECTION + FLOATING SEARCH BAR ── */}
-      <section className="relative z-30 pt-24 lg:pt-28 pb-12 bg-brand-cream">
-        <div className="relative min-h-[540px] lg:min-h-[600px] flex flex-col justify-between">
-          {/* Single Architectural Hero Background (Dynamic admin-configured or default) */}
-          <LandingHeroBackground />
-
-          {/* Left Column Hero Copy */}
-          <div className="container-custom relative z-10 pt-10 lg:pt-16 pb-10">
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="max-w-xl"
-            >
-              <span className="eyebrow inline-block mb-3 tracking-[0.22em]">
+      {/* Editorial homepage: real architecture, one primary action and generous spacing. */}
+      <section className="relative z-30 bg-white pt-28 pb-10 lg:pt-36 lg:pb-14">
+        <div className="relative flex flex-col gap-7 lg:gap-10">
+          <div className="container-custom grid items-center gap-8 lg:grid-cols-[0.85fr_1.15fr] lg:gap-14">
+            <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }} className="max-w-xl py-3 lg:py-12">
+              <p className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#545454]">
+                <span className="h-px w-8 bg-[#19A64F]" aria-hidden="true" />
                 {t('landing.heroEyebrow')}
-              </span>
-
-              <h1 className="font-display font-extrabold text-brand-navy text-display tracking-tight leading-[1.06] mb-5">
-                {t('landing.heroTitleLine1')}
-                <br />
-                {t('landing.heroTitleLine2')}
-              </h1>
-
-              <p className="text-neutral-600 text-base md:text-lg leading-relaxed max-w-md mb-7">
-                {t('landing.heroSubtitle')}
               </p>
-
-              {/* 3 Trust Pillars with high-visibility icon badges */}
-              <div className="flex flex-wrap items-center gap-6 pt-1">
-                <div className="flex items-center gap-2.5 text-xs md:text-sm font-bold text-brand-navy">
-                  <span className="w-10 h-10 rounded-xl bg-white border border-brand-navy/10 shadow-brand-sm text-brand-gold flex items-center justify-center shrink-0">
-                    <ShieldCheck size={20} strokeWidth={2.2} />
-                  </span>
-                  <span>{t('landing.pillar1')}</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs md:text-sm font-bold text-brand-navy">
-                  <span className="w-10 h-10 rounded-xl bg-white border border-brand-navy/10 shadow-brand-sm text-brand-gold flex items-center justify-center shrink-0">
-                    <Building2 size={20} strokeWidth={2.2} />
-                  </span>
-                  <span>{t('landing.pillar2')}</span>
-                </div>
-                <div className="flex items-center gap-2.5 text-xs md:text-sm font-bold text-brand-navy">
-                  <span className="w-10 h-10 rounded-xl bg-white border border-brand-navy/10 shadow-brand-sm text-brand-gold flex items-center justify-center shrink-0">
-                    <Users size={20} strokeWidth={2.2} />
-                  </span>
-                  <span>{t('landing.pillar3')}</span>
-                </div>
+              <h1 className="font-display text-[clamp(2.75rem,5.4vw,5.25rem)] font-semibold leading-[1.02] tracking-[-0.045em] text-[#171A1F]">
+                {t('landing.heroTitleLine1')}<br />{t('landing.heroTitleLine2')}
+              </h1>
+              <p className="mt-6 max-w-md text-base leading-relaxed text-[#545454] lg:text-lg">{t('landing.heroSubtitle')}</p>
+              <div className="mt-8 flex flex-wrap items-center gap-5">
+                <Link to="/properties" className="inline-flex items-center gap-3 rounded-full bg-[#186A9C] px-6 py-3.5 text-sm font-semibold text-white hover:bg-[#14577F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#186A9C]">{t('nav.properties')} <ArrowRight size={18} aria-hidden="true" /></Link>
+                <Link to="/projects" className="inline-flex items-center gap-2 border-b border-[#545454]/50 pb-1 text-sm font-semibold text-[#171A1F] hover:border-[#171A1F] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#186A9C]">{t('nav.projects')} <ArrowRight size={16} aria-hidden="true" /></Link>
               </div>
             </motion.div>
+            <LandingHeroBackground projectImage={projects.find(p => p.image_url)?.image_url} projectName={projects.find(p => p.image_url)?.name} />
           </div>
 
           {/* Floating Horizontal Search Card */}
@@ -370,7 +331,7 @@ export const LandingPageContent = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12, duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white rounded-2xl p-3 md:p-4 shadow-brand-xl border border-brand-navy/8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 lg:gap-0 items-center"
+              className="bg-white rounded-2xl p-3 md:p-4 shadow-[0_12px_36px_rgba(23,26,31,0.06)] border border-[#E4E8EE] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 lg:gap-0 items-center"
             >
               {/* 1. Location */}
               <HeroCustomSelect
@@ -424,7 +385,7 @@ export const LandingPageContent = () => {
               <div className="lg:col-span-2 ps-0 lg:ps-3">
                 <button
                   type="submit"
-                  className="w-full py-3.5 px-5 rounded-xl bg-brand-gold hover:bg-brand-gold-dark text-white font-bold text-sm flex items-center justify-center gap-2.5 shadow-gold-sm transition-all cursor-pointer whitespace-nowrap active:scale-[0.98]"
+                  className="w-full py-3.5 px-5 rounded-xl bg-brand-gold hover:bg-brand-gold-dark text-white font-bold text-sm flex items-center justify-center gap-2.5 transition-colors cursor-pointer whitespace-nowrap active:scale-[0.98]"
                 >
                   <Search size={18} strokeWidth={2.4} />
                   <span>{t('landing.searchButton')}</span>
@@ -477,33 +438,8 @@ export const LandingPageContent = () => {
         </div>
       </section>
 
-      {/* ── 2. SIGNATURE PROJECTS EXPANDING CARDS SECTION ── */}
-      <section
-        className="py-12 md:py-16 bg-brand-cream"
-        data-testid="signature-projects-expanding-section"
-      >
-        <div className="container-custom">
-          <SectionHeader
-            eyebrow={t('landing.projectsEyebrow')}
-            title={t('landing.projectsTitle')}
-            subtitle={t('landing.projectsSubtitle')}
-            cta={{ label: t('landing.viewAllProjects'), href: '/projects' }}
-          />
-          {expandingProjectItems.length > 0 ? (
-            <ExpandingCards items={expandingProjectItems} defaultActiveIndex={0} />
-          ) : (
-            <div className="rounded-2xl border border-neutral-200 bg-white p-12 text-center">
-              <Building2 size={32} className="mx-auto text-brand-gold/60 mb-3" />
-              <p className="text-brand-navy font-semibold text-base mb-1">
-                {t('landing.projectsEmptyTitle')}
-              </p>
-              <p className="text-neutral-500 text-sm">
-                {t('landing.projectsEmptySubtitle')}
-              </p>
-            </div>
-          )}
-        </div>
-      </section>
+      {/* Desktop-first signature gallery: real published project photos and official logo. */}
+      <SignatureProjectGallery projects={projects} loading={loadingFeatured} />
 
       {/* ── 3. LATEST PROPERTIES SECTION ─────────────────────────────────── */}
       <section className="py-12 md:py-16 bg-brand-cream">
